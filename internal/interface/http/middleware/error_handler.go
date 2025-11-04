@@ -37,7 +37,7 @@ func handleAppError(c *fiber.Ctx, err *errors.AppError, logger *zap.Logger) erro
 		err.Message,
 	)
 
-	if err.Details != nil && len(err.Details) > 0 {
+	if len(err.Details) > 0 {
 		errResp.WithDetails(err.Details)
 	}
 

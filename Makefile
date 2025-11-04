@@ -29,7 +29,14 @@ install-tools: ## 安装开发工具
 	@echo "$(BLUE)Installing development tools...$(NC)"
 	@go install github.com/air-verse/air@latest
 	@go install github.com/swaggo/swag/cmd/swag@latest
-	@echo "$(GREEN)Development tools installed$(RESET)"
+	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+	@echo "$(GREEN)Development tools installed$(NC)"
+
+.PHONY: lint
+lint: ## 运行 golangci-lint
+	@echo "$(BLUE)Running linter...$(NC)"
+	@golangci-lint run
+	@echo "$(GREEN)Linting completed$(NC)"
 
 .PHONY: generate-ent
 generate-ent: ## 生成Ent代码
@@ -50,7 +57,7 @@ ent-new: ## 创建新的Ent schema (使用: make ent-new name=User)
 generate-swagger: ## 生成swagger文档
 	@echo "$(GREEN)Generating Swagger documentation...$(NC)"
 	@swag init -g docs.go --output ./docs
-	@echo "$(GREEN)Swagger documentation generated in ./docs/$(RESET)"
+	@echo "$(GREEN)Swagger documentation generated in ./docs/$(NC)"
 
 .PHONY: build
 build: ## 构建

@@ -1,32 +1,24 @@
 package middleware
 
 import (
-	"net/http"
-
 	"github.com/gofiber/fiber/v2"
-	"github.com/ryuyb/fusion/internal/interface/http/response"
+	errors2 "github.com/ryuyb/fusion/internal/pkg/errors"
 	"go.uber.org/zap"
 )
 
 func Recovery(logger *zap.Logger) fiber.Handler {
 	return func(c *fiber.Ctx) (err error) {
 		defer func() {
-			if err := recover(); err != nil {
+			if panicErr := recover(); panicErr != nil {
 				logger.Error("Panic recovered",
-					zap.Any("error", err),
+					zap.Any("error", panicErr),
 					zap.String("path", c.Path()),
 					zap.String("method", c.Method()),
 					zap.String("remote", c.IP()),
 					zap.String("trace_id", c.GetRespHeader(fiber.HeaderXRequestID)),
 					zap.Stack("stack"),
 				)
-
-				err = response.NewErrorResponse(
-					c,
-					http.StatusInternalServerError,
-					http.StatusText(http.StatusInternalServerError),
-					"Internal Server Error",
-				)
+				err = errors2.Internal(nil)
 			}
 		}()
 
