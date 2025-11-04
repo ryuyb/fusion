@@ -1,0 +1,14 @@
+basePath: /api/v1
+host: http://localhost:8080
+info:
+  contact: {}
+  description: This is an api server for stream build with fiber
+  title: Fusion API
+  version: "1.0"
+paths: {}
+securityDefinitions:
+  Bearer:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -1,0 +1,21 @@
+server:
+  host: "0.0.0.0"
+  port: 8080
+  read_timeout: 30s
+  write_timeout: 30s
+
+database:
+  dsn: "postgres://postgres:postgres@localhost:5432/fusion"
+  max_open_conns: 25
+  max_idle_conns: 5
+  conn_max_lifetime: 300s
+
+logger:
+  level: "info"
+  enable_console: true
+  enable_color: true
+  enable_file: false
+
+jwt:
+  secret: 123456
+  expiration: 12h
