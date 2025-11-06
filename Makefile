@@ -59,6 +59,10 @@ generate-swagger: ## 生成swagger文档
 	@swag init -g docs.go --output ./docs
 	@echo "$(GREEN)Swagger documentation generated in ./docs/$(NC)"
 
+.PHONY: format-swagger
+format-swagger: ## 格式化 swagger 文档
+	@swag fmt
+
 .PHONY: build
 build: ## 构建
 	@go build $(LDFLAGS) -o bin/fusion cmd/server/main.go

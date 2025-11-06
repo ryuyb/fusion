@@ -7,6 +7,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/ryuyb/fusion/internal/infrastructure/config"
 	"go.uber.org/zap"
+
+	_ "github.com/ryuyb/fusion/docs"
 )
 
 type Server struct {

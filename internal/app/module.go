@@ -6,7 +6,7 @@ import (
 	"github.com/ryuyb/fusion/internal/infrastructure/database"
 	"github.com/ryuyb/fusion/internal/infrastructure/logger"
 	"github.com/ryuyb/fusion/internal/infrastructure/repository"
-	"github.com/ryuyb/fusion/internal/interface"
+	_interface "github.com/ryuyb/fusion/internal/interface"
 	"github.com/ryuyb/fusion/internal/interface/http/route"
 	"github.com/ryuyb/fusion/internal/pkg"
 	"go.uber.org/fx"

@@ -8,7 +8,96 @@
     },
     "host": "http://localhost:8080",
     "basePath": "/api/v1",
-    "paths": {},
+    "paths": {
+        "/api/v1/user/create": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "创建用户",
+                "parameters": [
+                    {
+                        "description": "用户信息",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateUserRequest"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dto.CreateUserRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "password",
+                "repeat_password",
+                "status",
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "maxLength": 32,
+                    "minLength": 6
+                },
+                "repeat_password": {
+                    "type": "string"
+                },
+                "status": {
+                    "enum": [
+                        "active",
+                        "inactive",
+                        "banned"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.UserStatus"
+                        }
+                    ]
+                },
+                "username": {
+                    "type": "string",
+                    "maxLength": 16,
+                    "minLength": 3
+                }
+            }
+        },
+        "entity.UserStatus": {
+            "type": "string",
+            "enum": [
+                "active",
+                "inactive",
+                "banned"
+            ],
+            "x-enum-varnames": [
+                "UserStatusActive",
+                "UserStatusInactive",
+                "UserStatusBanned"
+            ]
+        }
+    },
     "securityDefinitions": {
         "Bearer": {
             "type": "apiKey",

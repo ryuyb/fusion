@@ -11,6 +11,8 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"go.uber.org/fx"
+
+	_ "github.com/ryuyb/fusion/internal/infrastructure/database/ent/runtime"
 )
 
 var serveCmd = &cobra.Command{

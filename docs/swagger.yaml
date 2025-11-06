@@ -1,11 +1,71 @@
 basePath: /api/v1
+definitions:
+  dto.CreateUserRequest:
+    properties:
+      email:
+        type: string
+      password:
+        maxLength: 32
+        minLength: 6
+        type: string
+      repeat_password:
+        type: string
+      status:
+        allOf:
+        - $ref: '#/definitions/entity.UserStatus'
+        enum:
+        - active
+        - inactive
+        - banned
+      username:
+        maxLength: 16
+        minLength: 3
+        type: string
+    required:
+    - email
+    - password
+    - repeat_password
+    - status
+    - username
+    type: object
+  entity.UserStatus:
+    enum:
+    - active
+    - inactive
+    - banned
+    type: string
+    x-enum-varnames:
+    - UserStatusActive
+    - UserStatusInactive
+    - UserStatusBanned
 host: http://localhost:8080
 info:
   contact: {}
   description: This is an api server for stream build with fiber
   title: Fusion API
   version: "1.0"
-paths: {}
+paths:
+  /api/v1/user/create:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户信息
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.CreateUserRequest'
+      summary: 创建用户
+      tags:
+      - User
 securityDefinitions:
   Bearer:
     in: header

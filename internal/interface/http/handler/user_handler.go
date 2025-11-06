@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"strconv"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/ryuyb/fusion/internal/application/dto"
 	"github.com/ryuyb/fusion/internal/domain/service"
@@ -23,6 +25,15 @@ func NewUserHandler(userService service.UserService, validate *validator.Validat
 	}
 }
 
+// Create 创建用户
+//
+//	@Summary	创建用户
+//	@Tags		User
+//	@Accept		json
+//	@Produce	json
+//	@Param		request	body		dto.CreateUserRequest	true	"用户信息"
+//	@Success	200		{object}	dto.CreateUserRequest
+//	@Router		/api/v1/user/create [post]
 func (h *UserHandler) Create(c *fiber.Ctx) error {
 	var req dto.CreateUserRequest
 	if err := c.BodyParser(&req); err != nil {
@@ -32,6 +43,22 @@ func (h *UserHandler) Create(c *fiber.Ctx) error {
 		errs := h.validate.TranslateErrorsAuto(err, c.Get(fiber.HeaderAcceptLanguage))
 		return errors2.PkgValidationError(errs)
 	}
+	created, err := h.userService.Create(c.Context(), &req)
+	if err != nil {
+		return err
+	}
+	return c.Status(fiber.StatusCreated).JSON(created)
+}
 
-	return nil
+func (h *UserHandler) DeleteByID(c *fiber.Ctx) error {
+	idStr := c.Params("id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		return errors2.BadRequest("failed to parse id as integer")
+	}
+	err = h.userService.Delete(c.Context(), id)
+	if err != nil {
+		return err
+	}
+	return c.SendStatus(fiber.StatusOK)
 }

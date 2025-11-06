@@ -13,7 +13,7 @@ type UserResponse struct {
 	Status    entity.UserStatus `json:"status"`
 	CreatedAt time.Time         `json:"created_at"`
 	UpdatedAt time.Time         `json:"updated_at"`
-	DeleteAt  time.Time         `json:"delete_at"`
+	DeleteAt  time.Time         `json:"delete_at,omitzero"`
 }
 
 type CreateUserRequest struct {
@@ -22,4 +22,9 @@ type CreateUserRequest struct {
 	Password       string            `json:"password" validate:"required,min=6,max=32"`
 	RepeatPassword string            `json:"repeat_password" validate:"required,eqfield=Password"`
 	Status         entity.UserStatus `json:"status" validate:"required,oneof=active inactive banned"`
+}
+
+type UpdateUserRequest struct {
+	ID int64 `json:"id" validate:"required,gte=1"`
+	CreateUserRequest
 }

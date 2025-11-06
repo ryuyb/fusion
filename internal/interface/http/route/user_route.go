@@ -19,4 +19,5 @@ func (r *UserRoute) RegisterRouters(router fiber.Router) {
 	group := router.Group("/api/v1/user")
 
 	group.Post("/", r.userHandler.Create)
+	group.Delete("/:id", r.userHandler.DeleteByID)
 }
