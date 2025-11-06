@@ -1,13 +1,13 @@
 package auth
 
-import "github.com/gofiber/fiber/v2"
+import "github.com/gofiber/fiber/v3"
 
 const (
 	UserContextKey   = "auth_user"
 	UserIdContextKey = "user_id"
 )
 
-func GetCurrentUser(c *fiber.Ctx) (*UserClaims, bool) {
+func GetCurrentUser(c fiber.Ctx) (*UserClaims, bool) {
 	user := c.Locals(UserContextKey)
 	if user == nil {
 		return nil, false
@@ -16,7 +16,7 @@ func GetCurrentUser(c *fiber.Ctx) (*UserClaims, bool) {
 	return claims, ok
 }
 
-func GetCurrentUserId(c *fiber.Ctx) (int64, bool) {
+func GetCurrentUserId(c fiber.Ctx) (int64, bool) {
 	userID := c.Locals(UserIdContextKey)
 	if userID == nil {
 		return 0, false
@@ -25,7 +25,7 @@ func GetCurrentUserId(c *fiber.Ctx) (int64, bool) {
 	return id, ok
 }
 
-func IsAuthenticated(c *fiber.Ctx) bool {
+func IsAuthenticated(c fiber.Ctx) bool {
 	_, exists := GetCurrentUser(c)
 	return exists
 }

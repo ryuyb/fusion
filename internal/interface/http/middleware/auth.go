@@ -3,7 +3,7 @@ package middleware
 import (
 	"strings"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/ryuyb/fusion/internal/pkg/auth"
 	errors2 "github.com/ryuyb/fusion/internal/pkg/errors"
 )
@@ -17,7 +17,7 @@ func NewAuth(jwtManager *auth.JWTManager) *Auth {
 }
 
 func (a *Auth) Handler() fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		authHeader := c.Get("Authorization")
 		if authHeader == "" {
 			return errors2.Unauthorized("Authorization header is empty")
@@ -43,7 +43,7 @@ func (a *Auth) Handler() fiber.Handler {
 }
 
 func (a *Auth) Optional() fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		authHeader := c.Get("Authorization")
 		if authHeader == "" {
 			return c.Next()

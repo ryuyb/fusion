@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/ryuyb/fusion/internal/infrastructure/config"
 	"go.uber.org/zap"
 

@@ -3,7 +3,7 @@ package middleware
 import (
 	"fmt"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/ryuyb/fusion/internal/interface/http/response"
 	"github.com/ryuyb/fusion/internal/pkg/errors"
 	"github.com/samber/lo"
@@ -12,7 +12,7 @@ import (
 )
 
 func ErrorHandler(logger *zap.Logger) fiber.ErrorHandler {
-	return func(c *fiber.Ctx, err error) error {
+	return func(c fiber.Ctx, err error) error {
 		appErr := errors.GetAppError(err)
 
 		if appErr != nil {
@@ -27,7 +27,7 @@ func ErrorHandler(logger *zap.Logger) fiber.ErrorHandler {
 	}
 }
 
-func handleAppError(c *fiber.Ctx, err *errors.AppError, logger *zap.Logger) error {
+func handleAppError(c fiber.Ctx, err *errors.AppError, logger *zap.Logger) error {
 	logError(c, err, logger)
 
 	errResp := response.NewErrorResponse(
@@ -44,7 +44,7 @@ func handleAppError(c *fiber.Ctx, err *errors.AppError, logger *zap.Logger) erro
 	return c.Status(err.HTTPStatus).JSON(errResp)
 }
 
-func handleFiberError(c *fiber.Ctx, err *fiber.Error, logger *zap.Logger) error {
+func handleFiberError(c fiber.Ctx, err *fiber.Error, logger *zap.Logger) error {
 	logger.Warn("Fiber error",
 		zap.String("method", c.Method()),
 		zap.String("path", c.Path()),
@@ -64,7 +64,7 @@ func handleFiberError(c *fiber.Ctx, err *fiber.Error, logger *zap.Logger) error 
 	return c.Status(err.Code).JSON(errResp)
 }
 
-func handleUnknownError(c *fiber.Ctx, err error, logger *zap.Logger) error {
+func handleUnknownError(c fiber.Ctx, err error, logger *zap.Logger) error {
 	logger.Error("Unknown error",
 		zap.Error(err),
 		zap.String("method", c.Method()),
@@ -83,7 +83,7 @@ func handleUnknownError(c *fiber.Ctx, err error, logger *zap.Logger) error {
 	return c.Status(fiber.StatusInternalServerError).JSON(errResp)
 }
 
-func logError(c *fiber.Ctx, err *errors.AppError, logger *zap.Logger) {
+func logError(c fiber.Ctx, err *errors.AppError, logger *zap.Logger) {
 	logLevel := getLogLevel(err.HTTPStatus)
 
 	fields := []zap.Field{

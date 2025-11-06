@@ -1,16 +1,14 @@
 package middleware
 
 import (
-	"strings"
-
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/cors"
 )
 
 func Cors() fiber.Handler {
 	return cors.New(cors.Config{
-		AllowOrigins: "*",
-		AllowMethods: strings.Join([]string{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{
 			fiber.MethodGet,
 			fiber.MethodPost,
 			fiber.MethodHead,
@@ -18,8 +16,8 @@ func Cors() fiber.Handler {
 			fiber.MethodDelete,
 			fiber.MethodPatch,
 			fiber.MethodOptions,
-		}, ","),
-		AllowHeaders:     "Origin,Content-Type,Accept,Authorization",
+		},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		AllowCredentials: false,
 		MaxAge:           300,
 	})

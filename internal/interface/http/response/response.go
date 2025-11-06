@@ -3,7 +3,7 @@ package response
 import (
 	"time"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
 type ErrorResponse struct {
@@ -15,7 +15,7 @@ type ErrorResponse struct {
 	OccurredTime time.Time      `json:"occurred_time"` // occurred time
 }
 
-func NewErrorResponse(c *fiber.Ctx, status int, code, message string) *ErrorResponse {
+func NewErrorResponse(c fiber.Ctx, status int, code, message string) *ErrorResponse {
 	return &ErrorResponse{
 		Status:       status,
 		Code:         code,

@@ -3,7 +3,7 @@ package handler
 import (
 	"strconv"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/ryuyb/fusion/internal/application/dto"
 	"github.com/ryuyb/fusion/internal/domain/service"
 	errors2 "github.com/ryuyb/fusion/internal/pkg/errors"
@@ -34,10 +34,10 @@ func NewUserHandler(userService service.UserService, validate *validator.Validat
 //	@Param		request	body		dto.CreateUserRequest	true	"用户信息"
 //	@Success	200		{object}	dto.CreateUserRequest
 //	@Router		/api/v1/user/create [post]
-func (h *UserHandler) Create(c *fiber.Ctx) error {
+func (h *UserHandler) Create(c fiber.Ctx) error {
 	var req dto.CreateUserRequest
-	if err := c.BodyParser(&req); err != nil {
-		return errors2.BadRequest("failed to parse request body")
+	if err := c.Bind().JSON(&req); err != nil {
+		return errors2.BadRequest("failed to parse request body").Wrap(err)
 	}
 	if err := h.validate.Validate(req); err != nil {
 		errs := h.validate.TranslateErrorsAuto(err, c.Get(fiber.HeaderAcceptLanguage))
@@ -50,7 +50,7 @@ func (h *UserHandler) Create(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(created)
 }
 
-func (h *UserHandler) DeleteByID(c *fiber.Ctx) error {
+func (h *UserHandler) DeleteByID(c fiber.Ctx) error {
 	idStr := c.Params("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
 	if err != nil {

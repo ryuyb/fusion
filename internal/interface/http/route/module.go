@@ -1,7 +1,7 @@
 package route
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"go.uber.org/fx"
 )
 
@@ -40,6 +40,8 @@ func asRoute(f any) any {
 
 var Module = fx.Module("route",
 	fx.Provide(
+		asRoute(NewSwaggerRoute),
+
 		asRoute(NewUserRoute),
 
 		NewRouterRegistry,

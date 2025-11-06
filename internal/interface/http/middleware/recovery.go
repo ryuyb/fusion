@@ -1,13 +1,13 @@
 package middleware
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	errors2 "github.com/ryuyb/fusion/internal/pkg/errors"
 	"go.uber.org/zap"
 )
 
 func Recovery(logger *zap.Logger) fiber.Handler {
-	return func(c *fiber.Ctx) (err error) {
+	return func(c fiber.Ctx) (err error) {
 		defer func() {
 			if panicErr := recover(); panicErr != nil {
 				logger.Error("Panic recovered",
