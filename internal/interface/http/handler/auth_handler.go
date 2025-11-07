@@ -32,8 +32,9 @@ func NewAuthHandler(authService service.AuthService, validate *validator.Validat
 //	@Produce	json
 //	@Param		request	body		request.LoginRequest	true	"Login credentials"
 //	@Success	200		{object}	response.TokenResponse
-//	@Failure	401		{object}	errors2.ErrorResponse
-//	@Failure	422		{object}	errors2.ErrorResponse
+//	@Failure	400		{object}	response.ErrorResponse
+//	@Failure	401		{object}	response.ErrorResponse
+//	@Failure	422		{object}	response.ErrorResponse
 //	@Router		/auth/login [post]
 func (h *AuthHandler) Login(c fiber.Ctx) error {
 	var req request.LoginRequest
@@ -65,8 +66,9 @@ func (h *AuthHandler) Login(c fiber.Ctx) error {
 //	@Produce	json
 //	@Param		request	body		request.RegisterRequest	true	"Registration data"
 //	@Success	201		{object}	response.TokenResponse
-//	@Failure	409		{object}	errors2.ErrorResponse
-//	@Failure	422		{object}	errors2.ErrorResponse
+//	@Failure	400		{object}	response.ErrorResponse
+//	@Failure	409		{object}	response.ErrorResponse
+//	@Failure	422		{object}	response.ErrorResponse
 //	@Router		/auth/register [post]
 func (h *AuthHandler) Register(c fiber.Ctx) error {
 	var req request.RegisterRequest

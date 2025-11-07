@@ -27,6 +27,40 @@ definitions:
     - status
     - username
     type: object
+  request.LoginRequest:
+    properties:
+      password:
+        maxLength: 32
+        minLength: 6
+        type: string
+      username:
+        maxLength: 16
+        minLength: 3
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  request.RegisterRequest:
+    properties:
+      email:
+        type: string
+      password:
+        maxLength: 32
+        minLength: 6
+        type: string
+      repeat_password:
+        type: string
+      username:
+        maxLength: 16
+        minLength: 3
+        type: string
+    required:
+    - email
+    - password
+    - repeat_password
+    - username
+    type: object
   request.UpdateUserRequest:
     properties:
       email:
@@ -58,6 +92,28 @@ definitions:
     - status
     - username
     type: object
+  response.ErrorResponse:
+    properties:
+      code:
+        description: app error code
+        type: string
+      details:
+        additionalProperties: {}
+        description: error details
+        type: object
+      message:
+        description: error message
+        type: string
+      occurred_time:
+        description: occurred time
+        type: string
+      status:
+        description: Http status
+        type: integer
+      trace_id:
+        description: trace ID
+        type: string
+    type: object
   response.PaginationResponse-response_UserResponse:
     properties:
       data:
@@ -72,6 +128,13 @@ definitions:
         type: integer
       total_pages:
         type: integer
+    type: object
+  response.TokenResponse:
+    properties:
+      expires_at:
+        type: string
+      token:
+        type: string
     type: object
   response.UserResponse:
     properties:
@@ -97,6 +160,72 @@ info:
   title: Fusion API
   version: "1.0"
 paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Login credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.TokenResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: User login
+      tags:
+      - Auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Registration data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.TokenResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: User registration
+      tags:
+      - Auth
   /health:
     get:
       produces:
