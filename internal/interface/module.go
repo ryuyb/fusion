@@ -13,6 +13,7 @@ var Module = fx.Module("http",
 	fx.Provide(middleware.NewAuth),
 
 	fx.Provide(
+		handler.NewHealthHandler,
 		handler.NewUserHandler,
 	),
 )

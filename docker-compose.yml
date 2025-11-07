@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: fusion-postgres
+    environment:
+      POSTGRES_DB: fusion
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - fusion-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VERSION: ${VERSION:-dev}
+        BUILD_TIME: ${BUILD_TIME}
+        GIT_COMMIT: ${GIT_COMMIT}
+        GO_VERSION: ${GO_VERSION}
+    container_name: fusion-app
+    environment:
+      # Server config
+      FUSION_SERVER_HOST: "0.0.0.0"
+      FUSION_SERVER_PORT: 8080
+      FUSION_SERVER_READ_TIMEOUT: "30s"
+      FUSION_SERVER_WRITE_TIMEOUT: "30s"
+      # Database config
+      FUSION_DATABASE_DSN: "postgres://postgres:postgres@postgres:5432/fusion?sslmode=disable"
+      FUSION_DATABASE_MAX_OPEN_CONNS: 25
+      FUSION_DATABASE_MAX_IDLE_CONNS: 5
+      FUSION_DATABASE_CONN_MAX_LIFETIME: "300s"
+      # Logger config
+      FUSION_LOGGER_LEVEL: "info"
+      FUSION_LOGGER_ENABLE_CONSOLE: "true"
+      FUSION_LOGGER_ENABLE_COLOR: "true"
+      FUSION_LOGGER_ENABLE_FILE: "false"
+      # JWT config
+      FUSION_JWT_SECRET: "your-secret-key-change-this-in-production"
+      FUSION_JWT_EXPIRATION: "12h"
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - fusion-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  fusion-network:
+    driver: bridge

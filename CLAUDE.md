@@ -61,6 +61,58 @@ make generate-swagger
 make format-swagger
 ```
 
+## Docker
+
+### Build Docker Image
+```bash
+# Build with default settings
+docker build -t fusion:latest .
+
+# Build with version info
+docker build \
+  --build-arg VERSION=$(git describe --tags --always --dirty) \
+  --build-arg BUILD_TIME=$(date -u '+%Y-%m-%d_%H:%M:%S') \
+  --build-arg GIT_COMMIT=$(git rev-parse --short HEAD) \
+  --build-arg GO_VERSION=$(go version | awk '{print $3}') \
+  -t fusion:latest .
+```
+
+### Run with Docker Compose
+```bash
+# Start all services (app + PostgreSQL)
+docker-compose up
+
+# Start in detached mode
+docker-compose up -d
+
+# View logs
+docker-compose logs -f app
+
+# Stop services
+docker-compose down
+
+# Stop and remove volumes
+docker-compose down -v
+```
+
+### Run Docker Container Manually
+```bash
+# Run with environment variables
+docker run -d \
+  --name fusion-app \
+  -p 8080:8080 \
+  -e FUSION_DATABASE_DSN="postgres://user:pass@host:5432/fusion" \
+  -e FUSION_JWT_SECRET="your-secret-key" \
+  fusion:latest
+
+# Run with env file
+docker run -d \
+  --name fusion-app \
+  -p 8080:8080 \
+  --env-file .env \
+  fusion:latest
+```
+
 ## Architecture
 
 ### Layer Structure (Clean Architecture)

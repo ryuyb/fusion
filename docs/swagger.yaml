@@ -97,6 +97,20 @@ info:
   title: Fusion API
   version: "1.0"
 paths:
+  /health:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: 健康检查
+      tags:
+      - Health
   /user:
     post:
       consumes:
