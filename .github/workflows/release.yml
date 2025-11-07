@@ -1,0 +1,209 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+          cache: true
+
+      - name: Get version info
+        id: version
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/}"
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "BUILD_TIME=$(date -u '+%Y-%m-%d_%H:%M:%S')" >> $GITHUB_OUTPUT
+          echo "GIT_COMMIT=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "GO_VERSION=$(go version | awk '{print $3}')" >> $GITHUB_OUTPUT
+
+          # Determine release type based on version tag
+          IS_DRAFT="false"
+          IS_PRERELEASE="false"
+
+          # Check for draft indicator
+          if [[ "$VERSION" == *"-draft"* ]]; then
+            IS_DRAFT="true"
+            echo "📝 Detected draft release"
+          fi
+
+          # Check for prerelease indicators
+          if [[ "$VERSION" == *"-alpha"* ]] || \
+             [[ "$VERSION" == *"-beta"* ]] || \
+             [[ "$VERSION" == *"-rc"* ]] || \
+             [[ "$VERSION" == *"-pre"* ]] || \
+             [[ "$VERSION" == *"-dev"* ]]; then
+            IS_PRERELEASE="true"
+            echo "🚧 Detected pre-release"
+          fi
+
+          # If neither draft nor prerelease, it's a stable release
+          if [[ "$IS_DRAFT" == "false" ]] && [[ "$IS_PRERELEASE" == "false" ]]; then
+            echo "✅ Detected stable release"
+          fi
+
+          echo "IS_DRAFT=$IS_DRAFT" >> $GITHUB_OUTPUT
+          echo "IS_PRERELEASE=$IS_PRERELEASE" >> $GITHUB_OUTPUT
+
+      - name: Build binaries
+        run: |
+          mkdir -p bin/release
+
+          # Build for multiple platforms
+          platforms=(
+            "linux/amd64"
+            "linux/arm64"
+            "darwin/amd64"
+            "darwin/arm64"
+          )
+
+          for platform in "${platforms[@]}"; do
+            GOOS=${platform%/*}
+            GOARCH=${platform#*/}
+            output="bin/release/fusion-${GOOS}-${GOARCH}"
+
+            if [ "$GOOS" = "windows" ]; then
+              output="${output}.exe"
+            fi
+
+            echo "Building for $GOOS/$GOARCH..."
+            CGO_ENABLED=0 GOOS=$GOOS GOARCH=$GOARCH go build \
+              -ldflags="-s -w \
+                -X 'main.Version=${{ steps.version.outputs.VERSION }}' \
+                -X 'main.BuildTime=${{ steps.version.outputs.BUILD_TIME }}' \
+                -X 'main.GitCommit=${{ steps.version.outputs.GIT_COMMIT }}' \
+                -X 'main.GoVersion=${{ steps.version.outputs.GO_VERSION }}'" \
+              -o "$output" \
+              ./cmd/server
+
+            # Create tarball
+            if [ "$GOOS" = "windows" ]; then
+              zip "bin/release/fusion-${GOOS}-${GOARCH}.zip" "$output"
+              rm "$output"
+            else
+              tar -czf "bin/release/fusion-${GOOS}-${GOARCH}.tar.gz" -C "$(dirname $output)" "$(basename $output)"
+              rm "$output"
+            fi
+          done
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}},enable=${{ steps.version.outputs.IS_PRERELEASE == 'false' }}
+            type=semver,pattern={{major}},enable=${{ steps.version.outputs.IS_PRERELEASE == 'false' }}
+            type=sha
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            VERSION=${{ steps.version.outputs.VERSION }}
+            BUILD_TIME=${{ steps.version.outputs.BUILD_TIME }}
+            GIT_COMMIT=${{ steps.version.outputs.GIT_COMMIT }}
+            GO_VERSION=${{ steps.version.outputs.GO_VERSION }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # Get the previous tag
+          PREV_TAG=$(git tag --sort=-version:refname | grep -v "^${GITHUB_REF#refs/tags/}$" | head -n1)
+
+          if [ -z "$PREV_TAG" ]; then
+            # First release, get all commits
+            CHANGELOG=$(git log --pretty=format:"* %s (%h)" --no-merges)
+          else
+            # Get commits since previous tag
+            CHANGELOG=$(git log ${PREV_TAG}..HEAD --pretty=format:"* %s (%h)" --no-merges)
+          fi
+
+          # Save to file for release notes
+          echo "$CHANGELOG" > CHANGELOG.txt
+
+          # Also output for GitHub Actions
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release ${{ steps.version.outputs.VERSION }}
+          body: |
+            ${{ steps.version.outputs.IS_PRERELEASE == 'true' && '> **⚠️ Pre-release version** - This is a pre-release version and may contain bugs or incomplete features.' || '' }}
+            ${{ steps.version.outputs.IS_DRAFT == 'true' && '> **📝 Draft release** - This is a draft release for review purposes.' || '' }}
+
+            ## Docker Images
+
+            Multi-architecture Docker images are available at:
+
+            ```bash
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.VERSION }}
+            ```
+
+            Supported architectures: `linux/amd64`, `linux/arm64`
+
+            ## Binaries
+
+            Download the appropriate binary for your platform from the assets below.
+
+            ## Changes
+
+            ${{ steps.changelog.outputs.changelog }}
+
+            ---
+
+            **Build Info:**
+            - Version: `${{ steps.version.outputs.VERSION }}`
+            - Commit: `${{ steps.version.outputs.GIT_COMMIT }}`
+            - Build Time: `${{ steps.version.outputs.BUILD_TIME }}`
+            - Go Version: `${{ steps.version.outputs.GO_VERSION }}`
+          files: |
+            bin/release/*
+          draft: ${{ steps.version.outputs.IS_DRAFT }}
+          prerelease: ${{ steps.version.outputs.IS_PRERELEASE }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -11,6 +11,12 @@ import (
 var (
 	cfgFile string
 	envFile string
+
+	// Version information
+	version   string
+	buildTime string
+	gitCommit string
+	goVersion string
 )
 
 var rootCmd = &cobra.Command{
@@ -21,6 +27,14 @@ var rootCmd = &cobra.Command{
 
 func Execute() error {
 	return rootCmd.Execute()
+}
+
+// SetVersionInfo sets the version information
+func SetVersionInfo(ver, build, commit, goVer string) {
+	version = ver
+	buildTime = build
+	gitCommit = commit
+	goVersion = goVer
 }
 
 func init() {
