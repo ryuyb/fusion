@@ -1,0 +1,248 @@
+name: PR Checks
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+jobs:
+  golangci-lint:
+    name: golangci-lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+          cache: true
+
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: latest
+          args: --timeout=5m --out-format=github-actions
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_USER: fusion
+          POSTGRES_PASSWORD: fusion
+          POSTGRES_DB: fusion_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+          cache: true
+
+      - name: Install dependencies
+        run: go mod download
+
+      - name: Run tests
+        id: test
+        env:
+          FUSION_DATABASE_DSN: "postgres://fusion:fusion@localhost:5432/fusion_test?sslmode=disable"
+          TEST_DB_DRIVER: "postgres"
+          TEST_DB_DSN: "postgres://fusion:fusion@localhost:5432/fusion_test?sslmode=disable"
+        run: |
+          set -o pipefail
+          go test -v -race -coverprofile=coverage.out -covermode=atomic ./... 2>&1 | tee test-output.log
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
+
+      - name: Generate coverage report
+        if: always()
+        run: |
+          if [ -f coverage.out ]; then
+            go tool cover -func=coverage.out -o=coverage.txt
+            COVERAGE=$(go tool cover -func=coverage.out | grep total | awk '{print $3}')
+            echo "COVERAGE=$COVERAGE" >> $GITHUB_ENV
+            echo "Coverage: $COVERAGE"
+          else
+            echo "COVERAGE=0%" >> $GITHUB_ENV
+          fi
+
+      - name: Comment PR with results
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+
+            // Read test output
+            let testOutput = '';
+            try {
+              testOutput = fs.readFileSync('test-output.log', 'utf8');
+            } catch (e) {
+              testOutput = 'No test output available';
+            }
+
+            // Read coverage
+            let coverageReport = '';
+            try {
+              coverageReport = fs.readFileSync('coverage.txt', 'utf8');
+            } catch (e) {
+              coverageReport = 'No coverage report available';
+            }
+
+            const coverage = process.env.COVERAGE || 'N/A';
+            const testExitCode = '${{ steps.test.outputs.exit_code }}';
+            const testStatus = testExitCode === '0' ? '✅ Passed' : '❌ Failed';
+
+            // Truncate test output if too long
+            const maxLength = 8000;
+            if (testOutput.length > maxLength) {
+              testOutput = testOutput.substring(testOutput.length - maxLength);
+              testOutput = '...(truncated)\n' + testOutput;
+            }
+
+            const body = `## 🔍 PR Checks Results
+
+            ### Test Results: ${testStatus}
+
+            **Coverage:** ${coverage}
+
+            <details>
+            <summary>📋 Test Output</summary>
+
+            \`\`\`
+            ${testOutput}
+            \`\`\`
+            </details>
+
+            <details>
+            <summary>📊 Coverage Report</summary>
+
+            \`\`\`
+            ${coverageReport}
+            \`\`\`
+            </details>
+
+            ---
+            *Workflow run: [#${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})*
+            `;
+
+            // Find existing comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('🔍 PR Checks Results')
+            );
+
+            // Create or update comment
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }
+
+  report-status:
+    name: Report Overall Status
+    runs-on: ubuntu-latest
+    needs: [golangci-lint, test]
+    if: always()
+    steps:
+      - name: Check results
+        run: |
+          if [[ "${{ needs.golangci-lint.result }}" != "success" ]] || [[ "${{ needs.test.result }}" != "success" ]]; then
+            echo "❌ Some checks failed"
+            exit 1
+          else
+            echo "✅ All checks passed"
+          fi
+
+      - name: Comment final status
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const lintResult = '${{ needs.golangci-lint.result }}';
+            const testResult = '${{ needs.test.result }}';
+
+            const lintStatus = lintResult === 'success' ? '✅' : '❌';
+            const testStatus = testResult === 'success' ? '✅' : '❌';
+
+            const overallStatus = lintResult === 'success' && testResult === 'success'
+              ? '✅ All checks passed!'
+              : '❌ Some checks failed';
+
+            const body = `## ${overallStatus}
+
+            | Check | Status |
+            |-------|--------|
+            | golangci-lint | ${lintStatus} ${lintResult} |
+            | Tests | ${testStatus} ${testResult} |
+
+            ---
+            *Workflow run: [#${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})*
+            `;
+
+            // Find existing comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const statusComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('All checks passed') ||
+              comment.body.includes('Some checks failed')
+            );
+
+            // Create or update comment
+            if (statusComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: statusComment.id,
+                body: body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }
