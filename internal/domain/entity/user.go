@@ -23,19 +23,19 @@ const (
 	UserStatusBanned   UserStatus = "banned"
 )
 
-func CreateUser(username, password, email string, status UserStatus) *User {
+func CreateUser(username, password, email, status string) *User {
 	return &User{
 		Username: username,
 		Password: password,
 		Email:    email,
-		Status:   status,
+		Status:   UserStatus(status),
 	}
 }
 
-func (u *User) Update(username, password, email string, status UserStatus) *User {
+func (u *User) Update(username, password, email, status string) *User {
 	u.Username = username
 	u.Password = password
 	u.Email = email
-	u.Status = status
+	u.Status = UserStatus(status)
 	return u
 }

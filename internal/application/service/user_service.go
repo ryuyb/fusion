@@ -4,11 +4,10 @@ import (
 	"context"
 	"errors"
 
-	"github.com/ryuyb/fusion/internal/application/dto"
 	"github.com/ryuyb/fusion/internal/domain/entity"
 	"github.com/ryuyb/fusion/internal/domain/repository"
 	"github.com/ryuyb/fusion/internal/domain/service"
-	"github.com/ryuyb/fusion/internal/interface/http/response"
+	"github.com/ryuyb/fusion/internal/interface/http/dto/request"
 	errors2 "github.com/ryuyb/fusion/internal/pkg/errors"
 	"github.com/ryuyb/fusion/internal/pkg/utils"
 	"go.uber.org/zap"
@@ -26,7 +25,7 @@ func NewUserService(repo repository.UserRepository, logger *zap.Logger) service.
 	}
 }
 
-func (s *userService) Create(ctx context.Context, req *dto.CreateUserRequest) (*dto.UserResponse, error) {
+func (s *userService) Create(ctx context.Context, req *request.CreateUserRequest) (*entity.User, error) {
 	username, err := s.repo.FindByUsername(ctx, req.Username)
 	if err != nil && !errors2.IsNotFoundError(err) {
 		return nil, err
@@ -50,14 +49,14 @@ func (s *userService) Create(ctx context.Context, req *dto.CreateUserRequest) (*
 	if err != nil {
 		return nil, err
 	}
-	return s.toResponse(created), err
+	return created, err
 }
 
 func (s *userService) Delete(ctx context.Context, id int64) error {
 	return s.repo.Delete(ctx, id)
 }
 
-func (s *userService) Update(ctx context.Context, req *dto.UpdateUserRequest) (*dto.UserResponse, error) {
+func (s *userService) Update(ctx context.Context, req *request.UpdateUserRequest) (*entity.User, error) {
 	user, err := s.repo.FindByID(ctx, req.ID)
 	if err != nil {
 		return nil, err
@@ -89,47 +88,25 @@ func (s *userService) Update(ctx context.Context, req *dto.UpdateUserRequest) (*
 	if err != nil {
 		return nil, err
 	}
-	return s.toResponse(updated), err
+	return updated, err
 }
 
-func (s *userService) GetByID(ctx context.Context, id int64) (*dto.UserResponse, error) {
+func (s *userService) GetByID(ctx context.Context, id int64) (*entity.User, error) {
 	user, err := s.repo.FindByID(ctx, id)
 	if err != nil {
 		return nil, err
 	}
-	return s.toResponse(user), err
+	return user, err
 }
 
-func (s *userService) List(ctx context.Context, page, pageSize int) (*response.PaginationResponse[*dto.UserResponse], error) {
+func (s *userService) List(ctx context.Context, page, pageSize int) ([]*entity.User, int, error) {
 	if page < 1 {
-		return nil, errors2.BadRequest("page must be greater than zero")
+		return nil, 0, errors2.BadRequest("page must be greater than zero")
 	}
 	if pageSize < 1 || pageSize > 200 {
-		return nil, errors2.BadRequest("page size must be between 1 and 200")
+		return nil, 0, errors2.BadRequest("page size must be between 1 and 200")
 	}
 
 	offset := (page - 1) * pageSize
-	users, total, err := s.repo.List(ctx, offset, pageSize)
-	if err != nil {
-		return nil, err
-	}
-
-	items := make([]*dto.UserResponse, len(users))
-	for i, user := range users {
-		items[i] = s.toResponse(user)
-	}
-
-	return response.NewPaginationResponse[*dto.UserResponse](items, total, page, pageSize), nil
-}
-
-func (s *userService) toResponse(u *entity.User) *dto.UserResponse {
-	return &dto.UserResponse{
-		ID:        u.ID,
-		Username:  u.Username,
-		Email:     u.Email,
-		Status:    u.Status,
-		CreatedAt: u.CreatedAt,
-		UpdatedAt: u.UpdatedAt,
-		DeleteAt:  u.DeleteAt,
-	}
+	return s.repo.List(ctx, offset, pageSize)
 }
