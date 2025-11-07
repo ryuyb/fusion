@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -29,8 +30,35 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
+	// EdgeFollowings holds the string denoting the followings edge name in mutations.
+	EdgeFollowings = "followings"
+	// EdgeNotificationChannels holds the string denoting the notification_channels edge name in mutations.
+	EdgeNotificationChannels = "notification_channels"
+	// EdgeNotificationRules holds the string denoting the notification_rules edge name in mutations.
+	EdgeNotificationRules = "notification_rules"
 	// Table holds the table name of the user in the database.
 	Table = "users"
+	// FollowingsTable is the table that holds the followings relation/edge.
+	FollowingsTable = "user_followings"
+	// FollowingsInverseTable is the table name for the UserFollowing entity.
+	// It exists in this package in order to avoid circular dependency with the "userfollowing" package.
+	FollowingsInverseTable = "user_followings"
+	// FollowingsColumn is the table column denoting the followings relation/edge.
+	FollowingsColumn = "user_id"
+	// NotificationChannelsTable is the table that holds the notification_channels relation/edge.
+	NotificationChannelsTable = "notification_channels"
+	// NotificationChannelsInverseTable is the table name for the NotificationChannel entity.
+	// It exists in this package in order to avoid circular dependency with the "notificationchannel" package.
+	NotificationChannelsInverseTable = "notification_channels"
+	// NotificationChannelsColumn is the table column denoting the notification_channels relation/edge.
+	NotificationChannelsColumn = "user_id"
+	// NotificationRulesTable is the table that holds the notification_rules relation/edge.
+	NotificationRulesTable = "notification_rules"
+	// NotificationRulesInverseTable is the table name for the NotificationRule entity.
+	// It exists in this package in order to avoid circular dependency with the "notificationrule" package.
+	NotificationRulesInverseTable = "notification_rules"
+	// NotificationRulesColumn is the table column denoting the notification_rules relation/edge.
+	NotificationRulesColumn = "user_id"
 )
 
 // Columns holds all SQL columns for user fields.
@@ -88,7 +116,6 @@ const (
 	StatusActive   Status = "active"
 	StatusInactive Status = "inactive"
 	StatusBanned   Status = "banned"
-	StatusDeleted  Status = "deleted"
 )
 
 func (s Status) String() string {
@@ -98,7 +125,7 @@ func (s Status) String() string {
 // StatusValidator is a validator for the "status" field enum values. It is called by the builders before save.
 func StatusValidator(s Status) error {
 	switch s {
-	case StatusActive, StatusInactive, StatusBanned, StatusDeleted:
+	case StatusActive, StatusInactive, StatusBanned:
 		return nil
 	default:
 		return fmt.Errorf("user: invalid enum value for status field: %q", s)
@@ -146,4 +173,67 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByUpdatedAt orders the results by the updated_at field.
 func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
+// ByFollowingsCount orders the results by followings count.
+func ByFollowingsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newFollowingsStep(), opts...)
+	}
+}
+
+// ByFollowings orders the results by followings terms.
+func ByFollowings(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newFollowingsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByNotificationChannelsCount orders the results by notification_channels count.
+func ByNotificationChannelsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newNotificationChannelsStep(), opts...)
+	}
+}
+
+// ByNotificationChannels orders the results by notification_channels terms.
+func ByNotificationChannels(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newNotificationChannelsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByNotificationRulesCount orders the results by notification_rules count.
+func ByNotificationRulesCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newNotificationRulesStep(), opts...)
+	}
+}
+
+// ByNotificationRules orders the results by notification_rules terms.
+func ByNotificationRules(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newNotificationRulesStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newFollowingsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(FollowingsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, FollowingsTable, FollowingsColumn),
+	)
+}
+func newNotificationChannelsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(NotificationChannelsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, NotificationChannelsTable, NotificationChannelsColumn),
+	)
+}
+func newNotificationRulesStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(NotificationRulesInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, NotificationRulesTable, NotificationRulesColumn),
+	)
 }

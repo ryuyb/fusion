@@ -8,8 +8,13 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/ryuyb/fusion/internal/infrastructure/database/ent"
+	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/notificationchannel"
+	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/notificationrule"
+	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/platform"
 	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/predicate"
+	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/streamer"
 	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/user"
+	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/userfollowing"
 )
 
 // The Query interface represents an operation that queries a graph.
@@ -68,6 +73,114 @@ func (f TraverseFunc) Traverse(ctx context.Context, q ent.Query) error {
 	return f(ctx, query)
 }
 
+// The NotificationChannelFunc type is an adapter to allow the use of ordinary function as a Querier.
+type NotificationChannelFunc func(context.Context, *ent.NotificationChannelQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f NotificationChannelFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.NotificationChannelQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.NotificationChannelQuery", q)
+}
+
+// The TraverseNotificationChannel type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseNotificationChannel func(context.Context, *ent.NotificationChannelQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseNotificationChannel) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseNotificationChannel) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.NotificationChannelQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.NotificationChannelQuery", q)
+}
+
+// The NotificationRuleFunc type is an adapter to allow the use of ordinary function as a Querier.
+type NotificationRuleFunc func(context.Context, *ent.NotificationRuleQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f NotificationRuleFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.NotificationRuleQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.NotificationRuleQuery", q)
+}
+
+// The TraverseNotificationRule type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseNotificationRule func(context.Context, *ent.NotificationRuleQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseNotificationRule) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseNotificationRule) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.NotificationRuleQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.NotificationRuleQuery", q)
+}
+
+// The PlatformFunc type is an adapter to allow the use of ordinary function as a Querier.
+type PlatformFunc func(context.Context, *ent.PlatformQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f PlatformFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.PlatformQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.PlatformQuery", q)
+}
+
+// The TraversePlatform type is an adapter to allow the use of ordinary function as Traverser.
+type TraversePlatform func(context.Context, *ent.PlatformQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraversePlatform) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraversePlatform) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.PlatformQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.PlatformQuery", q)
+}
+
+// The StreamerFunc type is an adapter to allow the use of ordinary function as a Querier.
+type StreamerFunc func(context.Context, *ent.StreamerQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f StreamerFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.StreamerQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.StreamerQuery", q)
+}
+
+// The TraverseStreamer type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseStreamer func(context.Context, *ent.StreamerQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseStreamer) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseStreamer) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.StreamerQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.StreamerQuery", q)
+}
+
 // The UserFunc type is an adapter to allow the use of ordinary function as a Querier.
 type UserFunc func(context.Context, *ent.UserQuery) (ent.Value, error)
 
@@ -95,11 +208,48 @@ func (f TraverseUser) Traverse(ctx context.Context, q ent.Query) error {
 	return fmt.Errorf("unexpected query type %T. expect *ent.UserQuery", q)
 }
 
+// The UserFollowingFunc type is an adapter to allow the use of ordinary function as a Querier.
+type UserFollowingFunc func(context.Context, *ent.UserFollowingQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f UserFollowingFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.UserFollowingQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.UserFollowingQuery", q)
+}
+
+// The TraverseUserFollowing type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseUserFollowing func(context.Context, *ent.UserFollowingQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseUserFollowing) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseUserFollowing) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.UserFollowingQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.UserFollowingQuery", q)
+}
+
 // NewQuery returns the generic Query interface for the given typed query.
 func NewQuery(q ent.Query) (Query, error) {
 	switch q := q.(type) {
+	case *ent.NotificationChannelQuery:
+		return &query[*ent.NotificationChannelQuery, predicate.NotificationChannel, notificationchannel.OrderOption]{typ: ent.TypeNotificationChannel, tq: q}, nil
+	case *ent.NotificationRuleQuery:
+		return &query[*ent.NotificationRuleQuery, predicate.NotificationRule, notificationrule.OrderOption]{typ: ent.TypeNotificationRule, tq: q}, nil
+	case *ent.PlatformQuery:
+		return &query[*ent.PlatformQuery, predicate.Platform, platform.OrderOption]{typ: ent.TypePlatform, tq: q}, nil
+	case *ent.StreamerQuery:
+		return &query[*ent.StreamerQuery, predicate.Streamer, streamer.OrderOption]{typ: ent.TypeStreamer, tq: q}, nil
 	case *ent.UserQuery:
 		return &query[*ent.UserQuery, predicate.User, user.OrderOption]{typ: ent.TypeUser, tq: q}, nil
+	case *ent.UserFollowingQuery:
+		return &query[*ent.UserFollowingQuery, predicate.UserFollowing, userfollowing.OrderOption]{typ: ent.TypeUserFollowing, tq: q}, nil
 	default:
 		return nil, fmt.Errorf("unknown query type %T", q)
 	}

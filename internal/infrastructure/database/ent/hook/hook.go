@@ -9,6 +9,54 @@ import (
 	"github.com/ryuyb/fusion/internal/infrastructure/database/ent"
 )
 
+// The NotificationChannelFunc type is an adapter to allow the use of ordinary
+// function as NotificationChannel mutator.
+type NotificationChannelFunc func(context.Context, *ent.NotificationChannelMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f NotificationChannelFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.NotificationChannelMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.NotificationChannelMutation", m)
+}
+
+// The NotificationRuleFunc type is an adapter to allow the use of ordinary
+// function as NotificationRule mutator.
+type NotificationRuleFunc func(context.Context, *ent.NotificationRuleMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f NotificationRuleFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.NotificationRuleMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.NotificationRuleMutation", m)
+}
+
+// The PlatformFunc type is an adapter to allow the use of ordinary
+// function as Platform mutator.
+type PlatformFunc func(context.Context, *ent.PlatformMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f PlatformFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.PlatformMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PlatformMutation", m)
+}
+
+// The StreamerFunc type is an adapter to allow the use of ordinary
+// function as Streamer mutator.
+type StreamerFunc func(context.Context, *ent.StreamerMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f StreamerFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.StreamerMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.StreamerMutation", m)
+}
+
 // The UserFunc type is an adapter to allow the use of ordinary
 // function as User mutator.
 type UserFunc func(context.Context, *ent.UserMutation) (ent.Value, error)
@@ -19,6 +67,18 @@ func (f UserFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error)
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UserMutation", m)
+}
+
+// The UserFollowingFunc type is an adapter to allow the use of ordinary
+// function as UserFollowing mutator.
+type UserFollowingFunc func(context.Context, *ent.UserFollowingMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f UserFollowingFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.UserFollowingMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UserFollowingMutation", m)
 }
 
 // Condition is a hook condition function.

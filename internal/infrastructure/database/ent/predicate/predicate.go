@@ -6,5 +6,20 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// NotificationChannel is the predicate function for notificationchannel builders.
+type NotificationChannel func(*sql.Selector)
+
+// NotificationRule is the predicate function for notificationrule builders.
+type NotificationRule func(*sql.Selector)
+
+// Platform is the predicate function for platform builders.
+type Platform func(*sql.Selector)
+
+// Streamer is the predicate function for streamer builders.
+type Streamer func(*sql.Selector)
+
 // User is the predicate function for user builders.
 type User func(*sql.Selector)
+
+// UserFollowing is the predicate function for userfollowing builders.
+type UserFollowing func(*sql.Selector)

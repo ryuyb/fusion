@@ -11,8 +11,11 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/notificationchannel"
+	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/notificationrule"
 	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/predicate"
 	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/user"
+	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/userfollowing"
 )
 
 // UserUpdate is the builder for updating User entities.
@@ -110,9 +113,117 @@ func (_u *UserUpdate) SetUpdatedAt(v time.Time) *UserUpdate {
 	return _u
 }
 
+// AddFollowingIDs adds the "followings" edge to the UserFollowing entity by IDs.
+func (_u *UserUpdate) AddFollowingIDs(ids ...int64) *UserUpdate {
+	_u.mutation.AddFollowingIDs(ids...)
+	return _u
+}
+
+// AddFollowings adds the "followings" edges to the UserFollowing entity.
+func (_u *UserUpdate) AddFollowings(v ...*UserFollowing) *UserUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddFollowingIDs(ids...)
+}
+
+// AddNotificationChannelIDs adds the "notification_channels" edge to the NotificationChannel entity by IDs.
+func (_u *UserUpdate) AddNotificationChannelIDs(ids ...int64) *UserUpdate {
+	_u.mutation.AddNotificationChannelIDs(ids...)
+	return _u
+}
+
+// AddNotificationChannels adds the "notification_channels" edges to the NotificationChannel entity.
+func (_u *UserUpdate) AddNotificationChannels(v ...*NotificationChannel) *UserUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddNotificationChannelIDs(ids...)
+}
+
+// AddNotificationRuleIDs adds the "notification_rules" edge to the NotificationRule entity by IDs.
+func (_u *UserUpdate) AddNotificationRuleIDs(ids ...int64) *UserUpdate {
+	_u.mutation.AddNotificationRuleIDs(ids...)
+	return _u
+}
+
+// AddNotificationRules adds the "notification_rules" edges to the NotificationRule entity.
+func (_u *UserUpdate) AddNotificationRules(v ...*NotificationRule) *UserUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddNotificationRuleIDs(ids...)
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (_u *UserUpdate) Mutation() *UserMutation {
 	return _u.mutation
+}
+
+// ClearFollowings clears all "followings" edges to the UserFollowing entity.
+func (_u *UserUpdate) ClearFollowings() *UserUpdate {
+	_u.mutation.ClearFollowings()
+	return _u
+}
+
+// RemoveFollowingIDs removes the "followings" edge to UserFollowing entities by IDs.
+func (_u *UserUpdate) RemoveFollowingIDs(ids ...int64) *UserUpdate {
+	_u.mutation.RemoveFollowingIDs(ids...)
+	return _u
+}
+
+// RemoveFollowings removes "followings" edges to UserFollowing entities.
+func (_u *UserUpdate) RemoveFollowings(v ...*UserFollowing) *UserUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveFollowingIDs(ids...)
+}
+
+// ClearNotificationChannels clears all "notification_channels" edges to the NotificationChannel entity.
+func (_u *UserUpdate) ClearNotificationChannels() *UserUpdate {
+	_u.mutation.ClearNotificationChannels()
+	return _u
+}
+
+// RemoveNotificationChannelIDs removes the "notification_channels" edge to NotificationChannel entities by IDs.
+func (_u *UserUpdate) RemoveNotificationChannelIDs(ids ...int64) *UserUpdate {
+	_u.mutation.RemoveNotificationChannelIDs(ids...)
+	return _u
+}
+
+// RemoveNotificationChannels removes "notification_channels" edges to NotificationChannel entities.
+func (_u *UserUpdate) RemoveNotificationChannels(v ...*NotificationChannel) *UserUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveNotificationChannelIDs(ids...)
+}
+
+// ClearNotificationRules clears all "notification_rules" edges to the NotificationRule entity.
+func (_u *UserUpdate) ClearNotificationRules() *UserUpdate {
+	_u.mutation.ClearNotificationRules()
+	return _u
+}
+
+// RemoveNotificationRuleIDs removes the "notification_rules" edge to NotificationRule entities by IDs.
+func (_u *UserUpdate) RemoveNotificationRuleIDs(ids ...int64) *UserUpdate {
+	_u.mutation.RemoveNotificationRuleIDs(ids...)
+	return _u
+}
+
+// RemoveNotificationRules removes "notification_rules" edges to NotificationRule entities.
+func (_u *UserUpdate) RemoveNotificationRules(v ...*NotificationRule) *UserUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveNotificationRuleIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -214,6 +325,141 @@ func (_u *UserUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(user.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if _u.mutation.FollowingsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FollowingsTable,
+			Columns: []string{user.FollowingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userfollowing.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedFollowingsIDs(); len(nodes) > 0 && !_u.mutation.FollowingsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FollowingsTable,
+			Columns: []string{user.FollowingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userfollowing.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.FollowingsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FollowingsTable,
+			Columns: []string{user.FollowingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userfollowing.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.NotificationChannelsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotificationChannelsTable,
+			Columns: []string{user.NotificationChannelsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notificationchannel.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedNotificationChannelsIDs(); len(nodes) > 0 && !_u.mutation.NotificationChannelsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotificationChannelsTable,
+			Columns: []string{user.NotificationChannelsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notificationchannel.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.NotificationChannelsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotificationChannelsTable,
+			Columns: []string{user.NotificationChannelsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notificationchannel.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.NotificationRulesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotificationRulesTable,
+			Columns: []string{user.NotificationRulesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notificationrule.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedNotificationRulesIDs(); len(nodes) > 0 && !_u.mutation.NotificationRulesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotificationRulesTable,
+			Columns: []string{user.NotificationRulesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notificationrule.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.NotificationRulesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotificationRulesTable,
+			Columns: []string{user.NotificationRulesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notificationrule.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -317,9 +563,117 @@ func (_u *UserUpdateOne) SetUpdatedAt(v time.Time) *UserUpdateOne {
 	return _u
 }
 
+// AddFollowingIDs adds the "followings" edge to the UserFollowing entity by IDs.
+func (_u *UserUpdateOne) AddFollowingIDs(ids ...int64) *UserUpdateOne {
+	_u.mutation.AddFollowingIDs(ids...)
+	return _u
+}
+
+// AddFollowings adds the "followings" edges to the UserFollowing entity.
+func (_u *UserUpdateOne) AddFollowings(v ...*UserFollowing) *UserUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddFollowingIDs(ids...)
+}
+
+// AddNotificationChannelIDs adds the "notification_channels" edge to the NotificationChannel entity by IDs.
+func (_u *UserUpdateOne) AddNotificationChannelIDs(ids ...int64) *UserUpdateOne {
+	_u.mutation.AddNotificationChannelIDs(ids...)
+	return _u
+}
+
+// AddNotificationChannels adds the "notification_channels" edges to the NotificationChannel entity.
+func (_u *UserUpdateOne) AddNotificationChannels(v ...*NotificationChannel) *UserUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddNotificationChannelIDs(ids...)
+}
+
+// AddNotificationRuleIDs adds the "notification_rules" edge to the NotificationRule entity by IDs.
+func (_u *UserUpdateOne) AddNotificationRuleIDs(ids ...int64) *UserUpdateOne {
+	_u.mutation.AddNotificationRuleIDs(ids...)
+	return _u
+}
+
+// AddNotificationRules adds the "notification_rules" edges to the NotificationRule entity.
+func (_u *UserUpdateOne) AddNotificationRules(v ...*NotificationRule) *UserUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddNotificationRuleIDs(ids...)
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (_u *UserUpdateOne) Mutation() *UserMutation {
 	return _u.mutation
+}
+
+// ClearFollowings clears all "followings" edges to the UserFollowing entity.
+func (_u *UserUpdateOne) ClearFollowings() *UserUpdateOne {
+	_u.mutation.ClearFollowings()
+	return _u
+}
+
+// RemoveFollowingIDs removes the "followings" edge to UserFollowing entities by IDs.
+func (_u *UserUpdateOne) RemoveFollowingIDs(ids ...int64) *UserUpdateOne {
+	_u.mutation.RemoveFollowingIDs(ids...)
+	return _u
+}
+
+// RemoveFollowings removes "followings" edges to UserFollowing entities.
+func (_u *UserUpdateOne) RemoveFollowings(v ...*UserFollowing) *UserUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveFollowingIDs(ids...)
+}
+
+// ClearNotificationChannels clears all "notification_channels" edges to the NotificationChannel entity.
+func (_u *UserUpdateOne) ClearNotificationChannels() *UserUpdateOne {
+	_u.mutation.ClearNotificationChannels()
+	return _u
+}
+
+// RemoveNotificationChannelIDs removes the "notification_channels" edge to NotificationChannel entities by IDs.
+func (_u *UserUpdateOne) RemoveNotificationChannelIDs(ids ...int64) *UserUpdateOne {
+	_u.mutation.RemoveNotificationChannelIDs(ids...)
+	return _u
+}
+
+// RemoveNotificationChannels removes "notification_channels" edges to NotificationChannel entities.
+func (_u *UserUpdateOne) RemoveNotificationChannels(v ...*NotificationChannel) *UserUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveNotificationChannelIDs(ids...)
+}
+
+// ClearNotificationRules clears all "notification_rules" edges to the NotificationRule entity.
+func (_u *UserUpdateOne) ClearNotificationRules() *UserUpdateOne {
+	_u.mutation.ClearNotificationRules()
+	return _u
+}
+
+// RemoveNotificationRuleIDs removes the "notification_rules" edge to NotificationRule entities by IDs.
+func (_u *UserUpdateOne) RemoveNotificationRuleIDs(ids ...int64) *UserUpdateOne {
+	_u.mutation.RemoveNotificationRuleIDs(ids...)
+	return _u
+}
+
+// RemoveNotificationRules removes "notification_rules" edges to NotificationRule entities.
+func (_u *UserUpdateOne) RemoveNotificationRules(v ...*NotificationRule) *UserUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveNotificationRuleIDs(ids...)
 }
 
 // Where appends a list predicates to the UserUpdate builder.
@@ -451,6 +805,141 @@ func (_u *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) {
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(user.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if _u.mutation.FollowingsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FollowingsTable,
+			Columns: []string{user.FollowingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userfollowing.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedFollowingsIDs(); len(nodes) > 0 && !_u.mutation.FollowingsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FollowingsTable,
+			Columns: []string{user.FollowingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userfollowing.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.FollowingsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FollowingsTable,
+			Columns: []string{user.FollowingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userfollowing.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.NotificationChannelsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotificationChannelsTable,
+			Columns: []string{user.NotificationChannelsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notificationchannel.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedNotificationChannelsIDs(); len(nodes) > 0 && !_u.mutation.NotificationChannelsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotificationChannelsTable,
+			Columns: []string{user.NotificationChannelsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notificationchannel.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.NotificationChannelsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotificationChannelsTable,
+			Columns: []string{user.NotificationChannelsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notificationchannel.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.NotificationRulesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotificationRulesTable,
+			Columns: []string{user.NotificationRulesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notificationrule.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedNotificationRulesIDs(); len(nodes) > 0 && !_u.mutation.NotificationRulesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotificationRulesTable,
+			Columns: []string{user.NotificationRulesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notificationrule.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.NotificationRulesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotificationRulesTable,
+			Columns: []string{user.NotificationRulesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notificationrule.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &User{config: _u.config}
 	_spec.Assign = _node.assignValues

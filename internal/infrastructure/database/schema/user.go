@@ -4,6 +4,8 @@ import (
 	"time"
 
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 	"github.com/ryuyb/fusion/internal/pkg/entgo/mixin"
@@ -44,6 +46,23 @@ func (User) Indexes() []ent.Index {
 		index.Fields("username"),
 		index.Fields("email"),
 		index.Fields("status"),
+	}
+}
+
+func (User) Edges() []ent.Edge {
+	return []ent.Edge{
+		edge.To("followings", UserFollowing.Type).
+			Annotations(entsql.Annotation{
+				OnDelete: entsql.Cascade,
+			}),
+		edge.To("notification_channels", NotificationChannel.Type).
+			Annotations(entsql.Annotation{
+				OnDelete: entsql.Cascade,
+			}),
+		edge.To("notification_rules", NotificationRule.Type).
+			Annotations(entsql.Annotation{
+				OnDelete: entsql.Cascade,
+			}),
 	}
 }
 

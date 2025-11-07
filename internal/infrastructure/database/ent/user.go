@@ -30,8 +30,51 @@ type User struct {
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
-	UpdatedAt    time.Time `json:"updated_at,omitempty"`
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the UserQuery when eager-loading is set.
+	Edges        UserEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// UserEdges holds the relations/edges for other nodes in the graph.
+type UserEdges struct {
+	// Followings holds the value of the followings edge.
+	Followings []*UserFollowing `json:"followings,omitempty"`
+	// NotificationChannels holds the value of the notification_channels edge.
+	NotificationChannels []*NotificationChannel `json:"notification_channels,omitempty"`
+	// NotificationRules holds the value of the notification_rules edge.
+	NotificationRules []*NotificationRule `json:"notification_rules,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [3]bool
+}
+
+// FollowingsOrErr returns the Followings value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) FollowingsOrErr() ([]*UserFollowing, error) {
+	if e.loadedTypes[0] {
+		return e.Followings, nil
+	}
+	return nil, &NotLoadedError{edge: "followings"}
+}
+
+// NotificationChannelsOrErr returns the NotificationChannels value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) NotificationChannelsOrErr() ([]*NotificationChannel, error) {
+	if e.loadedTypes[1] {
+		return e.NotificationChannels, nil
+	}
+	return nil, &NotLoadedError{edge: "notification_channels"}
+}
+
+// NotificationRulesOrErr returns the NotificationRules value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) NotificationRulesOrErr() ([]*NotificationRule, error) {
+	if e.loadedTypes[2] {
+		return e.NotificationRules, nil
+	}
+	return nil, &NotLoadedError{edge: "notification_rules"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -119,6 +162,21 @@ func (_m *User) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (_m *User) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
+}
+
+// QueryFollowings queries the "followings" edge of the User entity.
+func (_m *User) QueryFollowings() *UserFollowingQuery {
+	return NewUserClient(_m.config).QueryFollowings(_m)
+}
+
+// QueryNotificationChannels queries the "notification_channels" edge of the User entity.
+func (_m *User) QueryNotificationChannels() *NotificationChannelQuery {
+	return NewUserClient(_m.config).QueryNotificationChannels(_m)
+}
+
+// QueryNotificationRules queries the "notification_rules" edge of the User entity.
+func (_m *User) QueryNotificationRules() *NotificationRuleQuery {
+	return NewUserClient(_m.config).QueryNotificationRules(_m)
 }
 
 // Update returns a builder for updating this User.

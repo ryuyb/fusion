@@ -10,7 +10,10 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/notificationchannel"
+	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/notificationrule"
 	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/user"
+	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/userfollowing"
 )
 
 // UserCreate is the builder for creating a User entity.
@@ -98,6 +101,51 @@ func (_c *UserCreate) SetNillableUpdatedAt(v *time.Time) *UserCreate {
 func (_c *UserCreate) SetID(v int64) *UserCreate {
 	_c.mutation.SetID(v)
 	return _c
+}
+
+// AddFollowingIDs adds the "followings" edge to the UserFollowing entity by IDs.
+func (_c *UserCreate) AddFollowingIDs(ids ...int64) *UserCreate {
+	_c.mutation.AddFollowingIDs(ids...)
+	return _c
+}
+
+// AddFollowings adds the "followings" edges to the UserFollowing entity.
+func (_c *UserCreate) AddFollowings(v ...*UserFollowing) *UserCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddFollowingIDs(ids...)
+}
+
+// AddNotificationChannelIDs adds the "notification_channels" edge to the NotificationChannel entity by IDs.
+func (_c *UserCreate) AddNotificationChannelIDs(ids ...int64) *UserCreate {
+	_c.mutation.AddNotificationChannelIDs(ids...)
+	return _c
+}
+
+// AddNotificationChannels adds the "notification_channels" edges to the NotificationChannel entity.
+func (_c *UserCreate) AddNotificationChannels(v ...*NotificationChannel) *UserCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddNotificationChannelIDs(ids...)
+}
+
+// AddNotificationRuleIDs adds the "notification_rules" edge to the NotificationRule entity by IDs.
+func (_c *UserCreate) AddNotificationRuleIDs(ids ...int64) *UserCreate {
+	_c.mutation.AddNotificationRuleIDs(ids...)
+	return _c
+}
+
+// AddNotificationRules adds the "notification_rules" edges to the NotificationRule entity.
+func (_c *UserCreate) AddNotificationRules(v ...*NotificationRule) *UserCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddNotificationRuleIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -257,6 +305,54 @@ func (_c *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(user.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
+	}
+	if nodes := _c.mutation.FollowingsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FollowingsTable,
+			Columns: []string{user.FollowingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userfollowing.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.NotificationChannelsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotificationChannelsTable,
+			Columns: []string{user.NotificationChannelsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notificationchannel.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.NotificationRulesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotificationRulesTable,
+			Columns: []string{user.NotificationRulesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notificationrule.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

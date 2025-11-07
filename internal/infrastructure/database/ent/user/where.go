@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/predicate"
 )
 
@@ -427,6 +428,75 @@ func UpdatedAtLT(v time.Time) predicate.User {
 // UpdatedAtLTE applies the LTE predicate on the "updated_at" field.
 func UpdatedAtLTE(v time.Time) predicate.User {
 	return predicate.User(sql.FieldLTE(FieldUpdatedAt, v))
+}
+
+// HasFollowings applies the HasEdge predicate on the "followings" edge.
+func HasFollowings() predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, FollowingsTable, FollowingsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasFollowingsWith applies the HasEdge predicate on the "followings" edge with a given conditions (other predicates).
+func HasFollowingsWith(preds ...predicate.UserFollowing) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := newFollowingsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasNotificationChannels applies the HasEdge predicate on the "notification_channels" edge.
+func HasNotificationChannels() predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, NotificationChannelsTable, NotificationChannelsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasNotificationChannelsWith applies the HasEdge predicate on the "notification_channels" edge with a given conditions (other predicates).
+func HasNotificationChannelsWith(preds ...predicate.NotificationChannel) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := newNotificationChannelsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasNotificationRules applies the HasEdge predicate on the "notification_rules" edge.
+func HasNotificationRules() predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, NotificationRulesTable, NotificationRulesColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasNotificationRulesWith applies the HasEdge predicate on the "notification_rules" edge with a given conditions (other predicates).
+func HasNotificationRulesWith(preds ...predicate.NotificationRule) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := newNotificationRulesStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

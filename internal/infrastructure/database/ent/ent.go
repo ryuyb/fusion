@@ -12,7 +12,12 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/notificationchannel"
+	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/notificationrule"
+	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/platform"
+	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/streamer"
 	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/user"
+	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/userfollowing"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -73,7 +78,12 @@ var (
 func checkColumn(t, c string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			user.Table: user.ValidColumn,
+			notificationchannel.Table: notificationchannel.ValidColumn,
+			notificationrule.Table:    notificationrule.ValidColumn,
+			platform.Table:            platform.ValidColumn,
+			streamer.Table:            streamer.ValidColumn,
+			user.Table:                user.ValidColumn,
+			userfollowing.Table:       userfollowing.ValidColumn,
 		})
 	})
 	return columnCheck(t, c)
