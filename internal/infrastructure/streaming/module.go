@@ -8,9 +8,6 @@ import (
 // Module provides the streaming infrastructure components
 var Module = fx.Module("streaming",
 	fx.Provide(
-		// Resty HTTP client for making API requests
-		NewRestyClient,
-
 		// Streaming platform providers (will be implemented in Phase 2.2)
 		// Each provider is annotated to be part of the "streaming_providers" group
 		fx.Annotate(

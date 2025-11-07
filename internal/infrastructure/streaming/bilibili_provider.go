@@ -8,17 +8,18 @@ import (
 
 	"github.com/ryuyb/fusion/internal/domain/entity"
 	"github.com/ryuyb/fusion/internal/domain/service"
+	"github.com/ryuyb/fusion/internal/infrastructure/client"
 	"go.uber.org/zap"
 )
 
 // BilibiliProvider implements StreamingPlatformProvider for Bilibili Live
 type BilibiliProvider struct {
-	client *RestyClient
+	client *client.RestyClient
 	logger *zap.Logger
 }
 
 // NewBilibiliProvider creates a new BilibiliProvider instance
-func NewBilibiliProvider(client *RestyClient, logger *zap.Logger) *BilibiliProvider {
+func NewBilibiliProvider(client *client.RestyClient, logger *zap.Logger) *BilibiliProvider {
 	return &BilibiliProvider{
 		client: client,
 		logger: logger,

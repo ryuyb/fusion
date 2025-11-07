@@ -1,4 +1,4 @@
-package streaming
+package client
 
 import (
 	"time"

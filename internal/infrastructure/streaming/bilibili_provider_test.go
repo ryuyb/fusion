@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/ryuyb/fusion/internal/domain/entity"
+	"github.com/ryuyb/fusion/internal/infrastructure/client"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap/zaptest"
@@ -12,7 +13,7 @@ import (
 
 func setupTestBilibiliProvider(t *testing.T) *BilibiliProvider {
 	logger := zaptest.NewLogger(t)
-	client := NewRestyClient(logger)
+	client := client.NewRestyClient(logger)
 	return NewBilibiliProvider(client, logger)
 }
 

@@ -383,13 +383,14 @@
   - [ ] 添加错误处理和日志
   - [ ] 添加单元测试
 
-- [ ] **实现 WebhookChannelProvider** (`internal/infrastructure/notification/webhook_provider.go`)
-  - [ ] 实现 `GetChannelType()` 返回 Webhook
-  - [ ] 实现 `Send()` - 使用 resty 发送 POST 请求
-  - [ ] 实现 `ValidateConfiguration()` - 验证 URL 配置
-  - [ ] 实现 `TestConnection()` - 测试 Webhook 连通性
-  - [ ] 支持自定义 Headers 和 Body 格式
-  - [ ] 添加错误处理和日志
+- [x] **实现 WebhookChannelProvider** (`internal/infrastructure/notification/webhook_provider.go`)
+  - [x] 实现 `GetChannelType()` 返回 Webhook
+  - [x] 实现 `Send()` - 使用 resty 发送 POST/PUT/PATCH 请求
+  - [x] 实现 `ValidateConfiguration()` - 验证 URL 配置和 HTTP 方法
+  - [x] 实现 `TestConnection()` - 测试 Webhook 连通性
+  - [x] 支持自定义 Headers、HTTP 方法和消息模板
+  - [x] 支持自定义字段和 JSON 格式
+  - [x] 添加错误处理和结构化日志
   - [ ] 添加单元测试
 
 - [ ] **实现 TelegramChannelProvider** (`internal/infrastructure/notification/telegram_provider.go`)

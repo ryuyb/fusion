@@ -5,17 +5,18 @@ import (
 
 	"github.com/ryuyb/fusion/internal/domain/entity"
 	"github.com/ryuyb/fusion/internal/domain/service"
+	"github.com/ryuyb/fusion/internal/infrastructure/client"
 	"go.uber.org/zap"
 )
 
 // DouyuProvider implements StreamingPlatformProvider for Douyu Live
 type DouyuProvider struct {
-	client *RestyClient
+	client *client.RestyClient
 	logger *zap.Logger
 }
 
 // NewDouyuProvider creates a new DouyuProvider instance
-func NewDouyuProvider(client *RestyClient, logger *zap.Logger) *DouyuProvider {
+func NewDouyuProvider(client *client.RestyClient, logger *zap.Logger) *DouyuProvider {
 	return &DouyuProvider{
 		client: client,
 		logger: logger,
