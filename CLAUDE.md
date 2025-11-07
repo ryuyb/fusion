@@ -34,6 +34,19 @@ make build
 
 # Run built binary
 ./bin/fusion serve
+
+# Build Docker image (single architecture)
+make docker-build
+
+# Build multi-architecture Docker image (AMD64 + ARM64)
+make docker-build-multiarch
+
+# Build for specific architecture
+make docker-build-arm64    # ARM64 only
+make docker-build-amd64    # AMD64 only
+
+# Build and push to registry
+make docker-push
 ```
 
 ### Database Migrations
@@ -64,8 +77,10 @@ make format-swagger
 ## Docker
 
 ### Build Docker Image
+
+**Single Architecture (AMD64 or ARM64):**
 ```bash
-# Build with default settings
+# Build for current platform
 docker build -t fusion:latest .
 
 # Build with version info
@@ -75,24 +90,46 @@ docker build \
   --build-arg GIT_COMMIT=$(git rev-parse --short HEAD) \
   --build-arg GO_VERSION=$(go version | awk '{print $3}') \
   -t fusion:latest .
+
+# Build for specific platform
+docker build --platform linux/arm64 -t fusion:latest .
+```
+
+**Multi-Architecture (AMD64 + ARM64):**
+```bash
+# Ensure Docker Buildx is available
+docker buildx version
+
+# Build for multiple platforms (requires buildx)
+docker buildx build \
+  --platform linux/amd64,linux/arm64 \
+  --build-arg VERSION=$(git describe --tags --always --dirty) \
+  --build-arg BUILD_TIME=$(date -u '+%Y-%m-%d_%H:%M:%S') \
+  --build-arg GIT_COMMIT=$(git rev-parse --short HEAD) \
+  --build-arg GO_VERSION=$(go version | awk '{print $3}') \
+  -t fusion:latest \
+  --push .
+
+# Or use the build script (recommended)
+./scripts/build-multiarch.sh                    # Build for AMD64 + ARM64
+./scripts/build-multiarch.sh --push             # Build and push to registry
+./scripts/build-multiarch.sh --load --platform linux/arm64  # Build ARM64 and load locally
+./scripts/build-multiarch.sh --platform linux/amd64         # Build AMD64 only
 ```
 
 ### Run with Docker Compose
 ```bash
-# Start all services (app + PostgreSQL)
-docker-compose up
+# Using Docker Compose directly
+docker-compose up                 # Start all services
+docker-compose up -d              # Start in detached mode
+docker-compose logs -f app        # View logs
+docker-compose down               # Stop services
+docker-compose down -v            # Stop and remove volumes
 
-# Start in detached mode
-docker-compose up -d
-
-# View logs
-docker-compose logs -f app
-
-# Stop services
-docker-compose down
-
-# Stop and remove volumes
-docker-compose down -v
+# Using Makefile (recommended)
+make docker-up                    # Start services
+make docker-logs                  # View logs
+make docker-down                  # Stop services
 ```
 
 ### Run Docker Container Manually

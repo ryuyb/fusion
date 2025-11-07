@@ -67,3 +67,6 @@ Makefile
 Dockerfile
 .dockerignore
 docker-compose.yml
+
+# Scripts (not needed in container)
+scripts/
