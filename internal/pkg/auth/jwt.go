@@ -6,16 +6,14 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/ryuyb/fusion/internal/domain/entity"
 	"github.com/ryuyb/fusion/internal/infrastructure/config"
 	errors2 "github.com/ryuyb/fusion/internal/pkg/errors"
 )
 
 type UserClaims struct {
-	UserID   int64             `json:"id"`
-	Username string            `json:"username"`
-	Email    string            `json:"email"`
-	Status   entity.UserStatus `json:"status"`
+	UserID   int64  `json:"id"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
 	jwt.RegisteredClaims
 }
 
@@ -31,15 +29,15 @@ func NewJWTManager(cfg *config.Config) *JWTManager {
 	}
 }
 
-func (j *JWTManager) GenerateToken(userID int64, username, email string, status entity.UserStatus) (string, error) {
+func (j *JWTManager) GenerateToken(userID int64, username, email string) (string, time.Time, error) {
 	now := time.Now()
+	expiresAt := now.Add(j.expiration)
 	claims := UserClaims{
 		UserID:   userID,
 		Username: username,
 		Email:    email,
-		Status:   status,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(now.Add(j.expiration)),
+			ExpiresAt: jwt.NewNumericDate(expiresAt),
 			IssuedAt:  jwt.NewNumericDate(now),
 			NotBefore: jwt.NewNumericDate(now),
 			Issuer:    "fusion",
@@ -47,7 +45,8 @@ func (j *JWTManager) GenerateToken(userID int64, username, email string, status 
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
-	return token.SignedString(j.secret)
+	signedString, err := token.SignedString(j.secret)
+	return signedString, expiresAt, err
 }
 
 func (j *JWTManager) ValidateToken(tokenStr string) (*UserClaims, error) {

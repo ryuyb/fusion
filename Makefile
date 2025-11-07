@@ -63,6 +63,60 @@ generate-swagger: ## 生成swagger文档
 format-swagger: ## 格式化 swagger 文档
 	@swag fmt
 
+.PHONY: test-unit
+test-unit: ## 运行单元测试
+	@echo "$(BLUE)Running unit tests...$(NC)"
+	@go test -v -race -coverprofile=coverage-unit.out ./internal/...
+	@echo "$(GREEN)Unit tests completed$(NC)"
+
+.PHONY: test-integration
+test-integration: ## 运行集成测试 (使用SQLite)
+	@echo "$(BLUE)Running integration tests with SQLite...$(NC)"
+	@go test -v -race -coverprofile=coverage-integration.out ./test/integration/...
+	@echo "$(GREEN)Integration tests completed$(NC)"
+
+.PHONY: test-integration-postgres
+test-integration-postgres: ## 运行集成测试 (使用PostgreSQL)
+	@echo "$(BLUE)Running integration tests with PostgreSQL...$(NC)"
+	@echo "$(YELLOW)Make sure PostgreSQL is running (docker-compose up -d)$(NC)"
+	@TEST_DB_DRIVER=postgres TEST_DB_DSN="postgres://postgres:postgres@localhost:5432/fusion_test?sslmode=disable" \
+		go test -v -race -coverprofile=coverage-integration-postgres.out ./test/integration/...
+	@echo "$(GREEN)Integration tests completed$(NC)"
+
+.PHONY: test-e2e
+test-e2e: ## 运行端到端测试 (使用SQLite)
+	@echo "$(BLUE)Running e2e tests with SQLite...$(NC)"
+	@go test -v -race -coverprofile=coverage-e2e.out ./test/e2e/...
+	@echo "$(GREEN)E2E tests completed$(NC)"
+
+.PHONY: test-e2e-postgres
+test-e2e-postgres: ## 运行端到端测试 (使用PostgreSQL)
+	@echo "$(BLUE)Running e2e tests with PostgreSQL...$(NC)"
+	@echo "$(YELLOW)Make sure PostgreSQL is running (docker-compose up -d)$(NC)"
+	@TEST_DB_DRIVER=postgres TEST_DB_DSN="postgres://postgres:postgres@localhost:5432/fusion_test?sslmode=disable" \
+		go test -v -race -coverprofile=coverage-e2e-postgres.out ./test/e2e/...
+	@echo "$(GREEN)E2E tests completed$(NC)"
+
+.PHONY: test-all
+test-all: test-unit test-integration test-e2e ## 运行所有测试 (单元+集成+E2E)
+	@echo "$(GREEN)All tests completed$(NC)"
+
+.PHONY: test
+test: test-all ## 运行所有测试 (别名)
+
+.PHONY: test-coverage
+test-coverage: test-all ## 运行测试并生成覆盖率报告
+	@echo "$(BLUE)Generating coverage report...$(NC)"
+	@go test -coverprofile=coverage.out ./...
+	@go tool cover -html=coverage.out -o coverage.html
+	@echo "$(GREEN)Coverage report generated: coverage.html$(NC)"
+
+.PHONY: test-short
+test-short: ## 运行快速测试 (跳过长时间运行的测试)
+	@echo "$(BLUE)Running short tests...$(NC)"
+	@go test -v -short ./...
+	@echo "$(GREEN)Short tests completed$(NC)"
+
 .PHONY: build
 build: ## 构建
 	@go build $(LDFLAGS) -o bin/fusion cmd/server/main.go

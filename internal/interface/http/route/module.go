@@ -42,6 +42,7 @@ var Module = fx.Module("route",
 	fx.Provide(
 		asRoute(NewSwaggerRoute),
 		asRoute(NewHealthRoute),
+		asRoute(NewAuthRoute),
 		asRoute(NewUserRoute),
 
 		NewRouterRegistry,
