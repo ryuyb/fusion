@@ -6,6 +6,7 @@ import (
 	"github.com/ryuyb/fusion/internal/infrastructure/database"
 	"github.com/ryuyb/fusion/internal/infrastructure/logger"
 	"github.com/ryuyb/fusion/internal/infrastructure/repository"
+	"github.com/ryuyb/fusion/internal/infrastructure/streaming"
 	_interface "github.com/ryuyb/fusion/internal/interface"
 	"github.com/ryuyb/fusion/internal/interface/http/route"
 	"github.com/ryuyb/fusion/internal/pkg"
@@ -17,6 +18,8 @@ var Module = fx.Module("app",
 	logger.Module,
 	database.Module,
 	repository.Module,
+	streaming.Module,
+
 	pkg.Module,
 
 	application.Module,

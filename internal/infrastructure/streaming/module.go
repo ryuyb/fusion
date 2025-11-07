@@ -13,16 +13,16 @@ var Module = fx.Module("streaming",
 
 		// Streaming platform providers (will be implemented in Phase 2.2)
 		// Each provider is annotated to be part of the "streaming_providers" group
-		// fx.Annotate(
-		// 	NewDouyuProvider,
-		// 	fx.As(new(service.StreamingPlatformProvider)),
-		// 	fx.ResultTags(`group:"streaming_providers"`),
-		// ),
-		// fx.Annotate(
-		// 	NewHuyaProvider,
-		// 	fx.As(new(service.StreamingPlatformProvider)),
-		// 	fx.ResultTags(`group:"streaming_providers"`),
-		// ),
+		fx.Annotate(
+			NewDouyuProvider,
+			fx.As(new(service.StreamingPlatformProvider)),
+			fx.ResultTags(`group:"streaming_providers"`),
+		),
+		fx.Annotate(
+			NewHuyaProvider,
+			fx.As(new(service.StreamingPlatformProvider)),
+			fx.ResultTags(`group:"streaming_providers"`),
+		),
 		fx.Annotate(
 			NewBilibiliProvider,
 			fx.As(new(service.StreamingPlatformProvider)),

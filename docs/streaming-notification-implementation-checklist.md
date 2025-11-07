@@ -147,38 +147,38 @@
 
 ### 1.5 Repository 实现层
 
-- [ ] **实现 PlatformRepository** (`internal/infrastructure/repository/platform_repository.go`)
-  - [ ] 实现所有接口方法
-  - [ ] 处理数据库错误转换
-  - [ ] 添加日志记录
+- [x] **实现 PlatformRepository** (`internal/infrastructure/repository/platform_repository.go`)
+  - [x] 实现所有接口方法
+  - [x] 处理数据库错误转换
+  - [x] 添加日志记录
 
-- [ ] **实现 StreamerRepository** (`internal/infrastructure/repository/streamer_repository.go`)
-  - [ ] 实现所有接口方法
-  - [ ] 实现预加载 Platform 关联
-  - [ ] 处理数据库错误转换
-  - [ ] 添加日志记录
+- [x] **实现 StreamerRepository** (`internal/infrastructure/repository/streamer_repository.go`)
+  - [x] 实现所有接口方法
+  - [x] 实现预加载 Platform 关联
+  - [x] 处理数据库错误转换
+  - [x] 添加日志记录
 
-- [ ] **实现 FollowingRepository** (`internal/infrastructure/repository/following_repository.go`)
-  - [ ] 实现所有接口方法
-  - [ ] 实现预加载 User 和 Streamer 关联
-  - [ ] 实现筛选逻辑（按平台、提醒状态）
-  - [ ] 处理数据库错误转换
-  - [ ] 添加日志记录
+- [x] **实现 FollowingRepository** (`internal/infrastructure/repository/following_repository.go`)
+  - [x] 实现所有接口方法
+  - [x] 实现预加载 User 和 Streamer 关联
+  - [x] 实现筛选逻辑（按平台、提醒状态）
+  - [x] 处理数据库错误转换
+  - [x] 添加日志记录
 
-- [ ] **实现 ChannelRepository** (`internal/infrastructure/repository/channel_repository.go`)
-  - [ ] 实现所有接口方法
-  - [ ] 实现按优先级排序
-  - [ ] 处理数据库错误转换
-  - [ ] 添加日志记录
+- [x] **实现 ChannelRepository** (`internal/infrastructure/repository/channel_repository.go`)
+  - [x] 实现所有接口方法
+  - [x] 实现按优先级排序
+  - [x] 处理数据库错误转换
+  - [x] 添加日志记录
 
-- [ ] **实现 RuleRepository** (`internal/infrastructure/repository/rule_repository.go`)
-  - [ ] 实现所有接口方法
-  - [ ] 处理数据库错误转换
-  - [ ] 添加日志记录
+- [x] **实现 RuleRepository** (`internal/infrastructure/repository/rule_repository.go`)
+  - [x] 实现所有接口方法
+  - [x] 处理数据库错误转换
+  - [x] 添加日志记录
 
-- [ ] **创建 Repository Module** (`internal/infrastructure/repository/module.go`)
-  - [ ] 添加所有 Repository 的 Provider
-  - [ ] 使用 fx.Annotate 进行接口绑定
+- [x] **创建 Repository Module** (`internal/infrastructure/repository/module.go`)
+  - [x] 添加所有 Repository 的 Provider
+  - [x] 使用 fx.Annotate 进行接口绑定
 
 ---
 
@@ -237,8 +237,8 @@
 
 - [x] **创建 Streaming Module** (`internal/infrastructure/streaming/module.go`)
   - [x] 注册 RestyClient Provider
-  - [ ] 注册 DouyuProvider（使用 fx.Annotate + fx.ResultTags）
-  - [ ] 注册 HuyaProvider（使用 fx.Annotate + fx.ResultTags）
+  - [x] 注册 DouyuProvider（使用 fx.Annotate + fx.ResultTags）
+  - [x] 注册 HuyaProvider（使用 fx.Annotate + fx.ResultTags）
   - [x] 注册 BilibiliProvider（使用 fx.Annotate + fx.ResultTags）
   - [x] 注册 StreamingProviderManager
 

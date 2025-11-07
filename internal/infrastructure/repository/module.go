@@ -8,5 +8,10 @@ import (
 var Module = fx.Module("repository",
 	fx.Provide(
 		NewUserRepository,
+		NewChannelRepository,
+		NewFollowingRepository,
+		NewPlatformRepository,
+		NewRuleRepository,
+		NewStreamerRepository,
 	),
 )
