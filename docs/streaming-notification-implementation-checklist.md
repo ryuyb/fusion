@@ -422,20 +422,20 @@
 
 ### 4.2 Provider 管理器
 
-- [ ] **实现 NotificationProviderManager** (`internal/infrastructure/notification/provider_manager.go`)
-  - [ ] 创建 ProviderManager 结构体
-  - [ ] 实现 `NewNotificationProviderManager()` - 接收 fx.Group 注入的 Providers
-  - [ ] 实现 `GetProvider(channelType)` - 获取指定类型的 Provider
-  - [ ] 实现 `GetAllProviders()` - 获取所有 Providers
-  - [ ] 添加日志记录
+- [x] **实现 NotificationProviderManager** (`internal/infrastructure/notification/provider_manager.go`)
+  - [x] 创建 ProviderManager 结构体
+  - [x] 实现 `NewNotificationProviderManager()` - 接收 fx.Group 注入的 Providers
+  - [x] 实现 `GetProvider(channelType)` - 获取指定类型的 Provider
+  - [x] 实现 `GetAllProviders()` - 获取所有 Providers
+  - [x] 添加日志记录
 
 - [ ] **创建 Notification Module** (`internal/infrastructure/notification/module.go`)
   - [ ] 注册 EmailChannelProvider（使用 fx.Annotate + fx.ResultTags）
-  - [ ] 注册 WebhookChannelProvider
+  - [x] 注册 WebhookChannelProvider
   - [ ] 注册 TelegramChannelProvider
   - [ ] 注册 DiscordChannelProvider
   - [ ] 注册 FeishuChannelProvider
-  - [ ] 注册 NotificationProviderManager
+  - [x] 注册 NotificationProviderManager
 
 ### 4.3 应用服务实现
 

@@ -15,5 +15,8 @@ var Module = fx.Module("notification",
 			fx.As(new(service.NotificationChannelProvider)),
 			fx.ResultTags(`group:"notification_providers"`),
 		),
+
+		// Notification Provider Manager
+		NewNotificationProviderManager,
 	),
 )
