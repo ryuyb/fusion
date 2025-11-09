@@ -196,15 +196,15 @@
 
 ### 2.2 直播平台 Provider 实现
 
-- [ ] **实现 DouyuProvider** (`internal/infrastructure/streaming/douyu_provider.go`)
-  - [ ] 实现 `GetPlatformType()` 返回 Douyu
-  - [ ] 实现 `FetchStreamerInfo()` - 调用斗鱼 API
-  - [ ] 实现 `CheckLiveStatus()` - 检查单个主播状态
-  - [ ] 实现 `BatchCheckLiveStatus()` - 批量检查（优化性能）
-  - [ ] 实现 `ValidateConfiguration()` - 验证 API 配置
-  - [ ] 实现 `SearchStreamer()` - 搜索主播
-  - [ ] 添加错误处理和日志
-  - [ ] 添加单元测试
+- [x] **实现 DouyuProvider** (`internal/infrastructure/streaming/douyu_provider.go`)
+  - [x] 实现 `GetPlatformType()` 返回 Douyu
+  - [x] 实现 `FetchStreamerInfo()` - 调用斗鱼 API
+  - [x] 实现 `CheckLiveStatus()` - 检查单个主播状态
+  - [x] 实现 `BatchCheckLiveStatus()` - 批量检查（优化性能）
+  - [x] 实现 `ValidateConfiguration()` - 验证 API 配置
+  - [x] 实现 `SearchStreamer()` - 搜索主播
+  - [x] 添加错误处理和日志
+  - [x] 添加单元测试
 
 - [ ] **实现 HuyaProvider** (`internal/infrastructure/streaming/huya_provider.go`)
   - [ ] 实现 `GetPlatformType()` 返回 Huya
