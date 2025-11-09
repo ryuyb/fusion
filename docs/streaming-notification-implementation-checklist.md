@@ -267,23 +267,25 @@
 
 ### 2.5 DTOs 定义
 
-- [ ] **创建 Platform Request DTOs** (`internal/interface/http/dto/request/platform_request.go`)
-  - [ ] 定义 `CreatePlatformRequest`（name, platform_type, config, poll_interval）
-  - [ ] 定义 `UpdatePlatformRequest`（name, config, status, poll_interval）
-  - [ ] 添加验证规则（required, enum, min, max）
+- [x] **创建 Platform Request DTOs** (`internal/interface/http/dto/request/platform_request.go`)
+  - [x] 定义 `CreatePlatformRequest`（name, platform_type, config, poll_interval）
+  - [x] 定义 `UpdatePlatformRequest`（name, config, status, poll_interval）
+  - [x] 添加验证规则（required, enum, min, max）
 
-- [ ] **创建 Platform Response DTOs** (`internal/interface/http/dto/response/platform_response.go`)
-  - [ ] 定义 `PlatformResponse`（ID, Name, PlatformType, Config, Status, PollInterval, CreatedAt, UpdatedAt）
-  - [ ] 实现转换方法 `ToPlatformResponse(entity)`
+- [x] **创建 Platform Response DTOs** (`internal/interface/http/dto/response/platform_response.go`)
+  - [x] 定义 `PlatformResponse`（ID, Name, PlatformType, Config, Status, PollInterval, CreatedAt, UpdatedAt）
+  - [x] 实现转换方法 `ToPlatformResponse(entity)`
+  - [x] 实现转换方法 `ToPlatformResponseList(entities)`
 
-- [ ] **创建 Streamer Request DTOs** (`internal/interface/http/dto/request/streamer_request.go`)
-  - [ ] 定义 `SearchStreamerRequest`（platform_type, keyword）
-  - [ ] 添加验证规则
+- [x] **创建 Streamer Request DTOs** (`internal/interface/http/dto/request/streamer_request.go`)
+  - [x] 定义 `SearchStreamerRequest`（platform_type, keyword, page, page_size）
+  - [x] 添加验证规则
 
-- [ ] **创建 Streamer Response DTOs** (`internal/interface/http/dto/response/streamer_response.go`)
-  - [ ] 定义 `StreamerResponse`（ID, PlatformID, PlatformStreamerID, Name, Avatar, Description, RoomURL, IsLive, LastLiveAt, CreatedAt, UpdatedAt）
-  - [ ] 定义 `LiveStatusResponse`（IsLive, Title, GameName, StartTime, Viewers, CoverImage）
-  - [ ] 实现转换方法
+- [x] **创建 Streamer Response DTOs** (`internal/interface/http/dto/response/streamer_response.go`)
+  - [x] 定义 `StreamerResponse`（ID, PlatformID, PlatformStreamerID, Name, Avatar, Description, RoomURL, IsLive, LastLiveAt, CreatedAt, UpdatedAt）
+  - [x] 定义 `LiveStatusResponse`（IsLive, Title, GameName, StartTime, Viewers, CoverImage）
+  - [x] 实现转换方法 `ToStreamerResponse(entity)`
+  - [x] 实现转换方法 `ToStreamerResponseList(entities)`
 
 ### 2.6 HTTP Handler 实现
 
@@ -337,16 +339,19 @@
 
 ### 3.2 DTOs 定义
 
-- [ ] **创建 Following Request DTOs** (`internal/interface/http/dto/request/following_request.go`)
-  - [ ] 定义 `FollowRequest`（platform_type, platform_streamer_id）
-  - [ ] 定义 `UpdateNotificationRequest`（enabled）
-  - [ ] 定义 `ListFollowingRequest`（platform_type, notification_enabled, page, page_size）
-  - [ ] 添加验证规则
+- [x] **创建 Following Request DTOs** (`internal/interface/http/dto/request/following_request.go`)
+  - [x] 定义 `FollowRequest`（platform_type, platform_streamer_id）
+  - [x] 定义 `UpdateNotificationRequest`（enabled）
+  - [x] 定义 `ListFollowingRequest`（platform_type, notification_enabled, page, page_size）
+  - [x] 添加验证规则
 
-- [ ] **创建 Following Response DTOs** (`internal/interface/http/dto/response/following_response.go`)
-  - [ ] 定义 `FollowingResponse`（ID, UserID, Streamer, NotificationEnabled, LastNotifiedAt, CreatedAt, UpdatedAt）
-  - [ ] 实现转换方法 `ToFollowingResponse(entity)`
-  - [ ] 实现分页响应
+- [x] **创建 Following Response DTOs** (`internal/interface/http/dto/response/following_response.go`)
+  - [x] 定义 `FollowingResponse`（ID, UserID, Streamer, NotificationEnabled, LastNotifiedAt, CreatedAt, UpdatedAt）
+  - [x] 定义 `StreamerInfo` 结构体
+  - [x] 定义 `FollowingListResponse` 分页响应
+  - [x] 实现转换方法 `ToFollowingResponse(entity)`
+  - [x] 实现转换方法 `ToFollowingResponseWithStreamer(entity, streamer)`
+  - [x] 实现分页响应 `ToFollowingResponseList(entities, page, pageSize, total)`
 
 ### 3.3 HTTP Handler 实现
 
@@ -453,15 +458,15 @@
 
 ### 4.4 DTOs 定义
 
-- [ ] **创建 Channel Request DTOs** (`internal/interface/http/dto/request/channel_request.go`)
-  - [ ] 定义 `CreateChannelRequest`（channel_type, name, config, priority）
-  - [ ] 定义 `UpdateChannelRequest`（name, config, priority, is_enabled）
-  - [ ] 添加验证规则
+- [x] **创建 Channel Request DTOs** (`internal/interface/http/dto/request/channel_request.go`)
+  - [x] 定义 `CreateChannelRequest`（channel_type, name, config, priority）
+  - [x] 定义 `UpdateChannelRequest`（name, config, priority, is_enabled）
+  - [x] 添加验证规则
 
-- [ ] **创建 Channel Response DTOs** (`internal/interface/http/dto/response/channel_response.go`)
-  - [ ] 定义 `ChannelResponse`（ID, UserID, ChannelType, Name, Config, IsEnabled, Priority, CreatedAt, UpdatedAt）
-  - [ ] 实现转换方法
-  - [ ] 脱敏处理（隐藏敏感配置信息）
+- [x] **创建 Channel Response DTOs** (`internal/interface/http/dto/response/channel_response.go`)
+  - [x] 定义 `ChannelResponse`（ID, UserID, ChannelType, Name, Config, IsEnabled, Priority, CreatedAt, UpdatedAt）
+  - [x] 实现转换方法
+  - [x] 脱敏处理（隐藏敏感配置信息）
 
 ### 4.5 HTTP Handler 实现
 
@@ -514,15 +519,15 @@
 
 ### 5.3 DTOs 定义
 
-- [ ] **创建 Rule Request DTOs** (`internal/interface/http/dto/request/rule_request.go`)
-  - [ ] 定义 `CreateRuleRequest`（rule_type, name, config）
-  - [ ] 定义 `UpdateRuleRequest`（name, config, is_enabled）
-  - [ ] 定义配置示例文档（各种规则类型的配置格式）
-  - [ ] 添加验证规则
+- [x] **创建 Rule Request DTOs** (`internal/interface/http/dto/request/rule_request.go`)
+  - [x] 定义 `CreateRuleRequest`（rule_type, name, config）
+  - [x] 定义 `UpdateRuleRequest`（name, config, is_enabled）
+  - [x] 定义配置示例文档（各种规则类型的配置格式）
+  - [x] 添加验证规则
 
-- [ ] **创建 Rule Response DTOs** (`internal/interface/http/dto/response/rule_response.go`)
-  - [ ] 定义 `RuleResponse`（ID, UserID, RuleType, Name, Config, IsEnabled, CreatedAt, UpdatedAt）
-  - [ ] 实现转换方法
+- [x] **创建 Rule Response DTOs** (`internal/interface/http/dto/response/rule_response.go`)
+  - [x] 定义 `RuleResponse`（ID, UserID, RuleType, Name, Config, IsEnabled, CreatedAt, UpdatedAt）
+  - [x] 实现转换方法
 
 ### 5.4 HTTP Handler 实现
 
