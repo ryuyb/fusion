@@ -13,8 +13,8 @@ import (
 
 func setupTestBilibiliProvider(t *testing.T) *BilibiliProvider {
 	logger := zaptest.NewLogger(t)
-	client := client.NewRestyClient(logger)
-	return NewBilibiliProvider(client, logger)
+	restyClient := client.NewRestyClient(logger)
+	return NewBilibiliProvider(restyClient, logger)
 }
 
 // TestBilibiliProvider_GetPlatformType tests that the provider returns correct platform type

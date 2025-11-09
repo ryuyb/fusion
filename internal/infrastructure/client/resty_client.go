@@ -12,6 +12,10 @@ type RestyClient struct {
 	*resty.Client
 }
 
+const (
+	DefaultUserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"
+)
+
 // NewRestyClient creates a new configured Resty HTTP client
 func NewRestyClient(logger *zap.Logger) *RestyClient {
 	client := resty.New()
@@ -25,13 +29,14 @@ func NewRestyClient(logger *zap.Logger) *RestyClient {
 	client.SetRetryMaxWaitTime(5 * time.Second)
 
 	// Set User-Agent header
-	client.SetHeader("User-Agent", "Fusion-Streaming-Platform/1.0")
+	client.SetHeader("User-Agent", DefaultUserAgent)
 
 	// Add request logging middleware
 	client.AddRequestMiddleware(func(client *resty.Client, req *resty.Request) error {
 		logger.Debug("Outgoing HTTP req",
 			zap.String("method", req.Method),
 			zap.String("url", req.URL),
+			zap.Any("path_params", req.PathParams),
 			zap.String("params", req.QueryParams.Encode()),
 		)
 		return nil

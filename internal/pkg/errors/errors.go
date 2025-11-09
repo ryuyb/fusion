@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/ryuyb/fusion/internal/domain/entity"
 	"github.com/ryuyb/fusion/internal/pkg/validator"
 	"github.com/samber/lo"
 )
@@ -22,6 +23,8 @@ const (
 
 	ErrCodeDatabaseError       ErrorCode = "DATABASE_ERROR"
 	ErrCodeConstraintViolation ErrorCode = "CONSTRAINT_VIOLATION"
+
+	ErrCodeStreamingPlatformError ErrorCode = "STREAMING_PLATFORM_ERROR"
 )
 
 type AppError struct {
@@ -148,6 +151,18 @@ func DatabaseError(err error) *AppError {
 		Message:    "Database operation failed",
 		HTTPStatus: http.StatusInternalServerError,
 		Err:        err,
+	}
+}
+
+func StreamingPlatformError(platform entity.PlatformType, message *string, err error) *AppError {
+	return &AppError{
+		Code:       ErrCodeStreamingPlatformError,
+		Message:    lo.FromPtrOr(message, "Streaming platform error"),
+		HTTPStatus: http.StatusInternalServerError,
+		Err:        err,
+		Details: map[string]any{
+			"platform": platform,
+		},
 	}
 }
 
