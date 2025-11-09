@@ -10,5 +10,6 @@ var Module = fx.Module("service",
 	fx.Provide(
 		fx.Annotate(service.NewUserService, fx.As(new(domainService.UserService))),
 		fx.Annotate(service.NewAuthService, fx.As(new(domainService.AuthService))),
+		fx.Annotate(service.NewPlatformService, fx.As(new(domainService.PlatformService))),
 	),
 )
