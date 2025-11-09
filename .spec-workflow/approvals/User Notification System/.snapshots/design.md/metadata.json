@@ -1,0 +1,30 @@
+{
+  "filePath": ".spec-workflow/specs/user-notification-system/design.md",
+  "currentVersion": 3,
+  "snapshots": [
+    {
+      "version": 1,
+      "filename": "snapshot-001.json",
+      "timestamp": "2025-11-09T05:53:50.733Z",
+      "trigger": "initial",
+      "approvalId": "approval_1762667630729_8uo78ht7v",
+      "approvalTitle": "User Notification System Design - Final Revision"
+    },
+    {
+      "version": 2,
+      "filename": "snapshot-002.json",
+      "timestamp": "2025-11-09T06:00:18.400Z",
+      "trigger": "revision_requested",
+      "approvalId": "approval_1762667630729_8uo78ht7v",
+      "approvalTitle": "User Notification System Design - Final Revision"
+    },
+    {
+      "version": 3,
+      "filename": "snapshot-003.json",
+      "timestamp": "2025-11-09T06:06:29.877Z",
+      "trigger": "revision_requested",
+      "approvalId": "approval_1762668186178_lfgglqrfl",
+      "approvalTitle": "User Notification System Design - Feedback Addressed"
+    }
+  ]
+}

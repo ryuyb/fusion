@@ -1,0 +1,51 @@
+{
+  "id": "approval_1762668186178_lfgglqrfl",
+  "title": "User Notification System Design - Feedback Addressed",
+  "filePath": ".spec-workflow/specs/user-notification-system/design.md",
+  "type": "document",
+  "status": "needs-revision",
+  "createdAt": "2025-11-09T06:03:06.178Z",
+  "category": "spec",
+  "categoryName": "User Notification System",
+  "response": "Feedback Summary (3 comments):\n\nSpecific Text Comments:\n1. \"**2. NotificationUserPreference (用户通知偏好表)**\n- **字段...\": NotificationUserPreference 是否没有必要，其他表已经可以满足需求，channel 的配置中已经有是否启用和 config map\n2. \"**1. Notification (通知主表)**\n- **字段**:\n  - `ID`: int...\": Notification 是否没有必要，history 表已经记录了发送结果\n3. \"type Subscription struct {\n    ID          int64  ...\": 使用Subscription 表是否已经可以替代 Notification\n",
+  "annotations": "{\n  \"decision\": \"needs-revision\",\n  \"comments\": [\n    {\n      \"type\": \"selection\",\n      \"comment\": \"NotificationUserPreference 是否没有必要，其他表已经可以满足需求，channel 的配置中已经有是否启用和 config map\",\n      \"timestamp\": \"2025-11-09T06:04:32.990Z\",\n      \"selectedText\": \"**2. NotificationUserPreference (用户通知偏好表)**\\n- **字段**:\\n  - `ID`: int64，主键\\n  - `UserID`: int64，用户ID，外键\\n  - `EmailEnabled`: bool，是否启用邮件通知\\n  - `PushEnabled`: bool，是否启用推送通知\\n  - `WebhookEnabled`: bool，是否启用Webhook通知\\n  - `SlackEnabled`: bool，是否启用Slack通知\\n  - `DiscordEnabled`: bool，是否启用Discord通知\\n  - `SMSEnabled`: bool，是否启用短信通知\\n  - `WebhookURL`: string，Webhook URL\\n  - `SlackChannel`: string，Slack频道\\n  - `DiscordWebhookURL`: string，Discord Webhook URL\\n  - `PhoneNumber`: string，手机号\\n  - `QuietHoursEnabled`: bool，是否启用免打扰时间\\n  - `QuietHoursStart`: string，免打扰开始时间（HH:MM）\\n  - `QuietHoursEnd`: string，免打扰结束时间（HH:MM）\\n  - `PlatformFilters`: []string，平台过滤器\\n  - `EnabledChannels`: []string，启用的渠道列表\\n  - `MaxNotificationsPerMin`: int，每分钟最大通知数\\n  - `CreatedAt`: time.Time，创建时间\\n  - `UpdatedAt`: time.Time，更新时间\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1762668272990_jeery297m\"\n    },\n    {\n      \"type\": \"selection\",\n      \"comment\": \"Notification 是否没有必要，history 表已经记录了发送结果\",\n      \"timestamp\": \"2025-11-09T06:05:37.489Z\",\n      \"selectedText\": \"**1. Notification (通知主表)**\\n- **字段**:\\n  - `ID`: int64，主键\\n  - `UserID`: int64，用户ID，外键关联到 user 表\\n  - `StreamerID`: int64，主播ID\\n  - `StreamerName`: string，主播名称\\n  - `Platform`: string，直播平台（斗鱼/虎牙/B站/Twitch等）\\n  - `StreamTitle`: string，直播标题\\n  - `StreamURL`: string，直播链接\\n  - `ThumbnailURL`: string，缩略图链接\\n  - `Status`: string，通知状态（pending/sent/failed）\\n  - `CreatedAt`: time.Time，创建时间\\n  - `ScheduledAt`: time.Time，计划发送时间\\n  - `SentAt`: time.Time，实际发送时间\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1762668337489_qxn0yujy4\"\n    },\n    {\n      \"type\": \"selection\",\n      \"comment\": \"使用Subscription 表是否已经可以替代 Notification\",\n      \"timestamp\": \"2025-11-09T06:06:21.324Z\",\n      \"selectedText\": \"type Subscription struct {\\n    ID          int64  `json:\\\"id\\\"`\\n    UserID      int64  `json:\\\"user_id\\\"`\\n    StreamerID  int64  `json:\\\"streamer_id\\\"`\\n    StreamerName string `json:\\\"streamer_name\\\"`\\n    Platform    string `json:\\\"platform\\\"`\\n    NotifyEnabled bool  `json:\\\"notify_enabled\\\"`  // 开播提醒开关\\n    CreatedAt   time.Time `json:\\\"created_at\\\"`\\n    UpdatedAt   time.Time `json:\\\"updated_at\\\"`\\n}\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1762668381324_9i557mwvx\"\n    }\n  ],\n  \"summary\": \"Feedback Summary (3 comments):\\n\\nSpecific Text Comments:\\n1. \\\"**2. NotificationUserPreference (用户通知偏好表)**\\n- **字段...\\\": NotificationUserPreference 是否没有必要，其他表已经可以满足需求，channel 的配置中已经有是否启用和 config map\\n2. \\\"**1. Notification (通知主表)**\\n- **字段**:\\n  - `ID`: int...\\\": Notification 是否没有必要，history 表已经记录了发送结果\\n3. \\\"type Subscription struct {\\n    ID          int64  ...\\\": 使用Subscription 表是否已经可以替代 Notification\\n\",\n  \"timestamp\": \"2025-11-09T06:06:29.868Z\"\n}",
+  "respondedAt": "2025-11-09T06:06:29.879Z",
+  "comments": [
+    {
+      "type": "selection",
+      "comment": "NotificationUserPreference 是否没有必要，其他表已经可以满足需求，channel 的配置中已经有是否启用和 config map",
+      "timestamp": "2025-11-09T06:04:32.990Z",
+      "selectedText": "**2. NotificationUserPreference (用户通知偏好表)**\n- **字段**:\n  - `ID`: int64，主键\n  - `UserID`: int64，用户ID，外键\n  - `EmailEnabled`: bool，是否启用邮件通知\n  - `PushEnabled`: bool，是否启用推送通知\n  - `WebhookEnabled`: bool，是否启用Webhook通知\n  - `SlackEnabled`: bool，是否启用Slack通知\n  - `DiscordEnabled`: bool，是否启用Discord通知\n  - `SMSEnabled`: bool，是否启用短信通知\n  - `WebhookURL`: string，Webhook URL\n  - `SlackChannel`: string，Slack频道\n  - `DiscordWebhookURL`: string，Discord Webhook URL\n  - `PhoneNumber`: string，手机号\n  - `QuietHoursEnabled`: bool，是否启用免打扰时间\n  - `QuietHoursStart`: string，免打扰开始时间（HH:MM）\n  - `QuietHoursEnd`: string，免打扰结束时间（HH:MM）\n  - `PlatformFilters`: []string，平台过滤器\n  - `EnabledChannels`: []string，启用的渠道列表\n  - `MaxNotificationsPerMin`: int，每分钟最大通知数\n  - `CreatedAt`: time.Time，创建时间\n  - `UpdatedAt`: time.Time，更新时间",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1762668272990_jeery297m"
+    },
+    {
+      "type": "selection",
+      "comment": "Notification 是否没有必要，history 表已经记录了发送结果",
+      "timestamp": "2025-11-09T06:05:37.489Z",
+      "selectedText": "**1. Notification (通知主表)**\n- **字段**:\n  - `ID`: int64，主键\n  - `UserID`: int64，用户ID，外键关联到 user 表\n  - `StreamerID`: int64，主播ID\n  - `StreamerName`: string，主播名称\n  - `Platform`: string，直播平台（斗鱼/虎牙/B站/Twitch等）\n  - `StreamTitle`: string，直播标题\n  - `StreamURL`: string，直播链接\n  - `ThumbnailURL`: string，缩略图链接\n  - `Status`: string，通知状态（pending/sent/failed）\n  - `CreatedAt`: time.Time，创建时间\n  - `ScheduledAt`: time.Time，计划发送时间\n  - `SentAt`: time.Time，实际发送时间",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1762668337489_qxn0yujy4"
+    },
+    {
+      "type": "selection",
+      "comment": "使用Subscription 表是否已经可以替代 Notification",
+      "timestamp": "2025-11-09T06:06:21.324Z",
+      "selectedText": "type Subscription struct {\n    ID          int64  `json:\"id\"`\n    UserID      int64  `json:\"user_id\"`\n    StreamerID  int64  `json:\"streamer_id\"`\n    StreamerName string `json:\"streamer_name\"`\n    Platform    string `json:\"platform\"`\n    NotifyEnabled bool  `json:\"notify_enabled\"`  // 开播提醒开关\n    CreatedAt   time.Time `json:\"created_at\"`\n    UpdatedAt   time.Time `json:\"updated_at\"`\n}",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1762668381324_9i557mwvx"
+    }
+  ]
+}

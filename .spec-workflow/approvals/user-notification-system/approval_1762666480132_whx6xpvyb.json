@@ -1,0 +1,75 @@
+{
+  "id": "approval_1762666480132_whx6xpvyb",
+  "title": "User Notification System Design - Extensible Architecture",
+  "filePath": ".spec-workflow/specs/user-notification-system/design.md",
+  "type": "document",
+  "status": "needs-revision",
+  "createdAt": "2025-11-09T05:34:40.132Z",
+  "category": "spec",
+  "categoryName": "user-notification-system",
+  "response": "Feedback Summary (5 comments):\n\nSpecific Text Comments:\n1. \"user_preference.go\": 命名不够明确，明确是通知的用户偏好\n2. \"│   └── integration/  # 外部集成服务\n│   │       ├── bas...\": sender 直接放到 integration 下，那还有其他外部集成服务应该怎么放。sender 是否为基础设施\n3. \"config/           # 配置\n│   │   ├── smtp.go\n│   │  ...\": 用来配置什么的？\n4. \"middleware/\n        │   └── notification.go\": 中间件是用来做什么的\n5. \"│   └── webhook_test.go\": 无需单独的 webhook test handler 吧\n",
+  "annotations": "{\n  \"decision\": \"needs-revision\",\n  \"comments\": [\n    {\n      \"type\": \"selection\",\n      \"comment\": \"命名不够明确，明确是通知的用户偏好\",\n      \"timestamp\": \"2025-11-09T05:37:04.541Z\",\n      \"selectedText\": \"user_preference.go\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1762666624541_vo99m211p\"\n    },\n    {\n      \"type\": \"selection\",\n      \"comment\": \"sender 直接放到 integration 下，那还有其他外部集成服务应该怎么放。sender 是否为基础设施\",\n      \"timestamp\": \"2025-11-09T05:38:38.775Z\",\n      \"selectedText\": \"│   └── integration/  # 外部集成服务\\n│   │       ├── base_sender.go      # 基础发送器接口\\n│   │       ├── email_sender.go\\n│   │       ├── push_sender.go\\n│   │       ├── webhook_sender.go\\n│   │       ├── slack_sender.go     # 可扩展：Slack\\n│   │       ├── discord_sender.go   # 可扩展：Discord\\n│   │       ├── sms_sender.go       # 可扩展：短信\\n│   │       ├── dingtalk_sender.go  # 可扩展：钉钉\\n│   │       └── wechat_sender.go    # 可扩展：企业微信\\n│   └── module.go\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1762666718775_qjo6xn99k\"\n    },\n    {\n      \"type\": \"selection\",\n      \"comment\": \"用来配置什么的？\",\n      \"timestamp\": \"2025-11-09T05:38:57.564Z\",\n      \"selectedText\": \"config/           # 配置\\n│   │   ├── smtp.go\\n│   │   ├── push.go\\n│   │   ├── webhook.go\\n│   │   ├── slack.go      # 可扩展：Slack 配置\\n│   │   ├── discord.go    # 可扩展：Discord 配置\\n│   │   ├── sms.go        # 可扩展：短信配置\\n│   │   └── channel.go    # 通用渠道配置\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1762666737564_ke7ozbmhl\"\n    },\n    {\n      \"type\": \"selection\",\n      \"comment\": \"中间件是用来做什么的\",\n      \"timestamp\": \"2025-11-09T05:39:34.682Z\",\n      \"selectedText\": \"middleware/\\n        │   └── notification.go\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1762666774682_ahpidz2so\"\n    },\n    {\n      \"type\": \"selection\",\n      \"comment\": \"无需单独的 webhook test handler 吧\",\n      \"timestamp\": \"2025-11-09T05:39:51.370Z\",\n      \"selectedText\": \"│   └── webhook_test.go\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1762666791370_7hqp2pugx\"\n    }\n  ],\n  \"summary\": \"Feedback Summary (5 comments):\\n\\nSpecific Text Comments:\\n1. \\\"user_preference.go\\\": 命名不够明确，明确是通知的用户偏好\\n2. \\\"│   └── integration/  # 外部集成服务\\n│   │       ├── bas...\\\": sender 直接放到 integration 下，那还有其他外部集成服务应该怎么放。sender 是否为基础设施\\n3. \\\"config/           # 配置\\n│   │   ├── smtp.go\\n│   │  ...\\\": 用来配置什么的？\\n4. \\\"middleware/\\n        │   └── notification.go\\\": 中间件是用来做什么的\\n5. \\\"│   └── webhook_test.go\\\": 无需单独的 webhook test handler 吧\\n\",\n  \"timestamp\": \"2025-11-09T05:40:04.511Z\"\n}",
+  "respondedAt": "2025-11-09T05:40:04.526Z",
+  "comments": [
+    {
+      "type": "selection",
+      "comment": "命名不够明确，明确是通知的用户偏好",
+      "timestamp": "2025-11-09T05:37:04.541Z",
+      "selectedText": "user_preference.go",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1762666624541_vo99m211p"
+    },
+    {
+      "type": "selection",
+      "comment": "sender 直接放到 integration 下，那还有其他外部集成服务应该怎么放。sender 是否为基础设施",
+      "timestamp": "2025-11-09T05:38:38.775Z",
+      "selectedText": "│   └── integration/  # 外部集成服务\n│   │       ├── base_sender.go      # 基础发送器接口\n│   │       ├── email_sender.go\n│   │       ├── push_sender.go\n│   │       ├── webhook_sender.go\n│   │       ├── slack_sender.go     # 可扩展：Slack\n│   │       ├── discord_sender.go   # 可扩展：Discord\n│   │       ├── sms_sender.go       # 可扩展：短信\n│   │       ├── dingtalk_sender.go  # 可扩展：钉钉\n│   │       └── wechat_sender.go    # 可扩展：企业微信\n│   └── module.go",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1762666718775_qjo6xn99k"
+    },
+    {
+      "type": "selection",
+      "comment": "用来配置什么的？",
+      "timestamp": "2025-11-09T05:38:57.564Z",
+      "selectedText": "config/           # 配置\n│   │   ├── smtp.go\n│   │   ├── push.go\n│   │   ├── webhook.go\n│   │   ├── slack.go      # 可扩展：Slack 配置\n│   │   ├── discord.go    # 可扩展：Discord 配置\n│   │   ├── sms.go        # 可扩展：短信配置\n│   │   └── channel.go    # 通用渠道配置",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1762666737564_ke7ozbmhl"
+    },
+    {
+      "type": "selection",
+      "comment": "中间件是用来做什么的",
+      "timestamp": "2025-11-09T05:39:34.682Z",
+      "selectedText": "middleware/\n        │   └── notification.go",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1762666774682_ahpidz2so"
+    },
+    {
+      "type": "selection",
+      "comment": "无需单独的 webhook test handler 吧",
+      "timestamp": "2025-11-09T05:39:51.370Z",
+      "selectedText": "│   └── webhook_test.go",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1762666791370_7hqp2pugx"
+    }
+  ]
+}

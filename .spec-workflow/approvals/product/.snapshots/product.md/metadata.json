@@ -1,0 +1,30 @@
+{
+  "filePath": ".spec-workflow/steering/product.md",
+  "currentVersion": 3,
+  "snapshots": [
+    {
+      "version": 1,
+      "filename": "snapshot-001.json",
+      "timestamp": "2025-11-09T04:34:34.154Z",
+      "trigger": "initial",
+      "approvalId": "approval_1762662874151_0ffj9ljxi",
+      "approvalTitle": "Product Vision and Goals Approval"
+    },
+    {
+      "version": 2,
+      "filename": "snapshot-002.json",
+      "timestamp": "2025-11-09T04:40:15.180Z",
+      "trigger": "revision_requested",
+      "approvalId": "approval_1762662874151_0ffj9ljxi",
+      "approvalTitle": "Product Vision and Goals Approval"
+    },
+    {
+      "version": 3,
+      "filename": "snapshot-003.json",
+      "timestamp": "2025-11-09T04:47:26.710Z",
+      "trigger": "approved",
+      "approvalId": "approval_1762663613504_yp86svhji",
+      "approvalTitle": "Product Vision - Streaming Aggregation Platform"
+    }
+  ]
+}

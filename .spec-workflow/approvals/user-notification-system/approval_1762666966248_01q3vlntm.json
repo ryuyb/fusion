@@ -1,0 +1,57 @@
+{
+  "id": "approval_1762666966248_01q3vlntm",
+  "title": "User Notification System Design - Revised",
+  "filePath": ".spec-workflow/specs/user-notification-system/design.md",
+  "type": "document",
+  "status": "needs-revision",
+  "createdAt": "2025-11-09T05:42:46.248Z",
+  "category": "spec",
+  "categoryName": "user-notification-system",
+  "response": "Feedback Summary (4 comments):\n\nGeneral Comments:\n1. 可以在现有 config.go 中添加通知相关配置\n\nSpecific Text Comments:\n1. \"service/          # 应用服务\n│   │   ├── notification_...\": service 名称中无需添加app\n2. \"├── config/           # 通知渠道配置\n│   │   ├── smtp.go...\": 不要单独的配置文件，直接在 sender 中获取渠道配置\n3. \"schema/       # EntGO 模式\n│   │   │   ├── notificat...\": notification.go 是用来保存什么数据的\n",
+  "annotations": "{\n  \"decision\": \"needs-revision\",\n  \"comments\": [\n    {\n      \"type\": \"selection\",\n      \"comment\": \"service 名称中无需添加app\",\n      \"timestamp\": \"2025-11-09T05:43:19.395Z\",\n      \"selectedText\": \"service/          # 应用服务\\n│   │   ├── notification_app_service.go\\n│   │   ├── preference_app_service.go\\n│   │   └── channel_app_service.go  # 渠道管理应用服务\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1762666999395_xuu3owwwh\"\n    },\n    {\n      \"type\": \"selection\",\n      \"comment\": \"不要单独的配置文件，直接在 sender 中获取渠道配置\",\n      \"timestamp\": \"2025-11-09T05:45:36.529Z\",\n      \"selectedText\": \"├── config/           # 通知渠道配置\\n│   │   ├── smtp.go       # SMTP 配置（服务器、端口、认证）\\n│   │   ├── push.go       # 推送配置（VAPID 密钥、主题）\\n│   │   ├── webhook.go    # Webhook 配置（签名密钥、超时）\\n│   │   ├── slack.go      # Slack 配置（Bot Token、默认频道）\\n│   │   ├── discord.go    # Discord 配置（Webhook URL）\\n│   │   ├── sms.go        # 短信配置（API Key、签名、模板）\\n│   │   ├── dingtalk.go   # 钉钉配置（Webhook、Secret）\\n│   │   └── wechat.go     # 企业微信配置（WebHook、AgentID）\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1762667136529_ksxravj4n\"\n    },\n    {\n      \"type\": \"general\",\n      \"comment\": \"可以在现有 config.go 中添加通知相关配置\",\n      \"timestamp\": \"2025-11-09T05:46:25.718Z\",\n      \"id\": \"comment_1762667185718_4qh48o82y\"\n    },\n    {\n      \"type\": \"selection\",\n      \"comment\": \"notification.go 是用来保存什么数据的\",\n      \"timestamp\": \"2025-11-09T05:48:56.028Z\",\n      \"selectedText\": \"schema/       # EntGO 模式\\n│   │   │   ├── notification.go\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1762667336028_1qy4k7lpu\"\n    }\n  ],\n  \"summary\": \"Feedback Summary (4 comments):\\n\\nGeneral Comments:\\n1. 可以在现有 config.go 中添加通知相关配置\\n\\nSpecific Text Comments:\\n1. \\\"service/          # 应用服务\\n│   │   ├── notification_...\\\": service 名称中无需添加app\\n2. \\\"├── config/           # 通知渠道配置\\n│   │   ├── smtp.go...\\\": 不要单独的配置文件，直接在 sender 中获取渠道配置\\n3. \\\"schema/       # EntGO 模式\\n│   │   │   ├── notificat...\\\": notification.go 是用来保存什么数据的\\n\",\n  \"timestamp\": \"2025-11-09T05:49:42.582Z\"\n}",
+  "respondedAt": "2025-11-09T05:49:42.592Z",
+  "comments": [
+    {
+      "type": "selection",
+      "comment": "service 名称中无需添加app",
+      "timestamp": "2025-11-09T05:43:19.395Z",
+      "selectedText": "service/          # 应用服务\n│   │   ├── notification_app_service.go\n│   │   ├── preference_app_service.go\n│   │   └── channel_app_service.go  # 渠道管理应用服务",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1762666999395_xuu3owwwh"
+    },
+    {
+      "type": "selection",
+      "comment": "不要单独的配置文件，直接在 sender 中获取渠道配置",
+      "timestamp": "2025-11-09T05:45:36.529Z",
+      "selectedText": "├── config/           # 通知渠道配置\n│   │   ├── smtp.go       # SMTP 配置（服务器、端口、认证）\n│   │   ├── push.go       # 推送配置（VAPID 密钥、主题）\n│   │   ├── webhook.go    # Webhook 配置（签名密钥、超时）\n│   │   ├── slack.go      # Slack 配置（Bot Token、默认频道）\n│   │   ├── discord.go    # Discord 配置（Webhook URL）\n│   │   ├── sms.go        # 短信配置（API Key、签名、模板）\n│   │   ├── dingtalk.go   # 钉钉配置（Webhook、Secret）\n│   │   └── wechat.go     # 企业微信配置（WebHook、AgentID）",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1762667136529_ksxravj4n"
+    },
+    {
+      "type": "general",
+      "comment": "可以在现有 config.go 中添加通知相关配置",
+      "timestamp": "2025-11-09T05:46:25.718Z",
+      "id": "comment_1762667185718_4qh48o82y"
+    },
+    {
+      "type": "selection",
+      "comment": "notification.go 是用来保存什么数据的",
+      "timestamp": "2025-11-09T05:48:56.028Z",
+      "selectedText": "schema/       # EntGO 模式\n│   │   │   ├── notification.go",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1762667336028_1qy4k7lpu"
+    }
+  ]
+}

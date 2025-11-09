@@ -1,0 +1,22 @@
+{
+  "filePath": ".spec-workflow/specs/user-notification-system/design.md",
+  "currentVersion": 2,
+  "snapshots": [
+    {
+      "version": 1,
+      "filename": "snapshot-001.json",
+      "timestamp": "2025-11-09T06:14:18.704Z",
+      "trigger": "initial",
+      "approvalId": "approval_1762668858700_sfeke4thb",
+      "approvalTitle": "User Notification System Design - Data Model Simplified"
+    },
+    {
+      "version": 2,
+      "filename": "snapshot-002.json",
+      "timestamp": "2025-11-09T06:16:43.723Z",
+      "trigger": "revision_requested",
+      "approvalId": "approval_1762668858700_sfeke4thb",
+      "approvalTitle": "User Notification System Design - Data Model Simplified"
+    }
+  ]
+}

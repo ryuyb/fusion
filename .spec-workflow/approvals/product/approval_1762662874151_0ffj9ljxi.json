@@ -1,0 +1,27 @@
+{
+  "id": "approval_1762662874151_0ffj9ljxi",
+  "title": "Product Vision and Goals Approval",
+  "filePath": ".spec-workflow/steering/product.md",
+  "type": "document",
+  "status": "needs-revision",
+  "createdAt": "2025-11-09T04:34:34.151Z",
+  "category": "steering",
+  "categoryName": "product",
+  "response": "Feedback Summary (2 comments):\n\nGeneral Comments:\n1. Fusion 的目标是在一个平台聚合其他不同的直播平台（如斗鱼、虎牙、哔哩哔哩直播、Twitch 等）的直播内容，用户可以在 Fusion 上订阅、观看不同直播平台的直播，接收开播提醒。\n2. Fusion 分为用户接口和管理员接口，用户主要可以观看直播、订阅主播、设置开播提醒等。管理员可以管理接入的直播平台、直播间、用户等数据\n\n",
+  "annotations": "{\n  \"decision\": \"needs-revision\",\n  \"comments\": [\n    {\n      \"type\": \"general\",\n      \"comment\": \"Fusion 的目标是在一个平台聚合其他不同的直播平台（如斗鱼、虎牙、哔哩哔哩直播、Twitch 等）的直播内容，用户可以在 Fusion 上订阅、观看不同直播平台的直播，接收开播提醒。\",\n      \"timestamp\": \"2025-11-09T04:38:58.252Z\",\n      \"id\": \"comment_1762663138252_849f0enhn\"\n    },\n    {\n      \"type\": \"general\",\n      \"comment\": \"Fusion 分为用户接口和管理员接口，用户主要可以观看直播、订阅主播、设置开播提醒等。管理员可以管理接入的直播平台、直播间、用户等数据\",\n      \"timestamp\": \"2025-11-09T04:40:13.103Z\",\n      \"id\": \"comment_1762663213103_g47dku991\"\n    }\n  ],\n  \"summary\": \"Feedback Summary (2 comments):\\n\\nGeneral Comments:\\n1. Fusion 的目标是在一个平台聚合其他不同的直播平台（如斗鱼、虎牙、哔哩哔哩直播、Twitch 等）的直播内容，用户可以在 Fusion 上订阅、观看不同直播平台的直播，接收开播提醒。\\n2. Fusion 分为用户接口和管理员接口，用户主要可以观看直播、订阅主播、设置开播提醒等。管理员可以管理接入的直播平台、直播间、用户等数据\\n\\n\",\n  \"timestamp\": \"2025-11-09T04:40:15.165Z\"\n}",
+  "respondedAt": "2025-11-09T04:40:15.181Z",
+  "comments": [
+    {
+      "type": "general",
+      "comment": "Fusion 的目标是在一个平台聚合其他不同的直播平台（如斗鱼、虎牙、哔哩哔哩直播、Twitch 等）的直播内容，用户可以在 Fusion 上订阅、观看不同直播平台的直播，接收开播提醒。",
+      "timestamp": "2025-11-09T04:38:58.252Z",
+      "id": "comment_1762663138252_849f0enhn"
+    },
+    {
+      "type": "general",
+      "comment": "Fusion 分为用户接口和管理员接口，用户主要可以观看直播、订阅主播、设置开播提醒等。管理员可以管理接入的直播平台、直播间、用户等数据",
+      "timestamp": "2025-11-09T04:40:13.103Z",
+      "id": "comment_1762663213103_g47dku991"
+    }
+  ]
+}

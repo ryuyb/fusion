@@ -1,0 +1,51 @@
+{
+  "id": "approval_1762668858700_sfeke4thb",
+  "title": "User Notification System Design - Data Model Simplified",
+  "filePath": ".spec-workflow/specs/user-notification-system/design.md",
+  "type": "document",
+  "status": "needs-revision",
+  "createdAt": "2025-11-09T06:14:18.700Z",
+  "category": "spec",
+  "categoryName": "User Notification System Design",
+  "response": "Feedback Summary (3 comments):\n\nSpecific Text Comments:\n1. \"StreamerID    int64             `json:\"streamer_id...\": NotificationHistory 中无需单独记录这些主播相关的信息\n2. \"Metadata      map[string]interface{} `json:\"metada...\": 可在需要时将主播相关信息记录在 metadata 中\n3. \"WebhookURL  string   `json:\"webhook_url,omitempty\"...\": 可以在用户在该渠道的额外配置中配置这些字段\n",
+  "annotations": "{\n  \"decision\": \"needs-revision\",\n  \"comments\": [\n    {\n      \"type\": \"selection\",\n      \"comment\": \"NotificationHistory 中无需单独记录这些主播相关的信息\",\n      \"timestamp\": \"2025-11-09T06:15:31.877Z\",\n      \"selectedText\": \"StreamerID    int64             `json:\\\"streamer_id\\\"`\\n    StreamerName  string            `json:\\\"streamer_name\\\"`\\n    Platform      string            `json:\\\"platform\\\"`\\n    StreamTitle   string            `json:\\\"stream_title\\\"`\\n    StreamURL     string            `json:\\\"stream_url\\\"`\\n    ThumbnailURL  string            `json:\\\"thumbnail_url,omitempty\\\"`\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1762668931877_mlmw0t06k\"\n    },\n    {\n      \"type\": \"selection\",\n      \"comment\": \"可在需要时将主播相关信息记录在 metadata 中\",\n      \"timestamp\": \"2025-11-09T06:15:59.928Z\",\n      \"selectedText\": \"Metadata      map[string]interface{} `json:\\\"metadata,omitempty\\\"`\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1762668959928_0s17qn8kd\"\n    },\n    {\n      \"type\": \"selection\",\n      \"comment\": \"可以在用户在该渠道的额外配置中配置这些字段\",\n      \"timestamp\": \"2025-11-09T06:16:24.960Z\",\n      \"selectedText\": \"WebhookURL  string   `json:\\\"webhook_url,omitempty\\\"`     // 用户个人Webhook URL\\n    SlackChannel string  `json:\\\"slack_channel,omitempty\\\"`   // 用户Slack频道\\n    SlackBotToken string `json:\\\"slack_bot_token,omitempty\\\"` // 用户Slack Bot Token\\n    DiscordWebhookURL string `json:\\\"discord_webhook_url,omitempty\\\"` // 用户Discord Webhook URL\\n    PhoneNumber string   `json:\\\"phone_number,omitempty\\\"`    // 用户手机号\",\n      \"highlightColor\": {\n        \"bg\": \"rgba(255, 235, 59, 0.3)\",\n        \"border\": \"#FFEB3B\",\n        \"name\": \"#ffeb3b\"\n      },\n      \"id\": \"comment_1762668984960_7cwyy5ffy\"\n    }\n  ],\n  \"summary\": \"Feedback Summary (3 comments):\\n\\nSpecific Text Comments:\\n1. \\\"StreamerID    int64             `json:\\\"streamer_id...\\\": NotificationHistory 中无需单独记录这些主播相关的信息\\n2. \\\"Metadata      map[string]interface{} `json:\\\"metada...\\\": 可在需要时将主播相关信息记录在 metadata 中\\n3. \\\"WebhookURL  string   `json:\\\"webhook_url,omitempty\\\"...\\\": 可以在用户在该渠道的额外配置中配置这些字段\\n\",\n  \"timestamp\": \"2025-11-09T06:16:43.715Z\"\n}",
+  "respondedAt": "2025-11-09T06:16:43.724Z",
+  "comments": [
+    {
+      "type": "selection",
+      "comment": "NotificationHistory 中无需单独记录这些主播相关的信息",
+      "timestamp": "2025-11-09T06:15:31.877Z",
+      "selectedText": "StreamerID    int64             `json:\"streamer_id\"`\n    StreamerName  string            `json:\"streamer_name\"`\n    Platform      string            `json:\"platform\"`\n    StreamTitle   string            `json:\"stream_title\"`\n    StreamURL     string            `json:\"stream_url\"`\n    ThumbnailURL  string            `json:\"thumbnail_url,omitempty\"`",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1762668931877_mlmw0t06k"
+    },
+    {
+      "type": "selection",
+      "comment": "可在需要时将主播相关信息记录在 metadata 中",
+      "timestamp": "2025-11-09T06:15:59.928Z",
+      "selectedText": "Metadata      map[string]interface{} `json:\"metadata,omitempty\"`",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1762668959928_0s17qn8kd"
+    },
+    {
+      "type": "selection",
+      "comment": "可以在用户在该渠道的额外配置中配置这些字段",
+      "timestamp": "2025-11-09T06:16:24.960Z",
+      "selectedText": "WebhookURL  string   `json:\"webhook_url,omitempty\"`     // 用户个人Webhook URL\n    SlackChannel string  `json:\"slack_channel,omitempty\"`   // 用户Slack频道\n    SlackBotToken string `json:\"slack_bot_token,omitempty\"` // 用户Slack Bot Token\n    DiscordWebhookURL string `json:\"discord_webhook_url,omitempty\"` // 用户Discord Webhook URL\n    PhoneNumber string   `json:\"phone_number,omitempty\"`    // 用户手机号",
+      "highlightColor": {
+        "bg": "rgba(255, 235, 59, 0.3)",
+        "border": "#FFEB3B",
+        "name": "#ffeb3b"
+      },
+      "id": "comment_1762668984960_7cwyy5ffy"
+    }
+  ]
+}
