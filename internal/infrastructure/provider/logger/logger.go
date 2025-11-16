@@ -41,7 +41,9 @@ func NewLogger(cfg *config.Config) (*zap.Logger, error) {
 	}
 
 	core := zapcore.NewTee(cores...)
-	return zap.New(core, zap.AddCaller(), zap.AddStacktrace(zapcore.ErrorLevel)), nil
+	logger := zap.New(core, zap.AddCaller(), zap.AddStacktrace(zapcore.ErrorLevel))
+	zap.ReplaceGlobals(logger)
+	return logger, nil
 }
 
 func getEncoderConfig() zapcore.EncoderConfig {
