@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/gofiber/fiber/v3"
-	"github.com/ryuyb/fusion/internal/app/errors"
 	"github.com/ryuyb/fusion/internal/infrastructure/http/dto"
+	"github.com/ryuyb/fusion/internal/pkg/errors"
 	"github.com/samber/lo"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"

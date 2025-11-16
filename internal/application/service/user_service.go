@@ -3,11 +3,11 @@ package service
 import (
 	"context"
 
-	"github.com/ryuyb/fusion/internal/app/errors"
 	"github.com/ryuyb/fusion/internal/core/command"
 	"github.com/ryuyb/fusion/internal/core/domain"
 	"github.com/ryuyb/fusion/internal/core/port/repository"
 	"github.com/ryuyb/fusion/internal/core/port/service"
+	"github.com/ryuyb/fusion/internal/pkg/errors"
 	"go.uber.org/zap"
 )
 

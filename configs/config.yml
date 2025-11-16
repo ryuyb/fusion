@@ -22,3 +22,8 @@ logger:
   enable_console: true
   enable_file: false
   console_color: true
+
+job:
+  broadcast_reminder:
+    enable: true
+    cron_expr: '*/1 * * * *'

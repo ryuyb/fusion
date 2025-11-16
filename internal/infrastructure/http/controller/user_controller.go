@@ -5,12 +5,12 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v3"
-	"github.com/ryuyb/fusion/internal/app/errors"
 	"github.com/ryuyb/fusion/internal/core/command"
 	"github.com/ryuyb/fusion/internal/core/domain"
 	"github.com/ryuyb/fusion/internal/core/port/service"
 	"github.com/ryuyb/fusion/internal/infrastructure/http/dto"
 	validator2 "github.com/ryuyb/fusion/internal/infrastructure/provider/validator"
+	"github.com/ryuyb/fusion/internal/pkg/errors"
 	"github.com/samber/lo"
 )
 

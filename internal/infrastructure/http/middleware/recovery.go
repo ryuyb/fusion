@@ -3,7 +3,7 @@ package middleware
 import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/requestid"
-	"github.com/ryuyb/fusion/internal/app/errors"
+	"github.com/ryuyb/fusion/internal/pkg/errors"
 	"go.uber.org/zap"
 )
 

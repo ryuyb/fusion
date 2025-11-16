@@ -3,8 +3,8 @@ package util
 import (
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v3"
-	"github.com/ryuyb/fusion/internal/app/errors"
 	validator2 "github.com/ryuyb/fusion/internal/infrastructure/provider/validator"
+	"github.com/ryuyb/fusion/internal/pkg/errors"
 	"github.com/samber/lo"
 )
 

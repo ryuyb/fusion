@@ -4,9 +4,9 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v3"
-	"github.com/ryuyb/fusion/internal/app/errors"
 	"github.com/ryuyb/fusion/internal/infrastructure/provider/jwt"
 	"github.com/ryuyb/fusion/internal/pkg/auth"
+	"github.com/ryuyb/fusion/internal/pkg/errors"
 )
 
 const (

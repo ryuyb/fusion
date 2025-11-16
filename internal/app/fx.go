@@ -8,6 +8,7 @@ import (
 	"github.com/ryuyb/fusion/internal/infrastructure/provider/jwt"
 	"github.com/ryuyb/fusion/internal/infrastructure/provider/logger"
 	"github.com/ryuyb/fusion/internal/infrastructure/provider/validator"
+	"github.com/ryuyb/fusion/internal/infrastructure/scheduler"
 	"go.uber.org/fx"
 )
 
@@ -16,6 +17,7 @@ var AppModule = fx.Module("app",
 	logger.Module,
 	validator.Module,
 	jwt.Module,
+	scheduler.Module,
 
 	database.Module,
 	http.Module,

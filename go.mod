@@ -4,6 +4,7 @@ go 1.25.0
 
 require (
 	entgo.io/ent v0.14.5
+	github.com/go-co-op/gocron/v2 v2.18.0
 	github.com/go-playground/locales v0.14.1
 	github.com/go-playground/universal-translator v0.18.1
 	github.com/go-playground/validator/v10 v10.28.0
@@ -21,6 +22,7 @@ require (
 	go.uber.org/zap v1.26.0
 	golang.org/x/crypto v0.44.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
+	resty.dev/v3 v3.0.0-beta.3
 )
 
 require (
@@ -57,6 +59,7 @@ require (
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
+	github.com/jonboulle/clockwork v0.5.0 // indirect
 	github.com/klauspost/compress v1.18.1 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
@@ -65,6 +68,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
 	github.com/philhofer/fwd v1.2.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/sagikazarmark/locafero v0.11.0 // indirect
 	github.com/sourcegraph/conc v0.3.1-0.20240121214520-5f936abd7ae8 // indirect
 	github.com/spf13/afero v1.15.0 // indirect

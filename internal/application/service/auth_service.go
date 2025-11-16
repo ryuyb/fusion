@@ -4,12 +4,12 @@ import (
 	"context"
 	"time"
 
-	errors2 "github.com/ryuyb/fusion/internal/app/errors"
 	"github.com/ryuyb/fusion/internal/core/command"
 	"github.com/ryuyb/fusion/internal/core/domain"
 	"github.com/ryuyb/fusion/internal/core/port/repository"
 	"github.com/ryuyb/fusion/internal/core/port/service"
 	"github.com/ryuyb/fusion/internal/infrastructure/provider/jwt"
+	errors2 "github.com/ryuyb/fusion/internal/pkg/errors"
 	"github.com/ryuyb/fusion/internal/pkg/util"
 	"go.uber.org/zap"
 )

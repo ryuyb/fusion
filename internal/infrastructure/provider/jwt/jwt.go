@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	errors2 "github.com/ryuyb/fusion/internal/app/errors"
 	"github.com/ryuyb/fusion/internal/infrastructure/provider/config"
+	errors2 "github.com/ryuyb/fusion/internal/pkg/errors"
 )
 
 type UserClaims struct {

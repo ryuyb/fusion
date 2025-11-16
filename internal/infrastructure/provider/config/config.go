@@ -3,11 +3,12 @@ package config
 import "time"
 
 type Config struct {
-	App      AppConfig      `mapstructure:"app"`
-	Server   ServerConfig   `mapstructure:"server"`
-	Database DatabaseConfig `mapstructure:"database"`
-	Log      LogConfig      `mapstructure:"logger"`
-	JWT      JWTConfig      `mapstructure:"jwt"`
+	App      AppConfig            `mapstructure:"app"`
+	Server   ServerConfig         `mapstructure:"server"`
+	Database DatabaseConfig       `mapstructure:"database"`
+	Log      LogConfig            `mapstructure:"logger"`
+	JWT      JWTConfig            `mapstructure:"jwt"`
+	Job      map[string]JobConfig `mapstructure:"job"`
 }
 
 type AppConfig struct {
@@ -47,4 +48,9 @@ type LogConfig struct {
 type JWTConfig struct {
 	Secret     string        `mapstructure:"secret"`
 	Expiration time.Duration `mapstructure:"expiration"`
+}
+
+type JobConfig struct {
+	Enable   bool   `mapstructure:"enable"`
+	CronExpr string `mapstructure:"cron_expr"`
 }

@@ -22,6 +22,8 @@ const (
 
 	ErrCodeDatabaseError       ErrorCode = "DATABASE_ERROR"
 	ErrCodeConstraintViolation ErrorCode = "CONSTRAINT_VIOLATION"
+
+	ErrCodeStreamingPlatformError ErrorCode = "STREAMING_PLATFORM_ERROR"
 )
 
 type AppError struct {
@@ -148,6 +150,21 @@ func DatabaseError(err error) *AppError {
 		Message:    "Database operation failed",
 		HTTPStatus: http.StatusInternalServerError,
 		Err:        err,
+	}
+}
+
+func StreamingPlatformError(platform string, message string, err error) *AppError {
+	if message == "" {
+		message = "Streaming platform error"
+	}
+	return &AppError{
+		Code:       ErrCodeStreamingPlatformError,
+		Message:    message,
+		HTTPStatus: http.StatusInternalServerError,
+		Err:        err,
+		Details: map[string]any{
+			"platform": platform,
+		},
 	}
 }
 

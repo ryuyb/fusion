@@ -3,7 +3,7 @@ package domain
 import (
 	"time"
 
-	"github.com/ryuyb/fusion/internal/app/errors"
+	"github.com/ryuyb/fusion/internal/pkg/errors"
 	"github.com/ryuyb/fusion/internal/pkg/util"
 )
 

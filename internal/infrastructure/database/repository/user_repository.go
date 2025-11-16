@@ -3,11 +3,11 @@ package repository
 import (
 	"context"
 
-	"github.com/ryuyb/fusion/internal/app/errors"
 	"github.com/ryuyb/fusion/internal/core/domain"
 	"github.com/ryuyb/fusion/internal/core/port/repository"
 	"github.com/ryuyb/fusion/internal/infrastructure/database/ent"
 	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/user"
+	errors2 "github.com/ryuyb/fusion/internal/pkg/errors"
 	"go.uber.org/zap"
 )
 
@@ -29,7 +29,7 @@ func (r *userRepository) Create(ctx context.Context, user *domain.User) (*domain
 			zap.String("username", user.Username),
 			zap.String("email", user.Email),
 		)
-		return nil, errors.ConvertDatabaseError(err, "User")
+		return nil, errors2.ConvertDatabaseError(err, "User")
 	}
 	return r.toDomain(created), nil
 }
@@ -43,10 +43,10 @@ func (r *userRepository) Update(ctx context.Context, user *domain.User) (*domain
 		Save(ctx)
 	if err != nil {
 		if ent.IsNotFound(err) {
-			return nil, errors.NotFound("User").WithDetail("id", user.ID)
+			return nil, errors2.NotFound("User").WithDetail("id", user.ID)
 		}
 		r.logger.Error("failed to update user", zap.Error(err), zap.String("username", user.Username), zap.String("email", user.Email))
-		return nil, errors.ConvertDatabaseError(err, "User")
+		return nil, errors2.ConvertDatabaseError(err, "User")
 	}
 	return r.toDomain(updated), nil
 }
@@ -55,10 +55,10 @@ func (r *userRepository) Delete(ctx context.Context, id int64) error {
 	err := r.client.User.DeleteOneID(id).Exec(ctx)
 	if err != nil {
 		if ent.IsNotFound(err) {
-			return errors.NotFound("User").WithDetail("id", id)
+			return errors2.NotFound("User").WithDetail("id", id)
 		}
 		r.logger.Error("failed to delete user", zap.Error(err), zap.Int64("id", id))
-		return errors.ConvertDatabaseError(err, "User")
+		return errors2.ConvertDatabaseError(err, "User")
 	}
 	return nil
 }
@@ -70,10 +70,10 @@ func (r *userRepository) FindById(ctx context.Context, id int64) (*domain.User, 
 		Only(ctx)
 	if err != nil {
 		if ent.IsNotFound(err) {
-			return nil, errors.NotFound("User").WithDetail("id", id)
+			return nil, errors2.NotFound("User").WithDetail("id", id)
 		}
 		r.logger.Error("failed to find user by id", zap.Error(err), zap.Int64("id", id))
-		return nil, errors.ConvertDatabaseError(err, "User")
+		return nil, errors2.ConvertDatabaseError(err, "User")
 	}
 	return r.toDomain(u), nil
 }
@@ -85,10 +85,10 @@ func (r *userRepository) FindByUsername(ctx context.Context, username string) (*
 		Only(ctx)
 	if err != nil {
 		if ent.IsNotFound(err) {
-			return nil, errors.NotFound("User").WithDetail("username", username)
+			return nil, errors2.NotFound("User").WithDetail("username", username)
 		}
 		r.logger.Error("failed to find user by username", zap.Error(err), zap.String("username", username))
-		return nil, errors.ConvertDatabaseError(err, "User")
+		return nil, errors2.ConvertDatabaseError(err, "User")
 	}
 	return r.toDomain(u), nil
 }
@@ -100,7 +100,7 @@ func (r *userRepository) ExistByUsername(ctx context.Context, username string) (
 		Exist(ctx)
 	if err != nil {
 		r.logger.Error("failed to find user by username", zap.Error(err), zap.String("username", username))
-		return false, errors.ConvertDatabaseError(err, "User")
+		return false, errors2.ConvertDatabaseError(err, "User")
 	}
 	return exist, nil
 }
@@ -112,10 +112,10 @@ func (r *userRepository) FindByEmail(ctx context.Context, email string) (*domain
 		Only(ctx)
 	if err != nil {
 		if ent.IsNotFound(err) {
-			return nil, errors.NotFound("User").WithDetail("email", email)
+			return nil, errors2.NotFound("User").WithDetail("email", email)
 		}
 		r.logger.Error("failed to find user by email", zap.Error(err), zap.String("email", email))
-		return nil, errors.ConvertDatabaseError(err, "User")
+		return nil, errors2.ConvertDatabaseError(err, "User")
 	}
 	return r.toDomain(u), nil
 }
@@ -127,7 +127,7 @@ func (r *userRepository) ExistByEmail(ctx context.Context, email string) (bool, 
 		Exist(ctx)
 	if err != nil {
 		r.logger.Error("failed to find user by email", zap.Error(err), zap.String("email", email))
-		return false, errors.ConvertDatabaseError(err, "User")
+		return false, errors2.ConvertDatabaseError(err, "User")
 	}
 	return exist, nil
 }
@@ -136,7 +136,7 @@ func (r *userRepository) List(ctx context.Context, offset, limit int) ([]*domain
 	total, err := r.client.User.Query().Count(ctx)
 	if err != nil {
 		r.logger.Error("failed to count users", zap.Error(err))
-		return nil, 0, errors.DatabaseError(err)
+		return nil, 0, errors2.DatabaseError(err)
 	}
 	users, err := r.client.User.
 		Query().
@@ -146,7 +146,7 @@ func (r *userRepository) List(ctx context.Context, offset, limit int) ([]*domain
 		All(ctx)
 	if err != nil {
 		r.logger.Error("failed to list users", zap.Error(err))
-		return nil, 0, errors.DatabaseError(err)
+		return nil, 0, errors2.DatabaseError(err)
 	}
 	entities := make([]*domain.User, len(users))
 	for i, u := range users {
