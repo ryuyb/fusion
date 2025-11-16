@@ -3,6 +3,7 @@ package http
 import (
 	"fmt"
 
+	"github.com/bytedance/sonic"
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/compress"
 	"github.com/gofiber/fiber/v3/middleware/requestid"
@@ -42,6 +43,8 @@ func NewFiberApp(cfg *config.Config, logger *zap.Logger, routerRegistry *router.
 		CaseSensitive: false,
 		ReadTimeout:   cfg.Server.ReadTimeout,
 		WriteTimeout:  cfg.Server.WriteTimeout,
+		JSONEncoder:   sonic.Marshal,
+		JSONDecoder:   sonic.Unmarshal,
 		ErrorHandler:  middleware.ErrorHandler(logger),
 		StructValidator: &middleware.StructValidator{
 			Validator: validate,

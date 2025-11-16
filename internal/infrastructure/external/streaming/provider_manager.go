@@ -50,7 +50,7 @@ func (pm *StreamingProviderManager) HasProvider(platformType domain.StreamingPla
 	return exists
 }
 
-func (pm StreamingProviderManager) GetSupportedPlatforms() []domain.StreamingPlatformType {
+func (pm *StreamingProviderManager) GetSupportedPlatforms() []domain.StreamingPlatformType {
 	platformTypes := make([]domain.StreamingPlatformType, 0, len(pm.providers))
 	for platformType := range pm.providers {
 		platformTypes = append(platformTypes, platformType)
