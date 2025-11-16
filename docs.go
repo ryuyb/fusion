@@ -11,7 +11,7 @@ package fusion
 //	@in							header
 //	@name						Authorization
 
-// @externalDocs.description	OpenAPI
-// @externalDocs.url			https://swagger.io/resources/open-api/
+//	@externalDocs.description	OpenAPI
+//	@externalDocs.url			https://swagger.io/resources/open-api/
 
 //go:generate go run -mod=mod github.com/swaggo/swag/cmd/swag init -g ./docs.go -o ./docs/api

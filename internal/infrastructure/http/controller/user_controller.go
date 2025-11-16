@@ -24,8 +24,9 @@ type UserController struct {
 //	@Tags		User
 //	@Accept		json
 //	@Produce	json
-//	@Param		request	body		dto.CreateUserRequest	true	"User info"
-//	@Success	200		{object}	dto.UserResponse
+//	@Param		request	body	dto.CreateUserRequest	true	"User info"
+//	@Security	Bearer
+//	@Success	200	{object}	dto.UserResponse
 //	@Router		/user [post]
 func (u *UserController) Create(ctx fiber.Ctx) error {
 	req := new(dto.CreateUserRequest)
@@ -56,6 +57,7 @@ func (u *UserController) Create(ctx fiber.Ctx) error {
 //	@Produce	json
 //	@Param		id		path		int						true	"User ID"
 //	@Param		request	body		dto.UpdateUserRequest	true	"User info"
+//	@Security	Bearer
 //	@Success	200		{object}	dto.UserResponse
 //	@Router		/user/{id} [put]
 func (u *UserController) Update(ctx fiber.Ctx) error {
@@ -88,6 +90,7 @@ func (u *UserController) Update(ctx fiber.Ctx) error {
 //	@Tags		User
 //	@Produce	json
 //	@Param		id	path		int	true	"User ID"
+//	@Security	Bearer
 //	@Success	200	{object}	dto.UserResponse
 //	@Router		/user/{id} [get]
 func (u *UserController) GetByID(ctx fiber.Ctx) error {
@@ -109,6 +112,7 @@ func (u *UserController) GetByID(ctx fiber.Ctx) error {
 //	@Tags		User
 //	@Produce	json
 //	@Param		id	path		int	true	"User ID"
+//	@Security	Bearer
 //	@Success	200	{object}	nil
 //	@Router		/user/{id} [delete]
 func (u *UserController) DeleteByID(ctx fiber.Ctx) error {
@@ -130,6 +134,7 @@ func (u *UserController) DeleteByID(ctx fiber.Ctx) error {
 //	@Produce	json
 //	@Param		page		query		int	false	"page"		default(1)
 //	@Param		page_size	query		int	false	"page size"	default(10)
+//	@Security	Bearer
 //	@Success	200			{object}	dto.PaginationResponse[dto.UserResponse]
 //	@Router		/user/list [get]
 func (u *UserController) List(ctx fiber.Ctx) error {

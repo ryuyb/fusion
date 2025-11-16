@@ -21,6 +21,7 @@ import (
 var Module = fx.Module("http",
 	fx.Provide(
 		controller.NewUserController,
+		controller.NewAuthController,
 	),
 
 	fx.Provide(
