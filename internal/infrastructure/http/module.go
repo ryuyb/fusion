@@ -6,6 +6,7 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/compress"
 	"github.com/gofiber/fiber/v3/middleware/requestid"
+	"github.com/gofiber/swagger/v2"
 	"github.com/ryuyb/fusion/internal/infrastructure/http/controller"
 	"github.com/ryuyb/fusion/internal/infrastructure/http/middleware"
 	"github.com/ryuyb/fusion/internal/infrastructure/http/router"
@@ -13,6 +14,8 @@ import (
 	"github.com/ryuyb/fusion/internal/infrastructure/provider/validator"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
+
+	_ "github.com/ryuyb/fusion/docs/api"
 )
 
 var Module = fx.Module("http",
@@ -48,6 +51,8 @@ func NewFiberApp(cfg *config.Config, logger *zap.Logger, routerRegistry *router.
 	app.Use(middleware.Logger(logger))
 
 	routerRegistry.RegisterAllRoutes(app)
+
+	app.Get("/swagger/*", swagger.HandlerDefault)
 
 	return app
 }

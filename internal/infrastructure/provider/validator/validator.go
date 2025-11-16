@@ -25,6 +25,8 @@ type Validator struct {
 	validate *validator.Validate
 }
 
+var VALIDATOR *Validator
+
 func NewValidator(logger *zap.Logger) *Validator {
 	enLocales := en.New()
 	universalTranslator := ut.New(enLocales, enLocales, zh.New())
@@ -40,10 +42,12 @@ func NewValidator(logger *zap.Logger) *Validator {
 
 	registerTranslations(validate, universalTranslator, logger)
 
-	return &Validator{
+	v := &Validator{
 		uni:      universalTranslator,
 		validate: validate,
 	}
+	VALIDATOR = v
+	return v
 }
 
 func registerTranslations(validate *validator.Validate, universalTranslator *ut.UniversalTranslator, logger *zap.Logger) {

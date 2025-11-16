@@ -5,3 +5,9 @@ type CreateUserCommand struct {
 	Email    string
 	Password string
 }
+
+type UpdateUserCommand struct {
+	*CreateUserCommand
+
+	ID int64
+}

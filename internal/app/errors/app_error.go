@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/ryuyb/fusion/internal/infrastructure/provider/validator"
 	"github.com/samber/lo"
 )
 
@@ -118,6 +119,17 @@ func ValidationError(message string) *AppError {
 		Code:       ErrCodeValidation,
 		Message:    message,
 		HTTPStatus: http.StatusUnprocessableEntity,
+	}
+}
+
+func CustomValidationError(validationErrors []validator.ValidationError) *AppError {
+	details := make(map[string]any)
+	details["errors"] = validationErrors
+	return &AppError{
+		Code:       ErrCodeValidation,
+		Message:    "validation errors",
+		HTTPStatus: http.StatusUnprocessableEntity,
+		Details:    details,
 	}
 }
 
