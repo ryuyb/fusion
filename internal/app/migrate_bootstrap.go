@@ -33,11 +33,9 @@ func RunMigrateApp(direction MigrateDirection) error {
 	case MigrateUp:
 		log.Info("Running up migrations")
 		err = migrator.Up()
-		break
 	case MigrateDown:
 		log.Info("Running down migrations")
 		err = migrator.Steps(-1)
-		break
 	}
 
 	if err != nil && !errors.Is(err, migrate.ErrNoChange) {
