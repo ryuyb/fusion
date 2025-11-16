@@ -20,6 +20,7 @@ import (
 
 var Module = fx.Module("http",
 	fx.Provide(
+		controller.NewHealthController,
 		controller.NewUserController,
 		controller.NewAuthController,
 	),

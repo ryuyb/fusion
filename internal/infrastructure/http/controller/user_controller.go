@@ -55,10 +55,10 @@ func (u *UserController) Create(ctx fiber.Ctx) error {
 //	@Tags		User
 //	@Accept		json
 //	@Produce	json
-//	@Param		id		path		int						true	"User ID"
-//	@Param		request	body		dto.UpdateUserRequest	true	"User info"
+//	@Param		id		path	int						true	"User ID"
+//	@Param		request	body	dto.UpdateUserRequest	true	"User info"
 //	@Security	Bearer
-//	@Success	200		{object}	dto.UserResponse
+//	@Success	200	{object}	dto.UserResponse
 //	@Router		/user/{id} [put]
 func (u *UserController) Update(ctx fiber.Ctx) error {
 	req := new(dto.UpdateUserRequest)
@@ -89,7 +89,7 @@ func (u *UserController) Update(ctx fiber.Ctx) error {
 //	@Summary	Get user By ID
 //	@Tags		User
 //	@Produce	json
-//	@Param		id	path		int	true	"User ID"
+//	@Param		id	path	int	true	"User ID"
 //	@Security	Bearer
 //	@Success	200	{object}	dto.UserResponse
 //	@Router		/user/{id} [get]
@@ -111,7 +111,7 @@ func (u *UserController) GetByID(ctx fiber.Ctx) error {
 //	@Summary	Delete user by user ID
 //	@Tags		User
 //	@Produce	json
-//	@Param		id	path		int	true	"User ID"
+//	@Param		id	path	int	true	"User ID"
 //	@Security	Bearer
 //	@Success	200	{object}	nil
 //	@Router		/user/{id} [delete]
@@ -132,10 +132,10 @@ func (u *UserController) DeleteByID(ctx fiber.Ctx) error {
 //	@Summary	List all users by page
 //	@Tags		User
 //	@Produce	json
-//	@Param		page		query		int	false	"page"		default(1)
-//	@Param		page_size	query		int	false	"page size"	default(10)
+//	@Param		page		query	int	false	"page"		default(1)
+//	@Param		page_size	query	int	false	"page size"	default(10)
 //	@Security	Bearer
-//	@Success	200			{object}	dto.PaginationResponse[dto.UserResponse]
+//	@Success	200	{object}	dto.PaginationResponse[dto.UserResponse]
 //	@Router		/user/list [get]
 func (u *UserController) List(ctx fiber.Ctx) error {
 	page, pageSize := 1, 10

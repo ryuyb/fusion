@@ -159,6 +159,20 @@ paths:
       summary: Register
       tags:
       - Auth
+  /health:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Health check
+      tags:
+      - Health
   /user:
     post:
       consumes:

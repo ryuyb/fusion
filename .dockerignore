@@ -1,0 +1,72 @@
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS generated
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+log/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+data/
+*.db-shm
+*.db-wal
+
+# Configuration files with sensitive data
+config.local.yaml
+config.production.yaml
+.env
+.env.local
+.env.production
+
+# Build output
+dist/
+build/
+bin/
+tmp/
+temp/
+.tmp/
+.air/
+
+# Test files
+*.test
+.testcache/
+coverage.out
+coverage.html
+
+# Documentation
+*.md
+!CLAUDE.md
+
+# Air
+.air.toml
+
+# Makefile (not needed in container)
+Makefile
+
+# Docker files
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# Scripts (not needed in container)
+scripts/

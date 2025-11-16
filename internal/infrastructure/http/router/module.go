@@ -4,6 +4,7 @@ import "go.uber.org/fx"
 
 var Module = fx.Module("router",
 	fx.Provide(
+		asRouter(NewHealthRouter),
 		asRouter(NewUserRouter),
 		asRouter(NewAuthRouter),
 	),

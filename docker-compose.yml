@@ -1,0 +1,75 @@
+services:
+  postgres:
+    image: postgres:18-alpine
+    container_name: fusion-postgres
+    environment:
+      POSTGRES_DB: fusion
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+#    ports:
+#      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - fusion-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VERSION: ${VERSION:-dev}
+        BUILD_TIME: ${BUILD_TIME:-}
+        GIT_COMMIT: ${GIT_COMMIT:-unknown}
+        GO_VERSION: ${GO_VERSION:-}
+        # Note: TARGETPLATFORM, TARGETOS, TARGETARCH are automatically
+        # injected by Docker when using buildx or platform is specified
+    container_name: fusion-app
+    environment:
+      # Server config
+      FUSION_SERVER_HOST: ${FUSION_SERVER_HOST:-0.0.0.0}
+      FUSION_SERVER_PORT: ${FUSION_SERVER_PORT:-8080}
+      FUSION_SERVER_READ_TIMEOUT: ${FUSION_SERVER_READ_TIMEOUT:-30s}
+      FUSION_SERVER_WRITE_TIMEOUT: ${FUSION_SERVER_WRITE_TIMEOUT:-30s}
+      # Database config
+      FUSION_DATABASE_HOST: ${FUSION_DATABASE_HOST:-postgres}
+      FUSION_DATABASE_PORT: ${FUSION_DATABASE_PORT:-5432}
+      FUSION_DATABASE_USER: ${FUSION_DATABASE_USER:-postgres}
+      FUSION_DATABASE_PASSWORD: ${FUSION_DATABASE_PASSWORD:-postgres}
+      FUSION_DATABASE_NAME: ${FUSION_DATABASE_NAME:-fusion}
+      FUSION_DATABASE_SSL_MODE: ${FUSION_DATABASE_SSL_MODE:-disable}
+      FUSION_DATABASE_AUTO_MIGRATE: ${FUSION_DATABASE_AUTO_MIGRATE:-true}
+      # Logger config
+      FUSION_LOGGER_LEVEL: ${FUSION_LOGGER_LEVEL:-info}
+      FUSION_LOGGER_ENABLE_CONSOLE: ${FUSION_LOGGER_ENABLE_CONSOLE:-true}
+      FUSION_LOGGER_ENABLE_COLOR: ${FUSION_LOGGER_ENABLE_COLOR:-true}
+      FUSION_LOGGER_ENABLE_FILE: ${FUSION_LOGGER_ENABLE_FILE:-false}
+      # JWT config
+      FUSION_JWT_SECRET: ${FUSION_JWT_SECRET:-your-secret-key-change-this-in-production}
+      FUSION_JWT_EXPIRATION: ${FUSION_JWT_EXPIRATION:-12h}
+    ports:
+      - "${FUSION_HOST_PORT:-8080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/api/v1/health"]
+      interval: 30s
+      timeout: 3s
+      start_period: 5s
+      retries: 3
+    networks:
+      - fusion-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  fusion-network:
+    driver: bridge
