@@ -29,6 +29,7 @@ install-tools: ## 安装开发工具
 	@echo "$(BLUE)Installing development tools...$(NC)"
 	@go install github.com/air-verse/air@latest
 	@go install github.com/swaggo/swag/cmd/swag@latest
+	@go install github.com/vektra/mockery/v3@latest
 	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 	@echo "$(GREEN)Development tools installed$(NC)"
 
@@ -62,6 +63,12 @@ generate-swagger: ## 生成swagger文档
 .PHONY: format-swagger
 format-swagger: ## 格式化 swagger 文档
 	@swag fmt
+
+.PHONY: generate-mockery
+generate-mockery: ## 生成 mockery 文件
+	@echo "$(GREEN)Generating mockery files...$(NC)"
+	@mockery
+	@echo "$(GREEN)Swagger mockery files done$(NC)"
 
 .PHONY: build
 build: ## 构建
