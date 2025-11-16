@@ -23,6 +23,10 @@ var Module = fx.Module("http",
 		controller.NewUserController,
 	),
 
+	fx.Provide(
+		middleware.NewAuth,
+	),
+
 	fx.Provide(NewFiberApp),
 
 	router.Module,

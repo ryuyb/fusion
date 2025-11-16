@@ -5,6 +5,7 @@ import (
 	"github.com/ryuyb/fusion/internal/infrastructure/database"
 	"github.com/ryuyb/fusion/internal/infrastructure/http"
 	"github.com/ryuyb/fusion/internal/infrastructure/provider/config"
+	"github.com/ryuyb/fusion/internal/infrastructure/provider/jwt"
 	"github.com/ryuyb/fusion/internal/infrastructure/provider/logger"
 	"github.com/ryuyb/fusion/internal/infrastructure/provider/validator"
 	"go.uber.org/fx"
@@ -14,6 +15,7 @@ var AppModule = fx.Module("app",
 	config.Module,
 	logger.Module,
 	validator.Module,
+	jwt.Module,
 
 	database.Module,
 	http.Module,

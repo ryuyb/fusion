@@ -7,6 +7,7 @@ type Config struct {
 	Server   ServerConfig   `mapstructure:"server"`
 	Database DatabaseConfig `mapstructure:"database"`
 	Log      LogConfig      `mapstructure:"logger"`
+	JWT      JWTConfig      `mapstructure:"jwt"`
 }
 
 type AppConfig struct {
