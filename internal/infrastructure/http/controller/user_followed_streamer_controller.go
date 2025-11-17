@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"github.com/gofiber/fiber/v3"
+	"github.com/ryuyb/fusion/internal/core/command"
 	"github.com/ryuyb/fusion/internal/core/domain"
 	coreService "github.com/ryuyb/fusion/internal/core/port/service"
 	"github.com/ryuyb/fusion/internal/infrastructure/http/dto"
@@ -34,13 +35,16 @@ func (c *UserFollowedStreamerController) Create(ctx fiber.Ctx) error {
 	if err := ctx.Bind().JSON(req); err != nil {
 		return errors.BadRequest("failed to parse request body").Wrap(err)
 	}
-	follow, err := domain.NewUserFollowedStreamer(req.UserID, req.StreamerID, req.Alias, req.Notes, req.NotificationChannelIDs)
-	if err != nil {
-		return err
+	cmd := &command.CreateUserFollowedStreamerCommand{
+		UserID:                 req.UserID,
+		StreamerID:             req.StreamerID,
+		Alias:                  req.Alias,
+		Notes:                  req.Notes,
+		NotificationsEnabled:   req.NotificationsEnabled,
+		NotificationChannelIDs: req.NotificationChannelIDs,
 	}
-	follow.NotificationsEnabled = req.NotificationsEnabled
 
-	created, err := c.service.Create(ctx, follow)
+	created, err := c.service.Create(ctx, cmd)
 	if err != nil {
 		return err
 	}
@@ -63,14 +67,14 @@ func (c *UserFollowedStreamerController) Update(ctx fiber.Ctx) error {
 	if err := ctx.Bind().JSON(req); err != nil {
 		return errors.BadRequest("failed to parse request body").Wrap(err)
 	}
-	follow := &domain.UserFollowedStreamer{
+	cmd := &command.UpdateUserFollowedStreamerCommand{
 		ID:                     req.ID,
 		Alias:                  req.Alias,
 		Notes:                  req.Notes,
 		NotificationsEnabled:   req.NotificationsEnabled,
 		NotificationChannelIDs: req.NotificationChannelIDs,
 	}
-	updated, err := c.service.Update(ctx, follow)
+	updated, err := c.service.Update(ctx, cmd)
 	if err != nil {
 		return err
 	}

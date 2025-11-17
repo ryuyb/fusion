@@ -3,13 +3,14 @@ package service
 import (
 	"context"
 
+	"github.com/ryuyb/fusion/internal/core/command"
 	"github.com/ryuyb/fusion/internal/core/domain"
 )
 
 type UserFollowedStreamerService interface {
-	Create(ctx context.Context, follow *domain.UserFollowedStreamer) (*domain.UserFollowedStreamer, error)
+	Create(ctx context.Context, cmd *command.CreateUserFollowedStreamerCommand) (*domain.UserFollowedStreamer, error)
 
-	Update(ctx context.Context, follow *domain.UserFollowedStreamer) (*domain.UserFollowedStreamer, error)
+	Update(ctx context.Context, cmd *command.UpdateUserFollowedStreamerCommand) (*domain.UserFollowedStreamer, error)
 
 	Delete(ctx context.Context, id int64) error
 

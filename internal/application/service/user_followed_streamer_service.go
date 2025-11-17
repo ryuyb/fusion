@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 
+	"github.com/ryuyb/fusion/internal/core/command"
 	"github.com/ryuyb/fusion/internal/core/domain"
 	coreRepo "github.com/ryuyb/fusion/internal/core/port/repository"
 	coreService "github.com/ryuyb/fusion/internal/core/port/service"
@@ -23,22 +24,31 @@ func NewUserFollowedStreamerService(repo coreRepo.UserFollowedStreamerRepository
 	}
 }
 
-func (s *userFollowedStreamerService) Create(ctx context.Context, follow *domain.UserFollowedStreamer) (*domain.UserFollowedStreamer, error) {
-	exist, err := s.repo.ExistByUserAndStreamer(ctx, follow.UserID, follow.StreamerID)
+func (s *userFollowedStreamerService) Create(ctx context.Context, cmd *command.CreateUserFollowedStreamerCommand) (*domain.UserFollowedStreamer, error) {
+	exist, err := s.repo.ExistByUserAndStreamer(ctx, cmd.UserID, cmd.StreamerID)
 	if err != nil {
 		return nil, err
 	}
 	if exist {
 		return nil, errors.Conflict("user already follows this streamer")
 	}
+	follow, err := domain.NewUserFollowedStreamer(cmd.UserID, cmd.StreamerID, cmd.Alias, cmd.Notes, cmd.NotificationChannelIDs)
+	if err != nil {
+		return nil, err
+	}
+	follow.NotificationsEnabled = cmd.NotificationsEnabled
 	return s.repo.Create(ctx, follow)
 }
 
-func (s *userFollowedStreamerService) Update(ctx context.Context, follow *domain.UserFollowedStreamer) (*domain.UserFollowedStreamer, error) {
-	if _, err := s.repo.FindById(ctx, follow.ID); err != nil {
+func (s *userFollowedStreamerService) Update(ctx context.Context, cmd *command.UpdateUserFollowedStreamerCommand) (*domain.UserFollowedStreamer, error) {
+	current, err := s.repo.FindById(ctx, cmd.ID)
+	if err != nil {
 		return nil, err
 	}
-	return s.repo.Update(ctx, follow)
+	if err := current.UpdatePreferences(cmd.Alias, cmd.Notes, cmd.NotificationsEnabled, cmd.NotificationChannelIDs); err != nil {
+		return nil, err
+	}
+	return s.repo.Update(ctx, current)
 }
 
 func (s *userFollowedStreamerService) Delete(ctx context.Context, id int64) error {

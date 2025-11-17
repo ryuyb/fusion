@@ -197,8 +197,8 @@ func (_m *MockNotificationChannelService) EXPECT() *MockNotificationChannelServi
 }
 
 // Create provides a mock function for the type MockNotificationChannelService
-func (_mock *MockNotificationChannelService) Create(ctx context.Context, channel *domain.NotificationChannel) (*domain.NotificationChannel, error) {
-	ret := _mock.Called(ctx, channel)
+func (_mock *MockNotificationChannelService) Create(ctx context.Context, cmd *command.CreateNotificationChannelCommand) (*domain.NotificationChannel, error) {
+	ret := _mock.Called(ctx, cmd)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Create")
@@ -206,18 +206,18 @@ func (_mock *MockNotificationChannelService) Create(ctx context.Context, channel
 
 	var r0 *domain.NotificationChannel
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *domain.NotificationChannel) (*domain.NotificationChannel, error)); ok {
-		return returnFunc(ctx, channel)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *command.CreateNotificationChannelCommand) (*domain.NotificationChannel, error)); ok {
+		return returnFunc(ctx, cmd)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *domain.NotificationChannel) *domain.NotificationChannel); ok {
-		r0 = returnFunc(ctx, channel)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *command.CreateNotificationChannelCommand) *domain.NotificationChannel); ok {
+		r0 = returnFunc(ctx, cmd)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*domain.NotificationChannel)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context, *domain.NotificationChannel) error); ok {
-		r1 = returnFunc(ctx, channel)
+	if returnFunc, ok := ret.Get(1).(func(context.Context, *command.CreateNotificationChannelCommand) error); ok {
+		r1 = returnFunc(ctx, cmd)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -231,20 +231,20 @@ type MockNotificationChannelService_Create_Call struct {
 
 // Create is a helper method to define mock.On call
 //   - ctx context.Context
-//   - channel *domain.NotificationChannel
-func (_e *MockNotificationChannelService_Expecter) Create(ctx interface{}, channel interface{}) *MockNotificationChannelService_Create_Call {
-	return &MockNotificationChannelService_Create_Call{Call: _e.mock.On("Create", ctx, channel)}
+//   - cmd *command.CreateNotificationChannelCommand
+func (_e *MockNotificationChannelService_Expecter) Create(ctx interface{}, cmd interface{}) *MockNotificationChannelService_Create_Call {
+	return &MockNotificationChannelService_Create_Call{Call: _e.mock.On("Create", ctx, cmd)}
 }
 
-func (_c *MockNotificationChannelService_Create_Call) Run(run func(ctx context.Context, channel *domain.NotificationChannel)) *MockNotificationChannelService_Create_Call {
+func (_c *MockNotificationChannelService_Create_Call) Run(run func(ctx context.Context, cmd *command.CreateNotificationChannelCommand)) *MockNotificationChannelService_Create_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
 			arg0 = args[0].(context.Context)
 		}
-		var arg1 *domain.NotificationChannel
+		var arg1 *command.CreateNotificationChannelCommand
 		if args[1] != nil {
-			arg1 = args[1].(*domain.NotificationChannel)
+			arg1 = args[1].(*command.CreateNotificationChannelCommand)
 		}
 		run(
 			arg0,
@@ -259,7 +259,7 @@ func (_c *MockNotificationChannelService_Create_Call) Return(notificationChannel
 	return _c
 }
 
-func (_c *MockNotificationChannelService_Create_Call) RunAndReturn(run func(ctx context.Context, channel *domain.NotificationChannel) (*domain.NotificationChannel, error)) *MockNotificationChannelService_Create_Call {
+func (_c *MockNotificationChannelService_Create_Call) RunAndReturn(run func(ctx context.Context, cmd *command.CreateNotificationChannelCommand) (*domain.NotificationChannel, error)) *MockNotificationChannelService_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -476,8 +476,8 @@ func (_c *MockNotificationChannelService_ListByUserId_Call) RunAndReturn(run fun
 }
 
 // Update provides a mock function for the type MockNotificationChannelService
-func (_mock *MockNotificationChannelService) Update(ctx context.Context, channel *domain.NotificationChannel) (*domain.NotificationChannel, error) {
-	ret := _mock.Called(ctx, channel)
+func (_mock *MockNotificationChannelService) Update(ctx context.Context, cmd *command.UpdateNotificationChannelCommand) (*domain.NotificationChannel, error) {
+	ret := _mock.Called(ctx, cmd)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Update")
@@ -485,18 +485,18 @@ func (_mock *MockNotificationChannelService) Update(ctx context.Context, channel
 
 	var r0 *domain.NotificationChannel
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *domain.NotificationChannel) (*domain.NotificationChannel, error)); ok {
-		return returnFunc(ctx, channel)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *command.UpdateNotificationChannelCommand) (*domain.NotificationChannel, error)); ok {
+		return returnFunc(ctx, cmd)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *domain.NotificationChannel) *domain.NotificationChannel); ok {
-		r0 = returnFunc(ctx, channel)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *command.UpdateNotificationChannelCommand) *domain.NotificationChannel); ok {
+		r0 = returnFunc(ctx, cmd)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*domain.NotificationChannel)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context, *domain.NotificationChannel) error); ok {
-		r1 = returnFunc(ctx, channel)
+	if returnFunc, ok := ret.Get(1).(func(context.Context, *command.UpdateNotificationChannelCommand) error); ok {
+		r1 = returnFunc(ctx, cmd)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -510,20 +510,20 @@ type MockNotificationChannelService_Update_Call struct {
 
 // Update is a helper method to define mock.On call
 //   - ctx context.Context
-//   - channel *domain.NotificationChannel
-func (_e *MockNotificationChannelService_Expecter) Update(ctx interface{}, channel interface{}) *MockNotificationChannelService_Update_Call {
-	return &MockNotificationChannelService_Update_Call{Call: _e.mock.On("Update", ctx, channel)}
+//   - cmd *command.UpdateNotificationChannelCommand
+func (_e *MockNotificationChannelService_Expecter) Update(ctx interface{}, cmd interface{}) *MockNotificationChannelService_Update_Call {
+	return &MockNotificationChannelService_Update_Call{Call: _e.mock.On("Update", ctx, cmd)}
 }
 
-func (_c *MockNotificationChannelService_Update_Call) Run(run func(ctx context.Context, channel *domain.NotificationChannel)) *MockNotificationChannelService_Update_Call {
+func (_c *MockNotificationChannelService_Update_Call) Run(run func(ctx context.Context, cmd *command.UpdateNotificationChannelCommand)) *MockNotificationChannelService_Update_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
 			arg0 = args[0].(context.Context)
 		}
-		var arg1 *domain.NotificationChannel
+		var arg1 *command.UpdateNotificationChannelCommand
 		if args[1] != nil {
-			arg1 = args[1].(*domain.NotificationChannel)
+			arg1 = args[1].(*command.UpdateNotificationChannelCommand)
 		}
 		run(
 			arg0,
@@ -538,7 +538,7 @@ func (_c *MockNotificationChannelService_Update_Call) Return(notificationChannel
 	return _c
 }
 
-func (_c *MockNotificationChannelService_Update_Call) RunAndReturn(run func(ctx context.Context, channel *domain.NotificationChannel) (*domain.NotificationChannel, error)) *MockNotificationChannelService_Update_Call {
+func (_c *MockNotificationChannelService_Update_Call) RunAndReturn(run func(ctx context.Context, cmd *command.UpdateNotificationChannelCommand) (*domain.NotificationChannel, error)) *MockNotificationChannelService_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -571,8 +571,8 @@ func (_m *MockStreamerService) EXPECT() *MockStreamerService_Expecter {
 }
 
 // Create provides a mock function for the type MockStreamerService
-func (_mock *MockStreamerService) Create(ctx context.Context, streamer *domain.Streamer) (*domain.Streamer, error) {
-	ret := _mock.Called(ctx, streamer)
+func (_mock *MockStreamerService) Create(ctx context.Context, cmd *command.CreateStreamerCommand) (*domain.Streamer, error) {
+	ret := _mock.Called(ctx, cmd)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Create")
@@ -580,18 +580,18 @@ func (_mock *MockStreamerService) Create(ctx context.Context, streamer *domain.S
 
 	var r0 *domain.Streamer
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *domain.Streamer) (*domain.Streamer, error)); ok {
-		return returnFunc(ctx, streamer)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *command.CreateStreamerCommand) (*domain.Streamer, error)); ok {
+		return returnFunc(ctx, cmd)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *domain.Streamer) *domain.Streamer); ok {
-		r0 = returnFunc(ctx, streamer)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *command.CreateStreamerCommand) *domain.Streamer); ok {
+		r0 = returnFunc(ctx, cmd)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*domain.Streamer)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context, *domain.Streamer) error); ok {
-		r1 = returnFunc(ctx, streamer)
+	if returnFunc, ok := ret.Get(1).(func(context.Context, *command.CreateStreamerCommand) error); ok {
+		r1 = returnFunc(ctx, cmd)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -605,20 +605,20 @@ type MockStreamerService_Create_Call struct {
 
 // Create is a helper method to define mock.On call
 //   - ctx context.Context
-//   - streamer *domain.Streamer
-func (_e *MockStreamerService_Expecter) Create(ctx interface{}, streamer interface{}) *MockStreamerService_Create_Call {
-	return &MockStreamerService_Create_Call{Call: _e.mock.On("Create", ctx, streamer)}
+//   - cmd *command.CreateStreamerCommand
+func (_e *MockStreamerService_Expecter) Create(ctx interface{}, cmd interface{}) *MockStreamerService_Create_Call {
+	return &MockStreamerService_Create_Call{Call: _e.mock.On("Create", ctx, cmd)}
 }
 
-func (_c *MockStreamerService_Create_Call) Run(run func(ctx context.Context, streamer *domain.Streamer)) *MockStreamerService_Create_Call {
+func (_c *MockStreamerService_Create_Call) Run(run func(ctx context.Context, cmd *command.CreateStreamerCommand)) *MockStreamerService_Create_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
 			arg0 = args[0].(context.Context)
 		}
-		var arg1 *domain.Streamer
+		var arg1 *command.CreateStreamerCommand
 		if args[1] != nil {
-			arg1 = args[1].(*domain.Streamer)
+			arg1 = args[1].(*command.CreateStreamerCommand)
 		}
 		run(
 			arg0,
@@ -628,12 +628,12 @@ func (_c *MockStreamerService_Create_Call) Run(run func(ctx context.Context, str
 	return _c
 }
 
-func (_c *MockStreamerService_Create_Call) Return(streamer1 *domain.Streamer, err error) *MockStreamerService_Create_Call {
-	_c.Call.Return(streamer1, err)
+func (_c *MockStreamerService_Create_Call) Return(streamer *domain.Streamer, err error) *MockStreamerService_Create_Call {
+	_c.Call.Return(streamer, err)
 	return _c
 }
 
-func (_c *MockStreamerService_Create_Call) RunAndReturn(run func(ctx context.Context, streamer *domain.Streamer) (*domain.Streamer, error)) *MockStreamerService_Create_Call {
+func (_c *MockStreamerService_Create_Call) RunAndReturn(run func(ctx context.Context, cmd *command.CreateStreamerCommand) (*domain.Streamer, error)) *MockStreamerService_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -764,8 +764,8 @@ func (_c *MockStreamerService_FindById_Call) RunAndReturn(run func(ctx context.C
 }
 
 // FindByPlatformStreamerId provides a mock function for the type MockStreamerService
-func (_mock *MockStreamerService) FindByPlatformStreamerId(ctx context.Context, platformType domain.StreamingPlatformType, platformStreamerID string) (*domain.Streamer, error) {
-	ret := _mock.Called(ctx, platformType, platformStreamerID)
+func (_mock *MockStreamerService) FindByPlatformStreamerId(ctx context.Context, platformType domain.StreamingPlatformType, platformStreamerID string, refresh bool) (*domain.Streamer, error) {
+	ret := _mock.Called(ctx, platformType, platformStreamerID, refresh)
 
 	if len(ret) == 0 {
 		panic("no return value specified for FindByPlatformStreamerId")
@@ -773,18 +773,18 @@ func (_mock *MockStreamerService) FindByPlatformStreamerId(ctx context.Context, 
 
 	var r0 *domain.Streamer
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, domain.StreamingPlatformType, string) (*domain.Streamer, error)); ok {
-		return returnFunc(ctx, platformType, platformStreamerID)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, domain.StreamingPlatformType, string, bool) (*domain.Streamer, error)); ok {
+		return returnFunc(ctx, platformType, platformStreamerID, refresh)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, domain.StreamingPlatformType, string) *domain.Streamer); ok {
-		r0 = returnFunc(ctx, platformType, platformStreamerID)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, domain.StreamingPlatformType, string, bool) *domain.Streamer); ok {
+		r0 = returnFunc(ctx, platformType, platformStreamerID, refresh)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*domain.Streamer)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context, domain.StreamingPlatformType, string) error); ok {
-		r1 = returnFunc(ctx, platformType, platformStreamerID)
+	if returnFunc, ok := ret.Get(1).(func(context.Context, domain.StreamingPlatformType, string, bool) error); ok {
+		r1 = returnFunc(ctx, platformType, platformStreamerID, refresh)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -800,11 +800,12 @@ type MockStreamerService_FindByPlatformStreamerId_Call struct {
 //   - ctx context.Context
 //   - platformType domain.StreamingPlatformType
 //   - platformStreamerID string
-func (_e *MockStreamerService_Expecter) FindByPlatformStreamerId(ctx interface{}, platformType interface{}, platformStreamerID interface{}) *MockStreamerService_FindByPlatformStreamerId_Call {
-	return &MockStreamerService_FindByPlatformStreamerId_Call{Call: _e.mock.On("FindByPlatformStreamerId", ctx, platformType, platformStreamerID)}
+//   - refresh bool
+func (_e *MockStreamerService_Expecter) FindByPlatformStreamerId(ctx interface{}, platformType interface{}, platformStreamerID interface{}, refresh interface{}) *MockStreamerService_FindByPlatformStreamerId_Call {
+	return &MockStreamerService_FindByPlatformStreamerId_Call{Call: _e.mock.On("FindByPlatformStreamerId", ctx, platformType, platformStreamerID, refresh)}
 }
 
-func (_c *MockStreamerService_FindByPlatformStreamerId_Call) Run(run func(ctx context.Context, platformType domain.StreamingPlatformType, platformStreamerID string)) *MockStreamerService_FindByPlatformStreamerId_Call {
+func (_c *MockStreamerService_FindByPlatformStreamerId_Call) Run(run func(ctx context.Context, platformType domain.StreamingPlatformType, platformStreamerID string, refresh bool)) *MockStreamerService_FindByPlatformStreamerId_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -818,10 +819,15 @@ func (_c *MockStreamerService_FindByPlatformStreamerId_Call) Run(run func(ctx co
 		if args[2] != nil {
 			arg2 = args[2].(string)
 		}
+		var arg3 bool
+		if args[3] != nil {
+			arg3 = args[3].(bool)
+		}
 		run(
 			arg0,
 			arg1,
 			arg2,
+			arg3,
 		)
 	})
 	return _c
@@ -832,7 +838,7 @@ func (_c *MockStreamerService_FindByPlatformStreamerId_Call) Return(streamer *do
 	return _c
 }
 
-func (_c *MockStreamerService_FindByPlatformStreamerId_Call) RunAndReturn(run func(ctx context.Context, platformType domain.StreamingPlatformType, platformStreamerID string) (*domain.Streamer, error)) *MockStreamerService_FindByPlatformStreamerId_Call {
+func (_c *MockStreamerService_FindByPlatformStreamerId_Call) RunAndReturn(run func(ctx context.Context, platformType domain.StreamingPlatformType, platformStreamerID string, refresh bool) (*domain.Streamer, error)) *MockStreamerService_FindByPlatformStreamerId_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -918,8 +924,8 @@ func (_c *MockStreamerService_List_Call) RunAndReturn(run func(ctx context.Conte
 }
 
 // Update provides a mock function for the type MockStreamerService
-func (_mock *MockStreamerService) Update(ctx context.Context, streamer *domain.Streamer) (*domain.Streamer, error) {
-	ret := _mock.Called(ctx, streamer)
+func (_mock *MockStreamerService) Update(ctx context.Context, cmd *command.UpdateStreamerCommand) (*domain.Streamer, error) {
+	ret := _mock.Called(ctx, cmd)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Update")
@@ -927,18 +933,18 @@ func (_mock *MockStreamerService) Update(ctx context.Context, streamer *domain.S
 
 	var r0 *domain.Streamer
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *domain.Streamer) (*domain.Streamer, error)); ok {
-		return returnFunc(ctx, streamer)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *command.UpdateStreamerCommand) (*domain.Streamer, error)); ok {
+		return returnFunc(ctx, cmd)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *domain.Streamer) *domain.Streamer); ok {
-		r0 = returnFunc(ctx, streamer)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *command.UpdateStreamerCommand) *domain.Streamer); ok {
+		r0 = returnFunc(ctx, cmd)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*domain.Streamer)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context, *domain.Streamer) error); ok {
-		r1 = returnFunc(ctx, streamer)
+	if returnFunc, ok := ret.Get(1).(func(context.Context, *command.UpdateStreamerCommand) error); ok {
+		r1 = returnFunc(ctx, cmd)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -952,20 +958,20 @@ type MockStreamerService_Update_Call struct {
 
 // Update is a helper method to define mock.On call
 //   - ctx context.Context
-//   - streamer *domain.Streamer
-func (_e *MockStreamerService_Expecter) Update(ctx interface{}, streamer interface{}) *MockStreamerService_Update_Call {
-	return &MockStreamerService_Update_Call{Call: _e.mock.On("Update", ctx, streamer)}
+//   - cmd *command.UpdateStreamerCommand
+func (_e *MockStreamerService_Expecter) Update(ctx interface{}, cmd interface{}) *MockStreamerService_Update_Call {
+	return &MockStreamerService_Update_Call{Call: _e.mock.On("Update", ctx, cmd)}
 }
 
-func (_c *MockStreamerService_Update_Call) Run(run func(ctx context.Context, streamer *domain.Streamer)) *MockStreamerService_Update_Call {
+func (_c *MockStreamerService_Update_Call) Run(run func(ctx context.Context, cmd *command.UpdateStreamerCommand)) *MockStreamerService_Update_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
 			arg0 = args[0].(context.Context)
 		}
-		var arg1 *domain.Streamer
+		var arg1 *command.UpdateStreamerCommand
 		if args[1] != nil {
-			arg1 = args[1].(*domain.Streamer)
+			arg1 = args[1].(*command.UpdateStreamerCommand)
 		}
 		run(
 			arg0,
@@ -975,12 +981,12 @@ func (_c *MockStreamerService_Update_Call) Run(run func(ctx context.Context, str
 	return _c
 }
 
-func (_c *MockStreamerService_Update_Call) Return(streamer1 *domain.Streamer, err error) *MockStreamerService_Update_Call {
-	_c.Call.Return(streamer1, err)
+func (_c *MockStreamerService_Update_Call) Return(streamer *domain.Streamer, err error) *MockStreamerService_Update_Call {
+	_c.Call.Return(streamer, err)
 	return _c
 }
 
-func (_c *MockStreamerService_Update_Call) RunAndReturn(run func(ctx context.Context, streamer *domain.Streamer) (*domain.Streamer, error)) *MockStreamerService_Update_Call {
+func (_c *MockStreamerService_Update_Call) RunAndReturn(run func(ctx context.Context, cmd *command.UpdateStreamerCommand) (*domain.Streamer, error)) *MockStreamerService_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1013,8 +1019,8 @@ func (_m *MockStreamingPlatformService) EXPECT() *MockStreamingPlatformService_E
 }
 
 // Create provides a mock function for the type MockStreamingPlatformService
-func (_mock *MockStreamingPlatformService) Create(ctx context.Context, platform *domain.StreamingPlatform) (*domain.StreamingPlatform, error) {
-	ret := _mock.Called(ctx, platform)
+func (_mock *MockStreamingPlatformService) Create(ctx context.Context, cmd *command.CreateStreamingPlatformCommand) (*domain.StreamingPlatform, error) {
+	ret := _mock.Called(ctx, cmd)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Create")
@@ -1022,18 +1028,18 @@ func (_mock *MockStreamingPlatformService) Create(ctx context.Context, platform 
 
 	var r0 *domain.StreamingPlatform
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *domain.StreamingPlatform) (*domain.StreamingPlatform, error)); ok {
-		return returnFunc(ctx, platform)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *command.CreateStreamingPlatformCommand) (*domain.StreamingPlatform, error)); ok {
+		return returnFunc(ctx, cmd)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *domain.StreamingPlatform) *domain.StreamingPlatform); ok {
-		r0 = returnFunc(ctx, platform)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *command.CreateStreamingPlatformCommand) *domain.StreamingPlatform); ok {
+		r0 = returnFunc(ctx, cmd)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*domain.StreamingPlatform)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context, *domain.StreamingPlatform) error); ok {
-		r1 = returnFunc(ctx, platform)
+	if returnFunc, ok := ret.Get(1).(func(context.Context, *command.CreateStreamingPlatformCommand) error); ok {
+		r1 = returnFunc(ctx, cmd)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -1047,20 +1053,20 @@ type MockStreamingPlatformService_Create_Call struct {
 
 // Create is a helper method to define mock.On call
 //   - ctx context.Context
-//   - platform *domain.StreamingPlatform
-func (_e *MockStreamingPlatformService_Expecter) Create(ctx interface{}, platform interface{}) *MockStreamingPlatformService_Create_Call {
-	return &MockStreamingPlatformService_Create_Call{Call: _e.mock.On("Create", ctx, platform)}
+//   - cmd *command.CreateStreamingPlatformCommand
+func (_e *MockStreamingPlatformService_Expecter) Create(ctx interface{}, cmd interface{}) *MockStreamingPlatformService_Create_Call {
+	return &MockStreamingPlatformService_Create_Call{Call: _e.mock.On("Create", ctx, cmd)}
 }
 
-func (_c *MockStreamingPlatformService_Create_Call) Run(run func(ctx context.Context, platform *domain.StreamingPlatform)) *MockStreamingPlatformService_Create_Call {
+func (_c *MockStreamingPlatformService_Create_Call) Run(run func(ctx context.Context, cmd *command.CreateStreamingPlatformCommand)) *MockStreamingPlatformService_Create_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
 			arg0 = args[0].(context.Context)
 		}
-		var arg1 *domain.StreamingPlatform
+		var arg1 *command.CreateStreamingPlatformCommand
 		if args[1] != nil {
-			arg1 = args[1].(*domain.StreamingPlatform)
+			arg1 = args[1].(*command.CreateStreamingPlatformCommand)
 		}
 		run(
 			arg0,
@@ -1075,7 +1081,7 @@ func (_c *MockStreamingPlatformService_Create_Call) Return(streamingPlatform *do
 	return _c
 }
 
-func (_c *MockStreamingPlatformService_Create_Call) RunAndReturn(run func(ctx context.Context, platform *domain.StreamingPlatform) (*domain.StreamingPlatform, error)) *MockStreamingPlatformService_Create_Call {
+func (_c *MockStreamingPlatformService_Create_Call) RunAndReturn(run func(ctx context.Context, cmd *command.CreateStreamingPlatformCommand) (*domain.StreamingPlatform, error)) *MockStreamingPlatformService_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1354,8 +1360,8 @@ func (_c *MockStreamingPlatformService_List_Call) RunAndReturn(run func(ctx cont
 }
 
 // Update provides a mock function for the type MockStreamingPlatformService
-func (_mock *MockStreamingPlatformService) Update(ctx context.Context, platform *domain.StreamingPlatform) (*domain.StreamingPlatform, error) {
-	ret := _mock.Called(ctx, platform)
+func (_mock *MockStreamingPlatformService) Update(ctx context.Context, cmd *command.UpdateStreamingPlatformCommand) (*domain.StreamingPlatform, error) {
+	ret := _mock.Called(ctx, cmd)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Update")
@@ -1363,18 +1369,18 @@ func (_mock *MockStreamingPlatformService) Update(ctx context.Context, platform 
 
 	var r0 *domain.StreamingPlatform
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *domain.StreamingPlatform) (*domain.StreamingPlatform, error)); ok {
-		return returnFunc(ctx, platform)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *command.UpdateStreamingPlatformCommand) (*domain.StreamingPlatform, error)); ok {
+		return returnFunc(ctx, cmd)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *domain.StreamingPlatform) *domain.StreamingPlatform); ok {
-		r0 = returnFunc(ctx, platform)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *command.UpdateStreamingPlatformCommand) *domain.StreamingPlatform); ok {
+		r0 = returnFunc(ctx, cmd)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*domain.StreamingPlatform)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context, *domain.StreamingPlatform) error); ok {
-		r1 = returnFunc(ctx, platform)
+	if returnFunc, ok := ret.Get(1).(func(context.Context, *command.UpdateStreamingPlatformCommand) error); ok {
+		r1 = returnFunc(ctx, cmd)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -1388,20 +1394,20 @@ type MockStreamingPlatformService_Update_Call struct {
 
 // Update is a helper method to define mock.On call
 //   - ctx context.Context
-//   - platform *domain.StreamingPlatform
-func (_e *MockStreamingPlatformService_Expecter) Update(ctx interface{}, platform interface{}) *MockStreamingPlatformService_Update_Call {
-	return &MockStreamingPlatformService_Update_Call{Call: _e.mock.On("Update", ctx, platform)}
+//   - cmd *command.UpdateStreamingPlatformCommand
+func (_e *MockStreamingPlatformService_Expecter) Update(ctx interface{}, cmd interface{}) *MockStreamingPlatformService_Update_Call {
+	return &MockStreamingPlatformService_Update_Call{Call: _e.mock.On("Update", ctx, cmd)}
 }
 
-func (_c *MockStreamingPlatformService_Update_Call) Run(run func(ctx context.Context, platform *domain.StreamingPlatform)) *MockStreamingPlatformService_Update_Call {
+func (_c *MockStreamingPlatformService_Update_Call) Run(run func(ctx context.Context, cmd *command.UpdateStreamingPlatformCommand)) *MockStreamingPlatformService_Update_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
 			arg0 = args[0].(context.Context)
 		}
-		var arg1 *domain.StreamingPlatform
+		var arg1 *command.UpdateStreamingPlatformCommand
 		if args[1] != nil {
-			arg1 = args[1].(*domain.StreamingPlatform)
+			arg1 = args[1].(*command.UpdateStreamingPlatformCommand)
 		}
 		run(
 			arg0,
@@ -1416,7 +1422,7 @@ func (_c *MockStreamingPlatformService_Update_Call) Return(streamingPlatform *do
 	return _c
 }
 
-func (_c *MockStreamingPlatformService_Update_Call) RunAndReturn(run func(ctx context.Context, platform *domain.StreamingPlatform) (*domain.StreamingPlatform, error)) *MockStreamingPlatformService_Update_Call {
+func (_c *MockStreamingPlatformService_Update_Call) RunAndReturn(run func(ctx context.Context, cmd *command.UpdateStreamingPlatformCommand) (*domain.StreamingPlatform, error)) *MockStreamingPlatformService_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1449,8 +1455,8 @@ func (_m *MockUserFollowedStreamerService) EXPECT() *MockUserFollowedStreamerSer
 }
 
 // Create provides a mock function for the type MockUserFollowedStreamerService
-func (_mock *MockUserFollowedStreamerService) Create(ctx context.Context, follow *domain.UserFollowedStreamer) (*domain.UserFollowedStreamer, error) {
-	ret := _mock.Called(ctx, follow)
+func (_mock *MockUserFollowedStreamerService) Create(ctx context.Context, cmd *command.CreateUserFollowedStreamerCommand) (*domain.UserFollowedStreamer, error) {
+	ret := _mock.Called(ctx, cmd)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Create")
@@ -1458,18 +1464,18 @@ func (_mock *MockUserFollowedStreamerService) Create(ctx context.Context, follow
 
 	var r0 *domain.UserFollowedStreamer
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *domain.UserFollowedStreamer) (*domain.UserFollowedStreamer, error)); ok {
-		return returnFunc(ctx, follow)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *command.CreateUserFollowedStreamerCommand) (*domain.UserFollowedStreamer, error)); ok {
+		return returnFunc(ctx, cmd)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *domain.UserFollowedStreamer) *domain.UserFollowedStreamer); ok {
-		r0 = returnFunc(ctx, follow)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *command.CreateUserFollowedStreamerCommand) *domain.UserFollowedStreamer); ok {
+		r0 = returnFunc(ctx, cmd)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*domain.UserFollowedStreamer)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context, *domain.UserFollowedStreamer) error); ok {
-		r1 = returnFunc(ctx, follow)
+	if returnFunc, ok := ret.Get(1).(func(context.Context, *command.CreateUserFollowedStreamerCommand) error); ok {
+		r1 = returnFunc(ctx, cmd)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -1483,20 +1489,20 @@ type MockUserFollowedStreamerService_Create_Call struct {
 
 // Create is a helper method to define mock.On call
 //   - ctx context.Context
-//   - follow *domain.UserFollowedStreamer
-func (_e *MockUserFollowedStreamerService_Expecter) Create(ctx interface{}, follow interface{}) *MockUserFollowedStreamerService_Create_Call {
-	return &MockUserFollowedStreamerService_Create_Call{Call: _e.mock.On("Create", ctx, follow)}
+//   - cmd *command.CreateUserFollowedStreamerCommand
+func (_e *MockUserFollowedStreamerService_Expecter) Create(ctx interface{}, cmd interface{}) *MockUserFollowedStreamerService_Create_Call {
+	return &MockUserFollowedStreamerService_Create_Call{Call: _e.mock.On("Create", ctx, cmd)}
 }
 
-func (_c *MockUserFollowedStreamerService_Create_Call) Run(run func(ctx context.Context, follow *domain.UserFollowedStreamer)) *MockUserFollowedStreamerService_Create_Call {
+func (_c *MockUserFollowedStreamerService_Create_Call) Run(run func(ctx context.Context, cmd *command.CreateUserFollowedStreamerCommand)) *MockUserFollowedStreamerService_Create_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
 			arg0 = args[0].(context.Context)
 		}
-		var arg1 *domain.UserFollowedStreamer
+		var arg1 *command.CreateUserFollowedStreamerCommand
 		if args[1] != nil {
-			arg1 = args[1].(*domain.UserFollowedStreamer)
+			arg1 = args[1].(*command.CreateUserFollowedStreamerCommand)
 		}
 		run(
 			arg0,
@@ -1511,7 +1517,7 @@ func (_c *MockUserFollowedStreamerService_Create_Call) Return(userFollowedStream
 	return _c
 }
 
-func (_c *MockUserFollowedStreamerService_Create_Call) RunAndReturn(run func(ctx context.Context, follow *domain.UserFollowedStreamer) (*domain.UserFollowedStreamer, error)) *MockUserFollowedStreamerService_Create_Call {
+func (_c *MockUserFollowedStreamerService_Create_Call) RunAndReturn(run func(ctx context.Context, cmd *command.CreateUserFollowedStreamerCommand) (*domain.UserFollowedStreamer, error)) *MockUserFollowedStreamerService_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1888,8 +1894,8 @@ func (_c *MockUserFollowedStreamerService_ListByUserId_Call) RunAndReturn(run fu
 }
 
 // Update provides a mock function for the type MockUserFollowedStreamerService
-func (_mock *MockUserFollowedStreamerService) Update(ctx context.Context, follow *domain.UserFollowedStreamer) (*domain.UserFollowedStreamer, error) {
-	ret := _mock.Called(ctx, follow)
+func (_mock *MockUserFollowedStreamerService) Update(ctx context.Context, cmd *command.UpdateUserFollowedStreamerCommand) (*domain.UserFollowedStreamer, error) {
+	ret := _mock.Called(ctx, cmd)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Update")
@@ -1897,18 +1903,18 @@ func (_mock *MockUserFollowedStreamerService) Update(ctx context.Context, follow
 
 	var r0 *domain.UserFollowedStreamer
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *domain.UserFollowedStreamer) (*domain.UserFollowedStreamer, error)); ok {
-		return returnFunc(ctx, follow)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *command.UpdateUserFollowedStreamerCommand) (*domain.UserFollowedStreamer, error)); ok {
+		return returnFunc(ctx, cmd)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, *domain.UserFollowedStreamer) *domain.UserFollowedStreamer); ok {
-		r0 = returnFunc(ctx, follow)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *command.UpdateUserFollowedStreamerCommand) *domain.UserFollowedStreamer); ok {
+		r0 = returnFunc(ctx, cmd)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*domain.UserFollowedStreamer)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context, *domain.UserFollowedStreamer) error); ok {
-		r1 = returnFunc(ctx, follow)
+	if returnFunc, ok := ret.Get(1).(func(context.Context, *command.UpdateUserFollowedStreamerCommand) error); ok {
+		r1 = returnFunc(ctx, cmd)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -1922,20 +1928,20 @@ type MockUserFollowedStreamerService_Update_Call struct {
 
 // Update is a helper method to define mock.On call
 //   - ctx context.Context
-//   - follow *domain.UserFollowedStreamer
-func (_e *MockUserFollowedStreamerService_Expecter) Update(ctx interface{}, follow interface{}) *MockUserFollowedStreamerService_Update_Call {
-	return &MockUserFollowedStreamerService_Update_Call{Call: _e.mock.On("Update", ctx, follow)}
+//   - cmd *command.UpdateUserFollowedStreamerCommand
+func (_e *MockUserFollowedStreamerService_Expecter) Update(ctx interface{}, cmd interface{}) *MockUserFollowedStreamerService_Update_Call {
+	return &MockUserFollowedStreamerService_Update_Call{Call: _e.mock.On("Update", ctx, cmd)}
 }
 
-func (_c *MockUserFollowedStreamerService_Update_Call) Run(run func(ctx context.Context, follow *domain.UserFollowedStreamer)) *MockUserFollowedStreamerService_Update_Call {
+func (_c *MockUserFollowedStreamerService_Update_Call) Run(run func(ctx context.Context, cmd *command.UpdateUserFollowedStreamerCommand)) *MockUserFollowedStreamerService_Update_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
 			arg0 = args[0].(context.Context)
 		}
-		var arg1 *domain.UserFollowedStreamer
+		var arg1 *command.UpdateUserFollowedStreamerCommand
 		if args[1] != nil {
-			arg1 = args[1].(*domain.UserFollowedStreamer)
+			arg1 = args[1].(*command.UpdateUserFollowedStreamerCommand)
 		}
 		run(
 			arg0,
@@ -1950,7 +1956,7 @@ func (_c *MockUserFollowedStreamerService_Update_Call) Return(userFollowedStream
 	return _c
 }
 
-func (_c *MockUserFollowedStreamerService_Update_Call) RunAndReturn(run func(ctx context.Context, follow *domain.UserFollowedStreamer) (*domain.UserFollowedStreamer, error)) *MockUserFollowedStreamerService_Update_Call {
+func (_c *MockUserFollowedStreamerService_Update_Call) RunAndReturn(run func(ctx context.Context, cmd *command.UpdateUserFollowedStreamerCommand) (*domain.UserFollowedStreamer, error)) *MockUserFollowedStreamerService_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

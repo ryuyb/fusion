@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"github.com/gofiber/fiber/v3"
+	"github.com/ryuyb/fusion/internal/core/command"
 	"github.com/ryuyb/fusion/internal/core/domain"
 	coreService "github.com/ryuyb/fusion/internal/core/port/service"
 	"github.com/ryuyb/fusion/internal/infrastructure/http/dto"
@@ -34,17 +35,18 @@ func (c *StreamingPlatformController) Create(ctx fiber.Ctx) error {
 	if err := ctx.Bind().JSON(req); err != nil {
 		return errors.BadRequest("failed to parse request body").Wrap(err)
 	}
-	platform, err := domain.NewStreamingPlatform(domain.StreamingPlatformType(req.Type), req.Name, req.BaseURL)
-	if err != nil {
-		return err
+	cmd := &command.CreateStreamingPlatformCommand{
+		Type:        req.Type,
+		Name:        req.Name,
+		Description: req.Description,
+		BaseURL:     req.BaseURL,
+		LogoURL:     req.LogoURL,
+		Enabled:     req.Enabled,
+		Priority:    req.Priority,
+		Metadata:    req.Metadata,
 	}
-	platform.Description = req.Description
-	platform.LogoURL = req.LogoURL
-	platform.Enabled = req.Enabled
-	platform.Priority = req.Priority
-	platform.Metadata = req.Metadata
 
-	created, err := c.service.Create(ctx, platform)
+	created, err := c.service.Create(ctx, cmd)
 	if err != nil {
 		return err
 	}
@@ -67,18 +69,21 @@ func (c *StreamingPlatformController) Update(ctx fiber.Ctx) error {
 	if err := ctx.Bind().JSON(req); err != nil {
 		return errors.BadRequest("failed to parse request body").Wrap(err)
 	}
-	platform, err := domain.NewStreamingPlatform(domain.StreamingPlatformType(req.Type), req.Name, req.BaseURL)
-	if err != nil {
-		return err
+	cmd := &command.UpdateStreamingPlatformCommand{
+		ID: req.ID,
+		CreateStreamingPlatformCommand: &command.CreateStreamingPlatformCommand{
+			Type:        req.Type,
+			Name:        req.Name,
+			Description: req.Description,
+			BaseURL:     req.BaseURL,
+			LogoURL:     req.LogoURL,
+			Enabled:     req.Enabled,
+			Priority:    req.Priority,
+			Metadata:    req.Metadata,
+		},
 	}
-	platform.ID = req.ID
-	platform.Description = req.Description
-	platform.LogoURL = req.LogoURL
-	platform.Enabled = req.Enabled
-	platform.Priority = req.Priority
-	platform.Metadata = req.Metadata
 
-	updated, err := c.service.Update(ctx, platform)
+	updated, err := c.service.Update(ctx, cmd)
 	if err != nil {
 		return err
 	}

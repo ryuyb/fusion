@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/ryuyb/fusion/internal/core/command"
 	"github.com/ryuyb/fusion/internal/core/domain"
 	coreRepo "github.com/ryuyb/fusion/internal/core/port/repository"
 	coreService "github.com/ryuyb/fusion/internal/core/port/service"
@@ -27,24 +28,30 @@ func NewStreamerService(repo coreRepo.StreamerRepository, spm *streaming.Streami
 	}
 }
 
-func (s *streamerService) Create(ctx context.Context, streamer *domain.Streamer) (*domain.Streamer, error) {
-	exist, err := s.repo.ExistByPlatformStreamerId(ctx, streamer.PlatformType, streamer.PlatformStreamerID)
+func (s *streamerService) Create(ctx context.Context, cmd *command.CreateStreamerCommand) (*domain.Streamer, error) {
+	platformType := domain.StreamingPlatformType(cmd.PlatformType)
+	exist, err := s.repo.ExistByPlatformStreamerId(ctx, platformType, cmd.PlatformStreamerID)
 	if err != nil {
 		return nil, err
 	}
 	if exist {
 		return nil, errors.Conflict("streamer already exists")
 	}
-	return s.repo.Create(ctx, streamer)
-}
-
-func (s *streamerService) Update(ctx context.Context, streamer *domain.Streamer) (*domain.Streamer, error) {
-	current, err := s.repo.FindById(ctx, streamer.ID)
+	streamer, err := buildStreamerFromCommand(cmd, platformType)
 	if err != nil {
 		return nil, err
 	}
-	if current.PlatformType != streamer.PlatformType || current.PlatformStreamerID != streamer.PlatformStreamerID {
-		exist, err := s.repo.ExistByPlatformStreamerId(ctx, streamer.PlatformType, streamer.PlatformStreamerID)
+	return s.repo.Create(ctx, streamer)
+}
+
+func (s *streamerService) Update(ctx context.Context, cmd *command.UpdateStreamerCommand) (*domain.Streamer, error) {
+	current, err := s.repo.FindById(ctx, cmd.ID)
+	if err != nil {
+		return nil, err
+	}
+	platformType := domain.StreamingPlatformType(cmd.PlatformType)
+	if current.PlatformType != platformType || current.PlatformStreamerID != cmd.PlatformStreamerID {
+		exist, err := s.repo.ExistByPlatformStreamerId(ctx, platformType, cmd.PlatformStreamerID)
 		if err != nil {
 			return nil, err
 		}
@@ -52,6 +59,11 @@ func (s *streamerService) Update(ctx context.Context, streamer *domain.Streamer)
 			return nil, errors.Conflict("streamer already exists")
 		}
 	}
+	streamer, err := buildStreamerFromCommand(cmd.CreateStreamerCommand, platformType)
+	if err != nil {
+		return nil, err
+	}
+	streamer.ID = cmd.ID
 	return s.repo.Update(ctx, streamer)
 }
 
@@ -109,4 +121,22 @@ func (s *streamerService) List(ctx context.Context, page, pageSize int) ([]*doma
 	}
 	offset := (page - 1) * pageSize
 	return s.repo.List(ctx, offset, pageSize)
+}
+
+func buildStreamerFromCommand(cmd *command.CreateStreamerCommand, platformType domain.StreamingPlatformType) (*domain.Streamer, error) {
+	if cmd == nil {
+		return nil, errors.BadRequest("streamer command is required")
+	}
+	streamer, err := domain.NewStreamer(platformType, cmd.PlatformStreamerID, cmd.DisplayName)
+	if err != nil {
+		return nil, err
+	}
+	streamer.AvatarURL = cmd.AvatarURL
+	streamer.RoomURL = cmd.RoomURL
+	streamer.Bio = cmd.Bio
+	if len(cmd.Tags) > 0 {
+		streamer.Tags = make([]string, len(cmd.Tags))
+		copy(streamer.Tags, cmd.Tags)
+	}
+	return streamer, nil
 }

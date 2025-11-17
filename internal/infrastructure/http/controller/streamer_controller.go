@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"github.com/gofiber/fiber/v3"
+	"github.com/ryuyb/fusion/internal/core/command"
 	"github.com/ryuyb/fusion/internal/core/domain"
 	coreService "github.com/ryuyb/fusion/internal/core/port/service"
 	"github.com/ryuyb/fusion/internal/infrastructure/http/dto"
@@ -34,16 +35,17 @@ func (c *StreamerController) Create(ctx fiber.Ctx) error {
 	if err := ctx.Bind().JSON(req); err != nil {
 		return errors.BadRequest("failed to parse request body").Wrap(err)
 	}
-	streamer, err := domain.NewStreamer(domain.StreamingPlatformType(req.PlatformType), req.PlatformStreamerID, req.DisplayName)
-	if err != nil {
-		return err
+	cmd := &command.CreateStreamerCommand{
+		PlatformType:       req.PlatformType,
+		PlatformStreamerID: req.PlatformStreamerID,
+		DisplayName:        req.DisplayName,
+		AvatarURL:          req.AvatarURL,
+		RoomURL:            req.RoomURL,
+		Bio:                req.Bio,
+		Tags:               req.Tags,
 	}
-	streamer.AvatarURL = req.AvatarURL
-	streamer.RoomURL = req.RoomURL
-	streamer.Bio = req.Bio
-	streamer.Tags = req.Tags
 
-	created, err := c.service.Create(ctx, streamer)
+	created, err := c.service.Create(ctx, cmd)
 	if err != nil {
 		return err
 	}
@@ -66,17 +68,20 @@ func (c *StreamerController) Update(ctx fiber.Ctx) error {
 	if err := ctx.Bind().JSON(req); err != nil {
 		return errors.BadRequest("failed to parse request body").Wrap(err)
 	}
-	streamer, err := domain.NewStreamer(domain.StreamingPlatformType(req.PlatformType), req.PlatformStreamerID, req.DisplayName)
-	if err != nil {
-		return err
+	cmd := &command.UpdateStreamerCommand{
+		ID: req.ID,
+		CreateStreamerCommand: &command.CreateStreamerCommand{
+			PlatformType:       req.PlatformType,
+			PlatformStreamerID: req.PlatformStreamerID,
+			DisplayName:        req.DisplayName,
+			AvatarURL:          req.AvatarURL,
+			RoomURL:            req.RoomURL,
+			Bio:                req.Bio,
+			Tags:               req.Tags,
+		},
 	}
-	streamer.ID = req.ID
-	streamer.AvatarURL = req.AvatarURL
-	streamer.RoomURL = req.RoomURL
-	streamer.Bio = req.Bio
-	streamer.Tags = req.Tags
 
-	updated, err := c.service.Update(ctx, streamer)
+	updated, err := c.service.Update(ctx, cmd)
 	if err != nil {
 		return err
 	}

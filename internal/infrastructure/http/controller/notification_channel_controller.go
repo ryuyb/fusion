@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"github.com/gofiber/fiber/v3"
+	"github.com/ryuyb/fusion/internal/core/command"
 	"github.com/ryuyb/fusion/internal/core/domain"
 	coreService "github.com/ryuyb/fusion/internal/core/port/service"
 	"github.com/ryuyb/fusion/internal/infrastructure/http/dto"
@@ -34,15 +35,15 @@ func (c *NotificationChannelController) Create(ctx fiber.Ctx) error {
 	if err := ctx.Bind().JSON(req); err != nil {
 		return errors.BadRequest("failed to parse request body").Wrap(err)
 	}
-	channel := &domain.NotificationChannel{
+	cmd := &command.CreateNotificationChannelCommand{
 		UserID:      req.UserID,
-		ChannelType: domain.NotificationChannelType(req.ChannelType),
+		ChannelType: req.ChannelType,
 		Name:        req.Name,
 		Config:      req.Config,
 		Enable:      req.Enable,
 		Priority:    req.Priority,
 	}
-	created, err := c.service.Create(ctx, channel)
+	created, err := c.service.Create(ctx, cmd)
 	if err != nil {
 		return err
 	}
@@ -65,16 +66,18 @@ func (c *NotificationChannelController) Update(ctx fiber.Ctx) error {
 	if err := ctx.Bind().JSON(req); err != nil {
 		return errors.BadRequest("failed to parse request body").Wrap(err)
 	}
-	channel := &domain.NotificationChannel{
-		ID:          req.ID,
-		UserID:      req.UserID,
-		ChannelType: domain.NotificationChannelType(req.ChannelType),
-		Name:        req.Name,
-		Config:      req.Config,
-		Enable:      req.Enable,
-		Priority:    req.Priority,
+	cmd := &command.UpdateNotificationChannelCommand{
+		ID: req.ID,
+		CreateNotificationChannelCommand: &command.CreateNotificationChannelCommand{
+			UserID:      req.UserID,
+			ChannelType: req.ChannelType,
+			Name:        req.Name,
+			Config:      req.Config,
+			Enable:      req.Enable,
+			Priority:    req.Priority,
+		},
 	}
-	updated, err := c.service.Update(ctx, channel)
+	updated, err := c.service.Update(ctx, cmd)
 	if err != nil {
 		return err
 	}

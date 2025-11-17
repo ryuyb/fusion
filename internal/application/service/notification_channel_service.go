@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 
+	"github.com/ryuyb/fusion/internal/core/command"
 	"github.com/ryuyb/fusion/internal/core/domain"
 	coreRepo "github.com/ryuyb/fusion/internal/core/port/repository"
 	coreService "github.com/ryuyb/fusion/internal/core/port/service"
@@ -23,24 +24,28 @@ func NewNotificationChannelService(repo coreRepo.NotificationChannelRepository, 
 	}
 }
 
-func (s *notificationChannelService) Create(ctx context.Context, channel *domain.NotificationChannel) (*domain.NotificationChannel, error) {
-	exist, err := s.repo.ExistByName(ctx, channel.UserID, channel.Name)
+func (s *notificationChannelService) Create(ctx context.Context, cmd *command.CreateNotificationChannelCommand) (*domain.NotificationChannel, error) {
+	exist, err := s.repo.ExistByName(ctx, cmd.UserID, cmd.Name)
 	if err != nil {
 		return nil, err
 	}
 	if exist {
 		return nil, errors.Conflict("notification channel already exists")
 	}
-	return s.repo.Create(ctx, channel)
-}
-
-func (s *notificationChannelService) Update(ctx context.Context, channel *domain.NotificationChannel) (*domain.NotificationChannel, error) {
-	current, err := s.repo.FindById(ctx, channel.ID)
+	channel, err := buildNotificationChannelFromCommand(cmd)
 	if err != nil {
 		return nil, err
 	}
-	if current.Name != channel.Name {
-		exist, err := s.repo.ExistByName(ctx, current.UserID, channel.Name)
+	return s.repo.Create(ctx, channel)
+}
+
+func (s *notificationChannelService) Update(ctx context.Context, cmd *command.UpdateNotificationChannelCommand) (*domain.NotificationChannel, error) {
+	current, err := s.repo.FindById(ctx, cmd.ID)
+	if err != nil {
+		return nil, err
+	}
+	if current.Name != cmd.Name {
+		exist, err := s.repo.ExistByName(ctx, current.UserID, cmd.Name)
 		if err != nil {
 			return nil, err
 		}
@@ -48,6 +53,11 @@ func (s *notificationChannelService) Update(ctx context.Context, channel *domain
 			return nil, errors.Conflict("notification channel already exists")
 		}
 	}
+	channel, err := buildNotificationChannelFromCommand(cmd.CreateNotificationChannelCommand)
+	if err != nil {
+		return nil, err
+	}
+	channel.ID = cmd.ID
 	return s.repo.Update(ctx, channel)
 }
 
@@ -70,4 +80,27 @@ func (s *notificationChannelService) ListByUserId(ctx context.Context, userID in
 	}
 	offset := (page - 1) * pageSize
 	return s.repo.ListByUserId(ctx, userID, offset, pageSize)
+}
+
+func buildNotificationChannelFromCommand(cmd *command.CreateNotificationChannelCommand) (*domain.NotificationChannel, error) {
+	if cmd == nil {
+		return nil, errors.BadRequest("notification channel command is required")
+	}
+
+	var config map[string]any
+	if cmd.Config != nil {
+		config = make(map[string]any, len(cmd.Config))
+		for k, v := range cmd.Config {
+			config[k] = v
+		}
+	}
+
+	return &domain.NotificationChannel{
+		UserID:      cmd.UserID,
+		ChannelType: domain.NotificationChannelType(cmd.ChannelType),
+		Name:        cmd.Name,
+		Config:      config,
+		Enable:      cmd.Enable,
+		Priority:    cmd.Priority,
+	}, nil
 }

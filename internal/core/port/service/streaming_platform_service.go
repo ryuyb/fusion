@@ -3,13 +3,14 @@ package service
 import (
 	"context"
 
+	"github.com/ryuyb/fusion/internal/core/command"
 	"github.com/ryuyb/fusion/internal/core/domain"
 )
 
 type StreamingPlatformService interface {
-	Create(ctx context.Context, platform *domain.StreamingPlatform) (*domain.StreamingPlatform, error)
+	Create(ctx context.Context, cmd *command.CreateStreamingPlatformCommand) (*domain.StreamingPlatform, error)
 
-	Update(ctx context.Context, platform *domain.StreamingPlatform) (*domain.StreamingPlatform, error)
+	Update(ctx context.Context, cmd *command.UpdateStreamingPlatformCommand) (*domain.StreamingPlatform, error)
 
 	Delete(ctx context.Context, id int64) error
 
