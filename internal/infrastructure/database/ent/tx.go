@@ -12,10 +12,16 @@ import (
 // Tx is a transactional client that is created by calling Client.Tx().
 type Tx struct {
 	config
+	// NotificationChannel is the client for interacting with the NotificationChannel builders.
+	NotificationChannel *NotificationChannelClient
+	// Streamer is the client for interacting with the Streamer builders.
+	Streamer *StreamerClient
 	// StreamingPlatform is the client for interacting with the StreamingPlatform builders.
 	StreamingPlatform *StreamingPlatformClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
+	// UserFollowedStreamer is the client for interacting with the UserFollowedStreamer builders.
+	UserFollowedStreamer *UserFollowedStreamerClient
 
 	// lazily loaded.
 	client     *Client
@@ -147,8 +153,11 @@ func (tx *Tx) Client() *Client {
 }
 
 func (tx *Tx) init() {
+	tx.NotificationChannel = NewNotificationChannelClient(tx.config)
+	tx.Streamer = NewStreamerClient(tx.config)
 	tx.StreamingPlatform = NewStreamingPlatformClient(tx.config)
 	tx.User = NewUserClient(tx.config)
+	tx.UserFollowedStreamer = NewUserFollowedStreamerClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.
@@ -158,7 +167,7 @@ func (tx *Tx) init() {
 // of them in order to commit or rollback the transaction.
 //
 // If a closed transaction is embedded in one of the generated entities, and the entity
-// applies a query, for example: StreamingPlatform.QueryXXX(), the query will be executed
+// applies a query, for example: NotificationChannel.QueryXXX(), the query will be executed
 // through the driver which created this transaction.
 //
 // Note that txDriver is not goroutine safe.

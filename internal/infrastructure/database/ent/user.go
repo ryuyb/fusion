@@ -26,8 +26,40 @@ type User struct {
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
-	UpdatedAt    time.Time `json:"updated_at,omitempty"`
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the UserQuery when eager-loading is set.
+	Edges        UserEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// UserEdges holds the relations/edges for other nodes in the graph.
+type UserEdges struct {
+	// FollowedStreamers holds the value of the followed_streamers edge.
+	FollowedStreamers []*UserFollowedStreamer `json:"followed_streamers,omitempty"`
+	// NotificationChannels holds the value of the notification_channels edge.
+	NotificationChannels []*NotificationChannel `json:"notification_channels,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [2]bool
+}
+
+// FollowedStreamersOrErr returns the FollowedStreamers value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) FollowedStreamersOrErr() ([]*UserFollowedStreamer, error) {
+	if e.loadedTypes[0] {
+		return e.FollowedStreamers, nil
+	}
+	return nil, &NotLoadedError{edge: "followed_streamers"}
+}
+
+// NotificationChannelsOrErr returns the NotificationChannels value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) NotificationChannelsOrErr() ([]*NotificationChannel, error) {
+	if e.loadedTypes[1] {
+		return e.NotificationChannels, nil
+	}
+	return nil, &NotLoadedError{edge: "notification_channels"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -103,6 +135,16 @@ func (_m *User) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (_m *User) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
+}
+
+// QueryFollowedStreamers queries the "followed_streamers" edge of the User entity.
+func (_m *User) QueryFollowedStreamers() *UserFollowedStreamerQuery {
+	return NewUserClient(_m.config).QueryFollowedStreamers(_m)
+}
+
+// QueryNotificationChannels queries the "notification_channels" edge of the User entity.
+func (_m *User) QueryNotificationChannels() *NotificationChannelQuery {
+	return NewUserClient(_m.config).QueryNotificationChannels(_m)
 }
 
 // Update returns a builder for updating this User.

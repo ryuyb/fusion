@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -23,8 +24,26 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
+	// EdgeFollowedStreamers holds the string denoting the followed_streamers edge name in mutations.
+	EdgeFollowedStreamers = "followed_streamers"
+	// EdgeNotificationChannels holds the string denoting the notification_channels edge name in mutations.
+	EdgeNotificationChannels = "notification_channels"
 	// Table holds the table name of the user in the database.
 	Table = "users"
+	// FollowedStreamersTable is the table that holds the followed_streamers relation/edge.
+	FollowedStreamersTable = "user_followed_streamers"
+	// FollowedStreamersInverseTable is the table name for the UserFollowedStreamer entity.
+	// It exists in this package in order to avoid circular dependency with the "userfollowedstreamer" package.
+	FollowedStreamersInverseTable = "user_followed_streamers"
+	// FollowedStreamersColumn is the table column denoting the followed_streamers relation/edge.
+	FollowedStreamersColumn = "user_id"
+	// NotificationChannelsTable is the table that holds the notification_channels relation/edge.
+	NotificationChannelsTable = "notification_channels"
+	// NotificationChannelsInverseTable is the table name for the NotificationChannel entity.
+	// It exists in this package in order to avoid circular dependency with the "notificationchannel" package.
+	NotificationChannelsInverseTable = "notification_channels"
+	// NotificationChannelsColumn is the table column denoting the notification_channels relation/edge.
+	NotificationChannelsColumn = "user_id"
 )
 
 // Columns holds all SQL columns for user fields.
@@ -93,4 +112,46 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByUpdatedAt orders the results by the updated_at field.
 func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
+// ByFollowedStreamersCount orders the results by followed_streamers count.
+func ByFollowedStreamersCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newFollowedStreamersStep(), opts...)
+	}
+}
+
+// ByFollowedStreamers orders the results by followed_streamers terms.
+func ByFollowedStreamers(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newFollowedStreamersStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByNotificationChannelsCount orders the results by notification_channels count.
+func ByNotificationChannelsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newNotificationChannelsStep(), opts...)
+	}
+}
+
+// ByNotificationChannels orders the results by notification_channels terms.
+func ByNotificationChannels(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newNotificationChannelsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newFollowedStreamersStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(FollowedStreamersInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, FollowedStreamersTable, FollowedStreamersColumn),
+	)
+}
+func newNotificationChannelsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(NotificationChannelsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, NotificationChannelsTable, NotificationChannelsColumn),
+	)
 }

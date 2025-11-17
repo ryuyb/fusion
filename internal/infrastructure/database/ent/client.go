@@ -14,8 +14,12 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/notificationchannel"
+	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/streamer"
 	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/streamingplatform"
 	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/user"
+	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/userfollowedstreamer"
 )
 
 // Client is the client that holds all ent builders.
@@ -23,10 +27,16 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// NotificationChannel is the client for interacting with the NotificationChannel builders.
+	NotificationChannel *NotificationChannelClient
+	// Streamer is the client for interacting with the Streamer builders.
+	Streamer *StreamerClient
 	// StreamingPlatform is the client for interacting with the StreamingPlatform builders.
 	StreamingPlatform *StreamingPlatformClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
+	// UserFollowedStreamer is the client for interacting with the UserFollowedStreamer builders.
+	UserFollowedStreamer *UserFollowedStreamerClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -38,8 +48,11 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.NotificationChannel = NewNotificationChannelClient(c.config)
+	c.Streamer = NewStreamerClient(c.config)
 	c.StreamingPlatform = NewStreamingPlatformClient(c.config)
 	c.User = NewUserClient(c.config)
+	c.UserFollowedStreamer = NewUserFollowedStreamerClient(c.config)
 }
 
 type (
@@ -130,10 +143,13 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:               ctx,
-		config:            cfg,
-		StreamingPlatform: NewStreamingPlatformClient(cfg),
-		User:              NewUserClient(cfg),
+		ctx:                  ctx,
+		config:               cfg,
+		NotificationChannel:  NewNotificationChannelClient(cfg),
+		Streamer:             NewStreamerClient(cfg),
+		StreamingPlatform:    NewStreamingPlatformClient(cfg),
+		User:                 NewUserClient(cfg),
+		UserFollowedStreamer: NewUserFollowedStreamerClient(cfg),
 	}, nil
 }
 
@@ -151,17 +167,20 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:               ctx,
-		config:            cfg,
-		StreamingPlatform: NewStreamingPlatformClient(cfg),
-		User:              NewUserClient(cfg),
+		ctx:                  ctx,
+		config:               cfg,
+		NotificationChannel:  NewNotificationChannelClient(cfg),
+		Streamer:             NewStreamerClient(cfg),
+		StreamingPlatform:    NewStreamingPlatformClient(cfg),
+		User:                 NewUserClient(cfg),
+		UserFollowedStreamer: NewUserFollowedStreamerClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		StreamingPlatform.
+//		NotificationChannel.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -183,26 +202,336 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
+	c.NotificationChannel.Use(hooks...)
+	c.Streamer.Use(hooks...)
 	c.StreamingPlatform.Use(hooks...)
 	c.User.Use(hooks...)
+	c.UserFollowedStreamer.Use(hooks...)
 }
 
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
+	c.NotificationChannel.Intercept(interceptors...)
+	c.Streamer.Intercept(interceptors...)
 	c.StreamingPlatform.Intercept(interceptors...)
 	c.User.Intercept(interceptors...)
+	c.UserFollowedStreamer.Intercept(interceptors...)
 }
 
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
+	case *NotificationChannelMutation:
+		return c.NotificationChannel.mutate(ctx, m)
+	case *StreamerMutation:
+		return c.Streamer.mutate(ctx, m)
 	case *StreamingPlatformMutation:
 		return c.StreamingPlatform.mutate(ctx, m)
 	case *UserMutation:
 		return c.User.mutate(ctx, m)
+	case *UserFollowedStreamerMutation:
+		return c.UserFollowedStreamer.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
+	}
+}
+
+// NotificationChannelClient is a client for the NotificationChannel schema.
+type NotificationChannelClient struct {
+	config
+}
+
+// NewNotificationChannelClient returns a client for the NotificationChannel from the given config.
+func NewNotificationChannelClient(c config) *NotificationChannelClient {
+	return &NotificationChannelClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `notificationchannel.Hooks(f(g(h())))`.
+func (c *NotificationChannelClient) Use(hooks ...Hook) {
+	c.hooks.NotificationChannel = append(c.hooks.NotificationChannel, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `notificationchannel.Intercept(f(g(h())))`.
+func (c *NotificationChannelClient) Intercept(interceptors ...Interceptor) {
+	c.inters.NotificationChannel = append(c.inters.NotificationChannel, interceptors...)
+}
+
+// Create returns a builder for creating a NotificationChannel entity.
+func (c *NotificationChannelClient) Create() *NotificationChannelCreate {
+	mutation := newNotificationChannelMutation(c.config, OpCreate)
+	return &NotificationChannelCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of NotificationChannel entities.
+func (c *NotificationChannelClient) CreateBulk(builders ...*NotificationChannelCreate) *NotificationChannelCreateBulk {
+	return &NotificationChannelCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *NotificationChannelClient) MapCreateBulk(slice any, setFunc func(*NotificationChannelCreate, int)) *NotificationChannelCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &NotificationChannelCreateBulk{err: fmt.Errorf("calling to NotificationChannelClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*NotificationChannelCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &NotificationChannelCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for NotificationChannel.
+func (c *NotificationChannelClient) Update() *NotificationChannelUpdate {
+	mutation := newNotificationChannelMutation(c.config, OpUpdate)
+	return &NotificationChannelUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *NotificationChannelClient) UpdateOne(_m *NotificationChannel) *NotificationChannelUpdateOne {
+	mutation := newNotificationChannelMutation(c.config, OpUpdateOne, withNotificationChannel(_m))
+	return &NotificationChannelUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *NotificationChannelClient) UpdateOneID(id int64) *NotificationChannelUpdateOne {
+	mutation := newNotificationChannelMutation(c.config, OpUpdateOne, withNotificationChannelID(id))
+	return &NotificationChannelUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for NotificationChannel.
+func (c *NotificationChannelClient) Delete() *NotificationChannelDelete {
+	mutation := newNotificationChannelMutation(c.config, OpDelete)
+	return &NotificationChannelDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *NotificationChannelClient) DeleteOne(_m *NotificationChannel) *NotificationChannelDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *NotificationChannelClient) DeleteOneID(id int64) *NotificationChannelDeleteOne {
+	builder := c.Delete().Where(notificationchannel.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &NotificationChannelDeleteOne{builder}
+}
+
+// Query returns a query builder for NotificationChannel.
+func (c *NotificationChannelClient) Query() *NotificationChannelQuery {
+	return &NotificationChannelQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeNotificationChannel},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a NotificationChannel entity by its id.
+func (c *NotificationChannelClient) Get(ctx context.Context, id int64) (*NotificationChannel, error) {
+	return c.Query().Where(notificationchannel.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *NotificationChannelClient) GetX(ctx context.Context, id int64) *NotificationChannel {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryUser queries the user edge of a NotificationChannel.
+func (c *NotificationChannelClient) QueryUser(_m *NotificationChannel) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(notificationchannel.Table, notificationchannel.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, notificationchannel.UserTable, notificationchannel.UserColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *NotificationChannelClient) Hooks() []Hook {
+	return c.hooks.NotificationChannel
+}
+
+// Interceptors returns the client interceptors.
+func (c *NotificationChannelClient) Interceptors() []Interceptor {
+	return c.inters.NotificationChannel
+}
+
+func (c *NotificationChannelClient) mutate(ctx context.Context, m *NotificationChannelMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&NotificationChannelCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&NotificationChannelUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&NotificationChannelUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&NotificationChannelDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown NotificationChannel mutation op: %q", m.Op())
+	}
+}
+
+// StreamerClient is a client for the Streamer schema.
+type StreamerClient struct {
+	config
+}
+
+// NewStreamerClient returns a client for the Streamer from the given config.
+func NewStreamerClient(c config) *StreamerClient {
+	return &StreamerClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `streamer.Hooks(f(g(h())))`.
+func (c *StreamerClient) Use(hooks ...Hook) {
+	c.hooks.Streamer = append(c.hooks.Streamer, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `streamer.Intercept(f(g(h())))`.
+func (c *StreamerClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Streamer = append(c.inters.Streamer, interceptors...)
+}
+
+// Create returns a builder for creating a Streamer entity.
+func (c *StreamerClient) Create() *StreamerCreate {
+	mutation := newStreamerMutation(c.config, OpCreate)
+	return &StreamerCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Streamer entities.
+func (c *StreamerClient) CreateBulk(builders ...*StreamerCreate) *StreamerCreateBulk {
+	return &StreamerCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *StreamerClient) MapCreateBulk(slice any, setFunc func(*StreamerCreate, int)) *StreamerCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &StreamerCreateBulk{err: fmt.Errorf("calling to StreamerClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*StreamerCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &StreamerCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Streamer.
+func (c *StreamerClient) Update() *StreamerUpdate {
+	mutation := newStreamerMutation(c.config, OpUpdate)
+	return &StreamerUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *StreamerClient) UpdateOne(_m *Streamer) *StreamerUpdateOne {
+	mutation := newStreamerMutation(c.config, OpUpdateOne, withStreamer(_m))
+	return &StreamerUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *StreamerClient) UpdateOneID(id int64) *StreamerUpdateOne {
+	mutation := newStreamerMutation(c.config, OpUpdateOne, withStreamerID(id))
+	return &StreamerUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Streamer.
+func (c *StreamerClient) Delete() *StreamerDelete {
+	mutation := newStreamerMutation(c.config, OpDelete)
+	return &StreamerDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *StreamerClient) DeleteOne(_m *Streamer) *StreamerDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *StreamerClient) DeleteOneID(id int64) *StreamerDeleteOne {
+	builder := c.Delete().Where(streamer.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &StreamerDeleteOne{builder}
+}
+
+// Query returns a query builder for Streamer.
+func (c *StreamerClient) Query() *StreamerQuery {
+	return &StreamerQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeStreamer},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Streamer entity by its id.
+func (c *StreamerClient) Get(ctx context.Context, id int64) (*Streamer, error) {
+	return c.Query().Where(streamer.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *StreamerClient) GetX(ctx context.Context, id int64) *Streamer {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryFollowers queries the followers edge of a Streamer.
+func (c *StreamerClient) QueryFollowers(_m *Streamer) *UserFollowedStreamerQuery {
+	query := (&UserFollowedStreamerClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(streamer.Table, streamer.FieldID, id),
+			sqlgraph.To(userfollowedstreamer.Table, userfollowedstreamer.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, streamer.FollowersTable, streamer.FollowersColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *StreamerClient) Hooks() []Hook {
+	return c.hooks.Streamer
+}
+
+// Interceptors returns the client interceptors.
+func (c *StreamerClient) Interceptors() []Interceptor {
+	return c.inters.Streamer
+}
+
+func (c *StreamerClient) mutate(ctx context.Context, m *StreamerMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&StreamerCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&StreamerUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&StreamerUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&StreamerDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Streamer mutation op: %q", m.Op())
 	}
 }
 
@@ -447,6 +776,38 @@ func (c *UserClient) GetX(ctx context.Context, id int64) *User {
 	return obj
 }
 
+// QueryFollowedStreamers queries the followed_streamers edge of a User.
+func (c *UserClient) QueryFollowedStreamers(_m *User) *UserFollowedStreamerQuery {
+	query := (&UserFollowedStreamerClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(userfollowedstreamer.Table, userfollowedstreamer.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.FollowedStreamersTable, user.FollowedStreamersColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryNotificationChannels queries the notification_channels edge of a User.
+func (c *UserClient) QueryNotificationChannels(_m *User) *NotificationChannelQuery {
+	query := (&NotificationChannelClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(notificationchannel.Table, notificationchannel.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.NotificationChannelsTable, user.NotificationChannelsColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *UserClient) Hooks() []Hook {
 	return c.hooks.User
@@ -472,12 +833,179 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 	}
 }
 
+// UserFollowedStreamerClient is a client for the UserFollowedStreamer schema.
+type UserFollowedStreamerClient struct {
+	config
+}
+
+// NewUserFollowedStreamerClient returns a client for the UserFollowedStreamer from the given config.
+func NewUserFollowedStreamerClient(c config) *UserFollowedStreamerClient {
+	return &UserFollowedStreamerClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `userfollowedstreamer.Hooks(f(g(h())))`.
+func (c *UserFollowedStreamerClient) Use(hooks ...Hook) {
+	c.hooks.UserFollowedStreamer = append(c.hooks.UserFollowedStreamer, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `userfollowedstreamer.Intercept(f(g(h())))`.
+func (c *UserFollowedStreamerClient) Intercept(interceptors ...Interceptor) {
+	c.inters.UserFollowedStreamer = append(c.inters.UserFollowedStreamer, interceptors...)
+}
+
+// Create returns a builder for creating a UserFollowedStreamer entity.
+func (c *UserFollowedStreamerClient) Create() *UserFollowedStreamerCreate {
+	mutation := newUserFollowedStreamerMutation(c.config, OpCreate)
+	return &UserFollowedStreamerCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of UserFollowedStreamer entities.
+func (c *UserFollowedStreamerClient) CreateBulk(builders ...*UserFollowedStreamerCreate) *UserFollowedStreamerCreateBulk {
+	return &UserFollowedStreamerCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *UserFollowedStreamerClient) MapCreateBulk(slice any, setFunc func(*UserFollowedStreamerCreate, int)) *UserFollowedStreamerCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &UserFollowedStreamerCreateBulk{err: fmt.Errorf("calling to UserFollowedStreamerClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*UserFollowedStreamerCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &UserFollowedStreamerCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for UserFollowedStreamer.
+func (c *UserFollowedStreamerClient) Update() *UserFollowedStreamerUpdate {
+	mutation := newUserFollowedStreamerMutation(c.config, OpUpdate)
+	return &UserFollowedStreamerUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *UserFollowedStreamerClient) UpdateOne(_m *UserFollowedStreamer) *UserFollowedStreamerUpdateOne {
+	mutation := newUserFollowedStreamerMutation(c.config, OpUpdateOne, withUserFollowedStreamer(_m))
+	return &UserFollowedStreamerUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *UserFollowedStreamerClient) UpdateOneID(id int64) *UserFollowedStreamerUpdateOne {
+	mutation := newUserFollowedStreamerMutation(c.config, OpUpdateOne, withUserFollowedStreamerID(id))
+	return &UserFollowedStreamerUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for UserFollowedStreamer.
+func (c *UserFollowedStreamerClient) Delete() *UserFollowedStreamerDelete {
+	mutation := newUserFollowedStreamerMutation(c.config, OpDelete)
+	return &UserFollowedStreamerDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *UserFollowedStreamerClient) DeleteOne(_m *UserFollowedStreamer) *UserFollowedStreamerDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *UserFollowedStreamerClient) DeleteOneID(id int64) *UserFollowedStreamerDeleteOne {
+	builder := c.Delete().Where(userfollowedstreamer.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &UserFollowedStreamerDeleteOne{builder}
+}
+
+// Query returns a query builder for UserFollowedStreamer.
+func (c *UserFollowedStreamerClient) Query() *UserFollowedStreamerQuery {
+	return &UserFollowedStreamerQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeUserFollowedStreamer},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a UserFollowedStreamer entity by its id.
+func (c *UserFollowedStreamerClient) Get(ctx context.Context, id int64) (*UserFollowedStreamer, error) {
+	return c.Query().Where(userfollowedstreamer.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *UserFollowedStreamerClient) GetX(ctx context.Context, id int64) *UserFollowedStreamer {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryUser queries the user edge of a UserFollowedStreamer.
+func (c *UserFollowedStreamerClient) QueryUser(_m *UserFollowedStreamer) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(userfollowedstreamer.Table, userfollowedstreamer.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, userfollowedstreamer.UserTable, userfollowedstreamer.UserColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryStreamer queries the streamer edge of a UserFollowedStreamer.
+func (c *UserFollowedStreamerClient) QueryStreamer(_m *UserFollowedStreamer) *StreamerQuery {
+	query := (&StreamerClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(userfollowedstreamer.Table, userfollowedstreamer.FieldID, id),
+			sqlgraph.To(streamer.Table, streamer.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, userfollowedstreamer.StreamerTable, userfollowedstreamer.StreamerColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *UserFollowedStreamerClient) Hooks() []Hook {
+	return c.hooks.UserFollowedStreamer
+}
+
+// Interceptors returns the client interceptors.
+func (c *UserFollowedStreamerClient) Interceptors() []Interceptor {
+	return c.inters.UserFollowedStreamer
+}
+
+func (c *UserFollowedStreamerClient) mutate(ctx context.Context, m *UserFollowedStreamerMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&UserFollowedStreamerCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&UserFollowedStreamerUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&UserFollowedStreamerUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&UserFollowedStreamerDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown UserFollowedStreamer mutation op: %q", m.Op())
+	}
+}
+
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		StreamingPlatform, User []ent.Hook
+		NotificationChannel, Streamer, StreamingPlatform, User,
+		UserFollowedStreamer []ent.Hook
 	}
 	inters struct {
-		StreamingPlatform, User []ent.Interceptor
+		NotificationChannel, Streamer, StreamingPlatform, User,
+		UserFollowedStreamer []ent.Interceptor
 	}
 )

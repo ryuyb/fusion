@@ -11,8 +11,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/notificationchannel"
 	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/predicate"
 	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/user"
+	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/userfollowedstreamer"
 )
 
 // UserUpdate is the builder for updating User entities.
@@ -76,9 +78,81 @@ func (_u *UserUpdate) SetUpdatedAt(v time.Time) *UserUpdate {
 	return _u
 }
 
+// AddFollowedStreamerIDs adds the "followed_streamers" edge to the UserFollowedStreamer entity by IDs.
+func (_u *UserUpdate) AddFollowedStreamerIDs(ids ...int64) *UserUpdate {
+	_u.mutation.AddFollowedStreamerIDs(ids...)
+	return _u
+}
+
+// AddFollowedStreamers adds the "followed_streamers" edges to the UserFollowedStreamer entity.
+func (_u *UserUpdate) AddFollowedStreamers(v ...*UserFollowedStreamer) *UserUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddFollowedStreamerIDs(ids...)
+}
+
+// AddNotificationChannelIDs adds the "notification_channels" edge to the NotificationChannel entity by IDs.
+func (_u *UserUpdate) AddNotificationChannelIDs(ids ...int64) *UserUpdate {
+	_u.mutation.AddNotificationChannelIDs(ids...)
+	return _u
+}
+
+// AddNotificationChannels adds the "notification_channels" edges to the NotificationChannel entity.
+func (_u *UserUpdate) AddNotificationChannels(v ...*NotificationChannel) *UserUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddNotificationChannelIDs(ids...)
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (_u *UserUpdate) Mutation() *UserMutation {
 	return _u.mutation
+}
+
+// ClearFollowedStreamers clears all "followed_streamers" edges to the UserFollowedStreamer entity.
+func (_u *UserUpdate) ClearFollowedStreamers() *UserUpdate {
+	_u.mutation.ClearFollowedStreamers()
+	return _u
+}
+
+// RemoveFollowedStreamerIDs removes the "followed_streamers" edge to UserFollowedStreamer entities by IDs.
+func (_u *UserUpdate) RemoveFollowedStreamerIDs(ids ...int64) *UserUpdate {
+	_u.mutation.RemoveFollowedStreamerIDs(ids...)
+	return _u
+}
+
+// RemoveFollowedStreamers removes "followed_streamers" edges to UserFollowedStreamer entities.
+func (_u *UserUpdate) RemoveFollowedStreamers(v ...*UserFollowedStreamer) *UserUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveFollowedStreamerIDs(ids...)
+}
+
+// ClearNotificationChannels clears all "notification_channels" edges to the NotificationChannel entity.
+func (_u *UserUpdate) ClearNotificationChannels() *UserUpdate {
+	_u.mutation.ClearNotificationChannels()
+	return _u
+}
+
+// RemoveNotificationChannelIDs removes the "notification_channels" edge to NotificationChannel entities by IDs.
+func (_u *UserUpdate) RemoveNotificationChannelIDs(ids ...int64) *UserUpdate {
+	_u.mutation.RemoveNotificationChannelIDs(ids...)
+	return _u
+}
+
+// RemoveNotificationChannels removes "notification_channels" edges to NotificationChannel entities.
+func (_u *UserUpdate) RemoveNotificationChannels(v ...*NotificationChannel) *UserUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveNotificationChannelIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -161,6 +235,96 @@ func (_u *UserUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(user.FieldUpdatedAt, field.TypeTime, value)
 	}
+	if _u.mutation.FollowedStreamersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FollowedStreamersTable,
+			Columns: []string{user.FollowedStreamersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userfollowedstreamer.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedFollowedStreamersIDs(); len(nodes) > 0 && !_u.mutation.FollowedStreamersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FollowedStreamersTable,
+			Columns: []string{user.FollowedStreamersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userfollowedstreamer.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.FollowedStreamersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FollowedStreamersTable,
+			Columns: []string{user.FollowedStreamersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userfollowedstreamer.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.NotificationChannelsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotificationChannelsTable,
+			Columns: []string{user.NotificationChannelsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notificationchannel.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedNotificationChannelsIDs(); len(nodes) > 0 && !_u.mutation.NotificationChannelsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotificationChannelsTable,
+			Columns: []string{user.NotificationChannelsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notificationchannel.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.NotificationChannelsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotificationChannelsTable,
+			Columns: []string{user.NotificationChannelsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notificationchannel.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{user.Label}
@@ -229,9 +393,81 @@ func (_u *UserUpdateOne) SetUpdatedAt(v time.Time) *UserUpdateOne {
 	return _u
 }
 
+// AddFollowedStreamerIDs adds the "followed_streamers" edge to the UserFollowedStreamer entity by IDs.
+func (_u *UserUpdateOne) AddFollowedStreamerIDs(ids ...int64) *UserUpdateOne {
+	_u.mutation.AddFollowedStreamerIDs(ids...)
+	return _u
+}
+
+// AddFollowedStreamers adds the "followed_streamers" edges to the UserFollowedStreamer entity.
+func (_u *UserUpdateOne) AddFollowedStreamers(v ...*UserFollowedStreamer) *UserUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddFollowedStreamerIDs(ids...)
+}
+
+// AddNotificationChannelIDs adds the "notification_channels" edge to the NotificationChannel entity by IDs.
+func (_u *UserUpdateOne) AddNotificationChannelIDs(ids ...int64) *UserUpdateOne {
+	_u.mutation.AddNotificationChannelIDs(ids...)
+	return _u
+}
+
+// AddNotificationChannels adds the "notification_channels" edges to the NotificationChannel entity.
+func (_u *UserUpdateOne) AddNotificationChannels(v ...*NotificationChannel) *UserUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddNotificationChannelIDs(ids...)
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (_u *UserUpdateOne) Mutation() *UserMutation {
 	return _u.mutation
+}
+
+// ClearFollowedStreamers clears all "followed_streamers" edges to the UserFollowedStreamer entity.
+func (_u *UserUpdateOne) ClearFollowedStreamers() *UserUpdateOne {
+	_u.mutation.ClearFollowedStreamers()
+	return _u
+}
+
+// RemoveFollowedStreamerIDs removes the "followed_streamers" edge to UserFollowedStreamer entities by IDs.
+func (_u *UserUpdateOne) RemoveFollowedStreamerIDs(ids ...int64) *UserUpdateOne {
+	_u.mutation.RemoveFollowedStreamerIDs(ids...)
+	return _u
+}
+
+// RemoveFollowedStreamers removes "followed_streamers" edges to UserFollowedStreamer entities.
+func (_u *UserUpdateOne) RemoveFollowedStreamers(v ...*UserFollowedStreamer) *UserUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveFollowedStreamerIDs(ids...)
+}
+
+// ClearNotificationChannels clears all "notification_channels" edges to the NotificationChannel entity.
+func (_u *UserUpdateOne) ClearNotificationChannels() *UserUpdateOne {
+	_u.mutation.ClearNotificationChannels()
+	return _u
+}
+
+// RemoveNotificationChannelIDs removes the "notification_channels" edge to NotificationChannel entities by IDs.
+func (_u *UserUpdateOne) RemoveNotificationChannelIDs(ids ...int64) *UserUpdateOne {
+	_u.mutation.RemoveNotificationChannelIDs(ids...)
+	return _u
+}
+
+// RemoveNotificationChannels removes "notification_channels" edges to NotificationChannel entities.
+func (_u *UserUpdateOne) RemoveNotificationChannels(v ...*NotificationChannel) *UserUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveNotificationChannelIDs(ids...)
 }
 
 // Where appends a list predicates to the UserUpdate builder.
@@ -343,6 +579,96 @@ func (_u *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) {
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(user.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if _u.mutation.FollowedStreamersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FollowedStreamersTable,
+			Columns: []string{user.FollowedStreamersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userfollowedstreamer.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedFollowedStreamersIDs(); len(nodes) > 0 && !_u.mutation.FollowedStreamersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FollowedStreamersTable,
+			Columns: []string{user.FollowedStreamersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userfollowedstreamer.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.FollowedStreamersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FollowedStreamersTable,
+			Columns: []string{user.FollowedStreamersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userfollowedstreamer.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.NotificationChannelsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotificationChannelsTable,
+			Columns: []string{user.NotificationChannelsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notificationchannel.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedNotificationChannelsIDs(); len(nodes) > 0 && !_u.mutation.NotificationChannelsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotificationChannelsTable,
+			Columns: []string{user.NotificationChannelsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notificationchannel.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.NotificationChannelsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotificationChannelsTable,
+			Columns: []string{user.NotificationChannelsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notificationchannel.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &User{config: _u.config}
 	_spec.Assign = _node.assignValues

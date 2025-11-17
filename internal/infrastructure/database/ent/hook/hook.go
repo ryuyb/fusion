@@ -9,6 +9,30 @@ import (
 	"github.com/ryuyb/fusion/internal/infrastructure/database/ent"
 )
 
+// The NotificationChannelFunc type is an adapter to allow the use of ordinary
+// function as NotificationChannel mutator.
+type NotificationChannelFunc func(context.Context, *ent.NotificationChannelMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f NotificationChannelFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.NotificationChannelMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.NotificationChannelMutation", m)
+}
+
+// The StreamerFunc type is an adapter to allow the use of ordinary
+// function as Streamer mutator.
+type StreamerFunc func(context.Context, *ent.StreamerMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f StreamerFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.StreamerMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.StreamerMutation", m)
+}
+
 // The StreamingPlatformFunc type is an adapter to allow the use of ordinary
 // function as StreamingPlatform mutator.
 type StreamingPlatformFunc func(context.Context, *ent.StreamingPlatformMutation) (ent.Value, error)
@@ -31,6 +55,18 @@ func (f UserFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error)
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UserMutation", m)
+}
+
+// The UserFollowedStreamerFunc type is an adapter to allow the use of ordinary
+// function as UserFollowedStreamer mutator.
+type UserFollowedStreamerFunc func(context.Context, *ent.UserFollowedStreamerMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f UserFollowedStreamerFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.UserFollowedStreamerMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UserFollowedStreamerMutation", m)
 }
 
 // Condition is a hook condition function.

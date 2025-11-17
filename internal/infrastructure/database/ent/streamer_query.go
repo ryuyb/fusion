@@ -12,59 +12,57 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/notificationchannel"
 	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/predicate"
-	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/user"
+	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/streamer"
 	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/userfollowedstreamer"
 )
 
-// UserQuery is the builder for querying User entities.
-type UserQuery struct {
+// StreamerQuery is the builder for querying Streamer entities.
+type StreamerQuery struct {
 	config
-	ctx                      *QueryContext
-	order                    []user.OrderOption
-	inters                   []Interceptor
-	predicates               []predicate.User
-	withFollowedStreamers    *UserFollowedStreamerQuery
-	withNotificationChannels *NotificationChannelQuery
+	ctx           *QueryContext
+	order         []streamer.OrderOption
+	inters        []Interceptor
+	predicates    []predicate.Streamer
+	withFollowers *UserFollowedStreamerQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
 }
 
-// Where adds a new predicate for the UserQuery builder.
-func (_q *UserQuery) Where(ps ...predicate.User) *UserQuery {
+// Where adds a new predicate for the StreamerQuery builder.
+func (_q *StreamerQuery) Where(ps ...predicate.Streamer) *StreamerQuery {
 	_q.predicates = append(_q.predicates, ps...)
 	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (_q *UserQuery) Limit(limit int) *UserQuery {
+func (_q *StreamerQuery) Limit(limit int) *StreamerQuery {
 	_q.ctx.Limit = &limit
 	return _q
 }
 
 // Offset to start from.
-func (_q *UserQuery) Offset(offset int) *UserQuery {
+func (_q *StreamerQuery) Offset(offset int) *StreamerQuery {
 	_q.ctx.Offset = &offset
 	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (_q *UserQuery) Unique(unique bool) *UserQuery {
+func (_q *StreamerQuery) Unique(unique bool) *StreamerQuery {
 	_q.ctx.Unique = &unique
 	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (_q *UserQuery) Order(o ...user.OrderOption) *UserQuery {
+func (_q *StreamerQuery) Order(o ...streamer.OrderOption) *StreamerQuery {
 	_q.order = append(_q.order, o...)
 	return _q
 }
 
-// QueryFollowedStreamers chains the current query on the "followed_streamers" edge.
-func (_q *UserQuery) QueryFollowedStreamers() *UserFollowedStreamerQuery {
+// QueryFollowers chains the current query on the "followers" edge.
+func (_q *StreamerQuery) QueryFollowers() *UserFollowedStreamerQuery {
 	query := (&UserFollowedStreamerClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := _q.prepareQuery(ctx); err != nil {
@@ -75,9 +73,9 @@ func (_q *UserQuery) QueryFollowedStreamers() *UserFollowedStreamerQuery {
 			return nil, err
 		}
 		step := sqlgraph.NewStep(
-			sqlgraph.From(user.Table, user.FieldID, selector),
+			sqlgraph.From(streamer.Table, streamer.FieldID, selector),
 			sqlgraph.To(userfollowedstreamer.Table, userfollowedstreamer.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.FollowedStreamersTable, user.FollowedStreamersColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, streamer.FollowersTable, streamer.FollowersColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -85,43 +83,21 @@ func (_q *UserQuery) QueryFollowedStreamers() *UserFollowedStreamerQuery {
 	return query
 }
 
-// QueryNotificationChannels chains the current query on the "notification_channels" edge.
-func (_q *UserQuery) QueryNotificationChannels() *NotificationChannelQuery {
-	query := (&NotificationChannelClient{config: _q.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := _q.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := _q.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(user.Table, user.FieldID, selector),
-			sqlgraph.To(notificationchannel.Table, notificationchannel.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.NotificationChannelsTable, user.NotificationChannelsColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// First returns the first User entity from the query.
-// Returns a *NotFoundError when no User was found.
-func (_q *UserQuery) First(ctx context.Context) (*User, error) {
+// First returns the first Streamer entity from the query.
+// Returns a *NotFoundError when no Streamer was found.
+func (_q *StreamerQuery) First(ctx context.Context) (*Streamer, error) {
 	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
-		return nil, &NotFoundError{user.Label}
+		return nil, &NotFoundError{streamer.Label}
 	}
 	return nodes[0], nil
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (_q *UserQuery) FirstX(ctx context.Context) *User {
+func (_q *StreamerQuery) FirstX(ctx context.Context) *Streamer {
 	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -129,22 +105,22 @@ func (_q *UserQuery) FirstX(ctx context.Context) *User {
 	return node
 }
 
-// FirstID returns the first User ID from the query.
-// Returns a *NotFoundError when no User ID was found.
-func (_q *UserQuery) FirstID(ctx context.Context) (id int64, err error) {
+// FirstID returns the first Streamer ID from the query.
+// Returns a *NotFoundError when no Streamer ID was found.
+func (_q *StreamerQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
 	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
-		err = &NotFoundError{user.Label}
+		err = &NotFoundError{streamer.Label}
 		return
 	}
 	return ids[0], nil
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (_q *UserQuery) FirstIDX(ctx context.Context) int64 {
+func (_q *StreamerQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -152,10 +128,10 @@ func (_q *UserQuery) FirstIDX(ctx context.Context) int64 {
 	return id
 }
 
-// Only returns a single User entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when more than one User entity is found.
-// Returns a *NotFoundError when no User entities are found.
-func (_q *UserQuery) Only(ctx context.Context) (*User, error) {
+// Only returns a single Streamer entity found by the query, ensuring it only returns one.
+// Returns a *NotSingularError when more than one Streamer entity is found.
+// Returns a *NotFoundError when no Streamer entities are found.
+func (_q *StreamerQuery) Only(ctx context.Context) (*Streamer, error) {
 	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
@@ -164,14 +140,14 @@ func (_q *UserQuery) Only(ctx context.Context) (*User, error) {
 	case 1:
 		return nodes[0], nil
 	case 0:
-		return nil, &NotFoundError{user.Label}
+		return nil, &NotFoundError{streamer.Label}
 	default:
-		return nil, &NotSingularError{user.Label}
+		return nil, &NotSingularError{streamer.Label}
 	}
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (_q *UserQuery) OnlyX(ctx context.Context) *User {
+func (_q *StreamerQuery) OnlyX(ctx context.Context) *Streamer {
 	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
@@ -179,10 +155,10 @@ func (_q *UserQuery) OnlyX(ctx context.Context) *User {
 	return node
 }
 
-// OnlyID is like Only, but returns the only User ID in the query.
-// Returns a *NotSingularError when more than one User ID is found.
+// OnlyID is like Only, but returns the only Streamer ID in the query.
+// Returns a *NotSingularError when more than one Streamer ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (_q *UserQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *StreamerQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
 	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
@@ -191,15 +167,15 @@ func (_q *UserQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	case 1:
 		id = ids[0]
 	case 0:
-		err = &NotFoundError{user.Label}
+		err = &NotFoundError{streamer.Label}
 	default:
-		err = &NotSingularError{user.Label}
+		err = &NotSingularError{streamer.Label}
 	}
 	return
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (_q *UserQuery) OnlyIDX(ctx context.Context) int64 {
+func (_q *StreamerQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -207,18 +183,18 @@ func (_q *UserQuery) OnlyIDX(ctx context.Context) int64 {
 	return id
 }
 
-// All executes the query and returns a list of Users.
-func (_q *UserQuery) All(ctx context.Context) ([]*User, error) {
+// All executes the query and returns a list of Streamers.
+func (_q *StreamerQuery) All(ctx context.Context) ([]*Streamer, error) {
 	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
 	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
-	qr := querierAll[[]*User, *UserQuery]()
-	return withInterceptors[[]*User](ctx, _q, qr, _q.inters)
+	qr := querierAll[[]*Streamer, *StreamerQuery]()
+	return withInterceptors[[]*Streamer](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (_q *UserQuery) AllX(ctx context.Context) []*User {
+func (_q *StreamerQuery) AllX(ctx context.Context) []*Streamer {
 	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
@@ -226,20 +202,20 @@ func (_q *UserQuery) AllX(ctx context.Context) []*User {
 	return nodes
 }
 
-// IDs executes the query and returns a list of User IDs.
-func (_q *UserQuery) IDs(ctx context.Context) (ids []int64, err error) {
+// IDs executes the query and returns a list of Streamer IDs.
+func (_q *StreamerQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if _q.ctx.Unique == nil && _q.path != nil {
 		_q.Unique(true)
 	}
 	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
-	if err = _q.Select(user.FieldID).Scan(ctx, &ids); err != nil {
+	if err = _q.Select(streamer.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (_q *UserQuery) IDsX(ctx context.Context) []int64 {
+func (_q *StreamerQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -248,16 +224,16 @@ func (_q *UserQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (_q *UserQuery) Count(ctx context.Context) (int, error) {
+func (_q *StreamerQuery) Count(ctx context.Context) (int, error) {
 	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
 	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, _q, querierCount[*UserQuery](), _q.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*StreamerQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (_q *UserQuery) CountX(ctx context.Context) int {
+func (_q *StreamerQuery) CountX(ctx context.Context) int {
 	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
@@ -266,7 +242,7 @@ func (_q *UserQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (_q *UserQuery) Exist(ctx context.Context) (bool, error) {
+func (_q *StreamerQuery) Exist(ctx context.Context) (bool, error) {
 	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
 	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
@@ -279,7 +255,7 @@ func (_q *UserQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (_q *UserQuery) ExistX(ctx context.Context) bool {
+func (_q *StreamerQuery) ExistX(ctx context.Context) bool {
 	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
@@ -287,45 +263,33 @@ func (_q *UserQuery) ExistX(ctx context.Context) bool {
 	return exist
 }
 
-// Clone returns a duplicate of the UserQuery builder, including all associated steps. It can be
+// Clone returns a duplicate of the StreamerQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (_q *UserQuery) Clone() *UserQuery {
+func (_q *StreamerQuery) Clone() *StreamerQuery {
 	if _q == nil {
 		return nil
 	}
-	return &UserQuery{
-		config:                   _q.config,
-		ctx:                      _q.ctx.Clone(),
-		order:                    append([]user.OrderOption{}, _q.order...),
-		inters:                   append([]Interceptor{}, _q.inters...),
-		predicates:               append([]predicate.User{}, _q.predicates...),
-		withFollowedStreamers:    _q.withFollowedStreamers.Clone(),
-		withNotificationChannels: _q.withNotificationChannels.Clone(),
+	return &StreamerQuery{
+		config:        _q.config,
+		ctx:           _q.ctx.Clone(),
+		order:         append([]streamer.OrderOption{}, _q.order...),
+		inters:        append([]Interceptor{}, _q.inters...),
+		predicates:    append([]predicate.Streamer{}, _q.predicates...),
+		withFollowers: _q.withFollowers.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
 	}
 }
 
-// WithFollowedStreamers tells the query-builder to eager-load the nodes that are connected to
-// the "followed_streamers" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *UserQuery) WithFollowedStreamers(opts ...func(*UserFollowedStreamerQuery)) *UserQuery {
+// WithFollowers tells the query-builder to eager-load the nodes that are connected to
+// the "followers" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *StreamerQuery) WithFollowers(opts ...func(*UserFollowedStreamerQuery)) *StreamerQuery {
 	query := (&UserFollowedStreamerClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	_q.withFollowedStreamers = query
-	return _q
-}
-
-// WithNotificationChannels tells the query-builder to eager-load the nodes that are connected to
-// the "notification_channels" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *UserQuery) WithNotificationChannels(opts ...func(*NotificationChannelQuery)) *UserQuery {
-	query := (&NotificationChannelClient{config: _q.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	_q.withNotificationChannels = query
+	_q.withFollowers = query
 	return _q
 }
 
@@ -335,19 +299,19 @@ func (_q *UserQuery) WithNotificationChannels(opts ...func(*NotificationChannelQ
 // Example:
 //
 //	var v []struct {
-//		Username string `json:"username,omitempty"`
+//		PlatformType string `json:"platform_type,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
-//	client.User.Query().
-//		GroupBy(user.FieldUsername).
+//	client.Streamer.Query().
+//		GroupBy(streamer.FieldPlatformType).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (_q *UserQuery) GroupBy(field string, fields ...string) *UserGroupBy {
+func (_q *StreamerQuery) GroupBy(field string, fields ...string) *StreamerGroupBy {
 	_q.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &UserGroupBy{build: _q}
+	grbuild := &StreamerGroupBy{build: _q}
 	grbuild.flds = &_q.ctx.Fields
-	grbuild.label = user.Label
+	grbuild.label = streamer.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
 }
@@ -358,26 +322,26 @@ func (_q *UserQuery) GroupBy(field string, fields ...string) *UserGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Username string `json:"username,omitempty"`
+//		PlatformType string `json:"platform_type,omitempty"`
 //	}
 //
-//	client.User.Query().
-//		Select(user.FieldUsername).
+//	client.Streamer.Query().
+//		Select(streamer.FieldPlatformType).
 //		Scan(ctx, &v)
-func (_q *UserQuery) Select(fields ...string) *UserSelect {
+func (_q *StreamerQuery) Select(fields ...string) *StreamerSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
-	sbuild := &UserSelect{UserQuery: _q}
-	sbuild.label = user.Label
+	sbuild := &StreamerSelect{StreamerQuery: _q}
+	sbuild.label = streamer.Label
 	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
-// Aggregate returns a UserSelect configured with the given aggregations.
-func (_q *UserQuery) Aggregate(fns ...AggregateFunc) *UserSelect {
+// Aggregate returns a StreamerSelect configured with the given aggregations.
+func (_q *StreamerQuery) Aggregate(fns ...AggregateFunc) *StreamerSelect {
 	return _q.Select().Aggregate(fns...)
 }
 
-func (_q *UserQuery) prepareQuery(ctx context.Context) error {
+func (_q *StreamerQuery) prepareQuery(ctx context.Context) error {
 	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
@@ -389,7 +353,7 @@ func (_q *UserQuery) prepareQuery(ctx context.Context) error {
 		}
 	}
 	for _, f := range _q.ctx.Fields {
-		if !user.ValidColumn(f) {
+		if !streamer.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
@@ -403,20 +367,19 @@ func (_q *UserQuery) prepareQuery(ctx context.Context) error {
 	return nil
 }
 
-func (_q *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, error) {
+func (_q *StreamerQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Streamer, error) {
 	var (
-		nodes       = []*User{}
+		nodes       = []*Streamer{}
 		_spec       = _q.querySpec()
-		loadedTypes = [2]bool{
-			_q.withFollowedStreamers != nil,
-			_q.withNotificationChannels != nil,
+		loadedTypes = [1]bool{
+			_q.withFollowers != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
-		return (*User).scanValues(nil, columns)
+		return (*Streamer).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &User{config: _q.config}
+		node := &Streamer{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
@@ -430,30 +393,19 @@ func (_q *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := _q.withFollowedStreamers; query != nil {
-		if err := _q.loadFollowedStreamers(ctx, query, nodes,
-			func(n *User) { n.Edges.FollowedStreamers = []*UserFollowedStreamer{} },
-			func(n *User, e *UserFollowedStreamer) {
-				n.Edges.FollowedStreamers = append(n.Edges.FollowedStreamers, e)
-			}); err != nil {
-			return nil, err
-		}
-	}
-	if query := _q.withNotificationChannels; query != nil {
-		if err := _q.loadNotificationChannels(ctx, query, nodes,
-			func(n *User) { n.Edges.NotificationChannels = []*NotificationChannel{} },
-			func(n *User, e *NotificationChannel) {
-				n.Edges.NotificationChannels = append(n.Edges.NotificationChannels, e)
-			}); err != nil {
+	if query := _q.withFollowers; query != nil {
+		if err := _q.loadFollowers(ctx, query, nodes,
+			func(n *Streamer) { n.Edges.Followers = []*UserFollowedStreamer{} },
+			func(n *Streamer, e *UserFollowedStreamer) { n.Edges.Followers = append(n.Edges.Followers, e) }); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (_q *UserQuery) loadFollowedStreamers(ctx context.Context, query *UserFollowedStreamerQuery, nodes []*User, init func(*User), assign func(*User, *UserFollowedStreamer)) error {
+func (_q *StreamerQuery) loadFollowers(ctx context.Context, query *UserFollowedStreamerQuery, nodes []*Streamer, init func(*Streamer), assign func(*Streamer, *UserFollowedStreamer)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int64]*User)
+	nodeids := make(map[int64]*Streamer)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -462,57 +414,27 @@ func (_q *UserQuery) loadFollowedStreamers(ctx context.Context, query *UserFollo
 		}
 	}
 	if len(query.ctx.Fields) > 0 {
-		query.ctx.AppendFieldOnce(userfollowedstreamer.FieldUserID)
+		query.ctx.AppendFieldOnce(userfollowedstreamer.FieldStreamerID)
 	}
 	query.Where(predicate.UserFollowedStreamer(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(user.FollowedStreamersColumn), fks...))
+		s.Where(sql.InValues(s.C(streamer.FollowersColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.UserID
+		fk := n.StreamerID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "user_id" returned %v for node %v`, fk, n.ID)
-		}
-		assign(node, n)
-	}
-	return nil
-}
-func (_q *UserQuery) loadNotificationChannels(ctx context.Context, query *NotificationChannelQuery, nodes []*User, init func(*User), assign func(*User, *NotificationChannel)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int64]*User)
-	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
-		}
-	}
-	if len(query.ctx.Fields) > 0 {
-		query.ctx.AppendFieldOnce(notificationchannel.FieldUserID)
-	}
-	query.Where(predicate.NotificationChannel(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(user.NotificationChannelsColumn), fks...))
-	}))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		fk := n.UserID
-		node, ok := nodeids[fk]
-		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "user_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "streamer_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
 	return nil
 }
 
-func (_q *UserQuery) sqlCount(ctx context.Context) (int, error) {
+func (_q *StreamerQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := _q.querySpec()
 	_spec.Node.Columns = _q.ctx.Fields
 	if len(_q.ctx.Fields) > 0 {
@@ -521,8 +443,8 @@ func (_q *UserQuery) sqlCount(ctx context.Context) (int, error) {
 	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (_q *UserQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64))
+func (_q *StreamerQuery) querySpec() *sqlgraph.QuerySpec {
+	_spec := sqlgraph.NewQuerySpec(streamer.Table, streamer.Columns, sqlgraph.NewFieldSpec(streamer.FieldID, field.TypeInt64))
 	_spec.From = _q.sql
 	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
@@ -531,9 +453,9 @@ func (_q *UserQuery) querySpec() *sqlgraph.QuerySpec {
 	}
 	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
-		_spec.Node.Columns = append(_spec.Node.Columns, user.FieldID)
+		_spec.Node.Columns = append(_spec.Node.Columns, streamer.FieldID)
 		for i := range fields {
-			if fields[i] != user.FieldID {
+			if fields[i] != streamer.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
@@ -561,12 +483,12 @@ func (_q *UserQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (_q *UserQuery) sqlQuery(ctx context.Context) *sql.Selector {
+func (_q *StreamerQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	builder := sql.Dialect(_q.driver.Dialect())
-	t1 := builder.Table(user.Table)
+	t1 := builder.Table(streamer.Table)
 	columns := _q.ctx.Fields
 	if len(columns) == 0 {
-		columns = user.Columns
+		columns = streamer.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
 	if _q.sql != nil {
@@ -593,28 +515,28 @@ func (_q *UserQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	return selector
 }
 
-// UserGroupBy is the group-by builder for User entities.
-type UserGroupBy struct {
+// StreamerGroupBy is the group-by builder for Streamer entities.
+type StreamerGroupBy struct {
 	selector
-	build *UserQuery
+	build *StreamerQuery
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (_g *UserGroupBy) Aggregate(fns ...AggregateFunc) *UserGroupBy {
+func (_g *StreamerGroupBy) Aggregate(fns ...AggregateFunc) *StreamerGroupBy {
 	_g.fns = append(_g.fns, fns...)
 	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (_g *UserGroupBy) Scan(ctx context.Context, v any) error {
+func (_g *StreamerGroupBy) Scan(ctx context.Context, v any) error {
 	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
 	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*UserQuery, *UserGroupBy](ctx, _g.build, _g, _g.build.inters, v)
+	return scanWithInterceptors[*StreamerQuery, *StreamerGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (_g *UserGroupBy) sqlScan(ctx context.Context, root *UserQuery, v any) error {
+func (_g *StreamerGroupBy) sqlScan(ctx context.Context, root *StreamerQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
 	aggregation := make([]string, 0, len(_g.fns))
 	for _, fn := range _g.fns {
@@ -641,28 +563,28 @@ func (_g *UserGroupBy) sqlScan(ctx context.Context, root *UserQuery, v any) erro
 	return sql.ScanSlice(rows, v)
 }
 
-// UserSelect is the builder for selecting fields of User entities.
-type UserSelect struct {
-	*UserQuery
+// StreamerSelect is the builder for selecting fields of Streamer entities.
+type StreamerSelect struct {
+	*StreamerQuery
 	selector
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (_s *UserSelect) Aggregate(fns ...AggregateFunc) *UserSelect {
+func (_s *StreamerSelect) Aggregate(fns ...AggregateFunc) *StreamerSelect {
 	_s.fns = append(_s.fns, fns...)
 	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (_s *UserSelect) Scan(ctx context.Context, v any) error {
+func (_s *StreamerSelect) Scan(ctx context.Context, v any) error {
 	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
 	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*UserQuery, *UserSelect](ctx, _s.UserQuery, _s, _s.inters, v)
+	return scanWithInterceptors[*StreamerQuery, *StreamerSelect](ctx, _s.StreamerQuery, _s, _s.inters, v)
 }
 
-func (_s *UserSelect) sqlScan(ctx context.Context, root *UserQuery, v any) error {
+func (_s *StreamerSelect) sqlScan(ctx context.Context, root *StreamerQuery, v any) error {
 	selector := root.sqlQuery(ctx)
 	aggregation := make([]string, 0, len(_s.fns))
 	for _, fn := range _s.fns {

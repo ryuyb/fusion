@@ -8,6 +8,81 @@ import (
 )
 
 var (
+	// NotificationChannelsColumns holds the columns for the "notification_channels" table.
+	NotificationChannelsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "channel_type", Type: field.TypeString},
+		{Name: "name", Type: field.TypeString},
+		{Name: "config", Type: field.TypeJSON, Nullable: true},
+		{Name: "enable", Type: field.TypeBool, Default: true},
+		{Name: "priority", Type: field.TypeInt, Default: 0},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "user_id", Type: field.TypeInt64},
+	}
+	// NotificationChannelsTable holds the schema information for the "notification_channels" table.
+	NotificationChannelsTable = &schema.Table{
+		Name:       "notification_channels",
+		Columns:    NotificationChannelsColumns,
+		PrimaryKey: []*schema.Column{NotificationChannelsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "notification_channels_users_notification_channels",
+				Columns:    []*schema.Column{NotificationChannelsColumns[8]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "notificationchannel_user_id",
+				Unique:  false,
+				Columns: []*schema.Column{NotificationChannelsColumns[8]},
+			},
+			{
+				Name:    "notificationchannel_channel_type",
+				Unique:  false,
+				Columns: []*schema.Column{NotificationChannelsColumns[1]},
+			},
+			{
+				Name:    "notificationchannel_user_id_name",
+				Unique:  true,
+				Columns: []*schema.Column{NotificationChannelsColumns[8], NotificationChannelsColumns[2]},
+			},
+		},
+	}
+	// StreamersColumns holds the columns for the "streamers" table.
+	StreamersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "platform_type", Type: field.TypeString},
+		{Name: "platform_streamer_id", Type: field.TypeString},
+		{Name: "display_name", Type: field.TypeString},
+		{Name: "avatar_url", Type: field.TypeString, Nullable: true},
+		{Name: "room_url", Type: field.TypeString, Nullable: true},
+		{Name: "bio", Type: field.TypeString, Nullable: true},
+		{Name: "tags", Type: field.TypeJSON, Nullable: true},
+		{Name: "last_synced_at", Type: field.TypeTime, Nullable: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+	}
+	// StreamersTable holds the schema information for the "streamers" table.
+	StreamersTable = &schema.Table{
+		Name:       "streamers",
+		Columns:    StreamersColumns,
+		PrimaryKey: []*schema.Column{StreamersColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "streamer_platform_type_platform_streamer_id",
+				Unique:  true,
+				Columns: []*schema.Column{StreamersColumns[1], StreamersColumns[2]},
+			},
+			{
+				Name:    "streamer_display_name",
+				Unique:  false,
+				Columns: []*schema.Column{StreamersColumns[3]},
+			},
+		},
+	}
 	// StreamingPlatformsColumns holds the columns for the "streaming_platforms" table.
 	StreamingPlatformsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
@@ -67,12 +142,68 @@ var (
 			},
 		},
 	}
+	// UserFollowedStreamersColumns holds the columns for the "user_followed_streamers" table.
+	UserFollowedStreamersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "alias", Type: field.TypeString, Nullable: true},
+		{Name: "notes", Type: field.TypeString, Nullable: true},
+		{Name: "notifications_enabled", Type: field.TypeBool, Default: true},
+		{Name: "notification_channel_ids", Type: field.TypeJSON, Nullable: true},
+		{Name: "last_notification_sent_at", Type: field.TypeTime, Nullable: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "streamer_id", Type: field.TypeInt64},
+		{Name: "user_id", Type: field.TypeInt64},
+	}
+	// UserFollowedStreamersTable holds the schema information for the "user_followed_streamers" table.
+	UserFollowedStreamersTable = &schema.Table{
+		Name:       "user_followed_streamers",
+		Columns:    UserFollowedStreamersColumns,
+		PrimaryKey: []*schema.Column{UserFollowedStreamersColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "user_followed_streamers_streamers_followers",
+				Columns:    []*schema.Column{UserFollowedStreamersColumns[8]},
+				RefColumns: []*schema.Column{StreamersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "user_followed_streamers_users_followed_streamers",
+				Columns:    []*schema.Column{UserFollowedStreamersColumns[9]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "userfollowedstreamer_user_id",
+				Unique:  false,
+				Columns: []*schema.Column{UserFollowedStreamersColumns[9]},
+			},
+			{
+				Name:    "userfollowedstreamer_streamer_id",
+				Unique:  false,
+				Columns: []*schema.Column{UserFollowedStreamersColumns[8]},
+			},
+			{
+				Name:    "userfollowedstreamer_user_id_streamer_id",
+				Unique:  true,
+				Columns: []*schema.Column{UserFollowedStreamersColumns[9], UserFollowedStreamersColumns[8]},
+			},
+		},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		NotificationChannelsTable,
+		StreamersTable,
 		StreamingPlatformsTable,
 		UsersTable,
+		UserFollowedStreamersTable,
 	}
 )
 
 func init() {
+	NotificationChannelsTable.ForeignKeys[0].RefTable = UsersTable
+	UserFollowedStreamersTable.ForeignKeys[0].RefTable = StreamersTable
+	UserFollowedStreamersTable.ForeignKeys[1].RefTable = UsersTable
 }

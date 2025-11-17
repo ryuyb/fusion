@@ -5,8 +5,11 @@ package ent
 import (
 	"time"
 
+	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/notificationchannel"
+	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/streamer"
 	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/streamingplatform"
 	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/user"
+	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/userfollowedstreamer"
 	"github.com/ryuyb/fusion/internal/infrastructure/database/schema"
 )
 
@@ -14,6 +17,70 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	notificationchannelFields := schema.NotificationChannel{}.Fields()
+	_ = notificationchannelFields
+	// notificationchannelDescUserID is the schema descriptor for user_id field.
+	notificationchannelDescUserID := notificationchannelFields[1].Descriptor()
+	// notificationchannel.UserIDValidator is a validator for the "user_id" field. It is called by the builders before save.
+	notificationchannel.UserIDValidator = notificationchannelDescUserID.Validators[0].(func(int64) error)
+	// notificationchannelDescChannelType is the schema descriptor for channel_type field.
+	notificationchannelDescChannelType := notificationchannelFields[2].Descriptor()
+	// notificationchannel.ChannelTypeValidator is a validator for the "channel_type" field. It is called by the builders before save.
+	notificationchannel.ChannelTypeValidator = notificationchannelDescChannelType.Validators[0].(func(string) error)
+	// notificationchannelDescName is the schema descriptor for name field.
+	notificationchannelDescName := notificationchannelFields[3].Descriptor()
+	// notificationchannel.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	notificationchannel.NameValidator = notificationchannelDescName.Validators[0].(func(string) error)
+	// notificationchannelDescConfig is the schema descriptor for config field.
+	notificationchannelDescConfig := notificationchannelFields[4].Descriptor()
+	// notificationchannel.DefaultConfig holds the default value on creation for the config field.
+	notificationchannel.DefaultConfig = notificationchannelDescConfig.Default.(map[string]interface{})
+	// notificationchannelDescEnable is the schema descriptor for enable field.
+	notificationchannelDescEnable := notificationchannelFields[5].Descriptor()
+	// notificationchannel.DefaultEnable holds the default value on creation for the enable field.
+	notificationchannel.DefaultEnable = notificationchannelDescEnable.Default.(bool)
+	// notificationchannelDescPriority is the schema descriptor for priority field.
+	notificationchannelDescPriority := notificationchannelFields[6].Descriptor()
+	// notificationchannel.DefaultPriority holds the default value on creation for the priority field.
+	notificationchannel.DefaultPriority = notificationchannelDescPriority.Default.(int)
+	// notificationchannelDescCreatedAt is the schema descriptor for created_at field.
+	notificationchannelDescCreatedAt := notificationchannelFields[7].Descriptor()
+	// notificationchannel.DefaultCreatedAt holds the default value on creation for the created_at field.
+	notificationchannel.DefaultCreatedAt = notificationchannelDescCreatedAt.Default.(func() time.Time)
+	// notificationchannelDescUpdatedAt is the schema descriptor for updated_at field.
+	notificationchannelDescUpdatedAt := notificationchannelFields[8].Descriptor()
+	// notificationchannel.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	notificationchannel.DefaultUpdatedAt = notificationchannelDescUpdatedAt.Default.(func() time.Time)
+	// notificationchannel.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	notificationchannel.UpdateDefaultUpdatedAt = notificationchannelDescUpdatedAt.UpdateDefault.(func() time.Time)
+	streamerFields := schema.Streamer{}.Fields()
+	_ = streamerFields
+	// streamerDescPlatformType is the schema descriptor for platform_type field.
+	streamerDescPlatformType := streamerFields[1].Descriptor()
+	// streamer.PlatformTypeValidator is a validator for the "platform_type" field. It is called by the builders before save.
+	streamer.PlatformTypeValidator = streamerDescPlatformType.Validators[0].(func(string) error)
+	// streamerDescPlatformStreamerID is the schema descriptor for platform_streamer_id field.
+	streamerDescPlatformStreamerID := streamerFields[2].Descriptor()
+	// streamer.PlatformStreamerIDValidator is a validator for the "platform_streamer_id" field. It is called by the builders before save.
+	streamer.PlatformStreamerIDValidator = streamerDescPlatformStreamerID.Validators[0].(func(string) error)
+	// streamerDescDisplayName is the schema descriptor for display_name field.
+	streamerDescDisplayName := streamerFields[3].Descriptor()
+	// streamer.DisplayNameValidator is a validator for the "display_name" field. It is called by the builders before save.
+	streamer.DisplayNameValidator = streamerDescDisplayName.Validators[0].(func(string) error)
+	// streamerDescTags is the schema descriptor for tags field.
+	streamerDescTags := streamerFields[7].Descriptor()
+	// streamer.DefaultTags holds the default value on creation for the tags field.
+	streamer.DefaultTags = streamerDescTags.Default.([]string)
+	// streamerDescCreatedAt is the schema descriptor for created_at field.
+	streamerDescCreatedAt := streamerFields[9].Descriptor()
+	// streamer.DefaultCreatedAt holds the default value on creation for the created_at field.
+	streamer.DefaultCreatedAt = streamerDescCreatedAt.Default.(func() time.Time)
+	// streamerDescUpdatedAt is the schema descriptor for updated_at field.
+	streamerDescUpdatedAt := streamerFields[10].Descriptor()
+	// streamer.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	streamer.DefaultUpdatedAt = streamerDescUpdatedAt.Default.(func() time.Time)
+	// streamer.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	streamer.UpdateDefaultUpdatedAt = streamerDescUpdatedAt.UpdateDefault.(func() time.Time)
 	streamingplatformFields := schema.StreamingPlatform{}.Fields()
 	_ = streamingplatformFields
 	// streamingplatformDescType is the schema descriptor for type field.
@@ -74,4 +141,32 @@ func init() {
 	user.DefaultUpdatedAt = userDescUpdatedAt.Default.(func() time.Time)
 	// user.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	user.UpdateDefaultUpdatedAt = userDescUpdatedAt.UpdateDefault.(func() time.Time)
+	userfollowedstreamerFields := schema.UserFollowedStreamer{}.Fields()
+	_ = userfollowedstreamerFields
+	// userfollowedstreamerDescUserID is the schema descriptor for user_id field.
+	userfollowedstreamerDescUserID := userfollowedstreamerFields[1].Descriptor()
+	// userfollowedstreamer.UserIDValidator is a validator for the "user_id" field. It is called by the builders before save.
+	userfollowedstreamer.UserIDValidator = userfollowedstreamerDescUserID.Validators[0].(func(int64) error)
+	// userfollowedstreamerDescStreamerID is the schema descriptor for streamer_id field.
+	userfollowedstreamerDescStreamerID := userfollowedstreamerFields[2].Descriptor()
+	// userfollowedstreamer.StreamerIDValidator is a validator for the "streamer_id" field. It is called by the builders before save.
+	userfollowedstreamer.StreamerIDValidator = userfollowedstreamerDescStreamerID.Validators[0].(func(int64) error)
+	// userfollowedstreamerDescNotificationsEnabled is the schema descriptor for notifications_enabled field.
+	userfollowedstreamerDescNotificationsEnabled := userfollowedstreamerFields[5].Descriptor()
+	// userfollowedstreamer.DefaultNotificationsEnabled holds the default value on creation for the notifications_enabled field.
+	userfollowedstreamer.DefaultNotificationsEnabled = userfollowedstreamerDescNotificationsEnabled.Default.(bool)
+	// userfollowedstreamerDescNotificationChannelIds is the schema descriptor for notification_channel_ids field.
+	userfollowedstreamerDescNotificationChannelIds := userfollowedstreamerFields[6].Descriptor()
+	// userfollowedstreamer.DefaultNotificationChannelIds holds the default value on creation for the notification_channel_ids field.
+	userfollowedstreamer.DefaultNotificationChannelIds = userfollowedstreamerDescNotificationChannelIds.Default.([]int64)
+	// userfollowedstreamerDescCreatedAt is the schema descriptor for created_at field.
+	userfollowedstreamerDescCreatedAt := userfollowedstreamerFields[8].Descriptor()
+	// userfollowedstreamer.DefaultCreatedAt holds the default value on creation for the created_at field.
+	userfollowedstreamer.DefaultCreatedAt = userfollowedstreamerDescCreatedAt.Default.(func() time.Time)
+	// userfollowedstreamerDescUpdatedAt is the schema descriptor for updated_at field.
+	userfollowedstreamerDescUpdatedAt := userfollowedstreamerFields[9].Descriptor()
+	// userfollowedstreamer.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	userfollowedstreamer.DefaultUpdatedAt = userfollowedstreamerDescUpdatedAt.Default.(func() time.Time)
+	// userfollowedstreamer.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	userfollowedstreamer.UpdateDefaultUpdatedAt = userfollowedstreamerDescUpdatedAt.UpdateDefault.(func() time.Time)
 }
