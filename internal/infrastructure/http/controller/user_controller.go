@@ -18,9 +18,9 @@ type UserController struct {
 	service service.UserService
 }
 
-// Create Create new user
+// Create creates a new user
 //
-//	@Summary	Create user
+//	@Summary	Create User
 //	@Tags		User
 //	@Accept		json
 //	@Produce	json
@@ -49,9 +49,9 @@ func (u *UserController) Create(ctx fiber.Ctx) error {
 	return ctx.Status(fiber.StatusCreated).JSON(u.toResponse(create))
 }
 
-// Update Update user info
+// Update updates user info
 //
-//	@Summary	Update user
+//	@Summary	Update User
 //	@Tags		User
 //	@Accept		json
 //	@Produce	json
@@ -84,9 +84,9 @@ func (u *UserController) Update(ctx fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(u.toResponse(update))
 }
 
-// GetByID Get user by id
+// GetByID gets a user by id
 //
-//	@Summary	Get user By ID
+//	@Summary	Get User
 //	@Tags		User
 //	@Produce	json
 //	@Param		id	path	int	true	"User ID"
@@ -106,9 +106,9 @@ func (u *UserController) GetByID(ctx fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(u.toResponse(user))
 }
 
-// DeleteByID Delete user by user id
+// DeleteByID deletes a user by id
 //
-//	@Summary	Delete user by user ID
+//	@Summary	Delete User
 //	@Tags		User
 //	@Produce	json
 //	@Param		id	path	int	true	"User ID"
@@ -127,9 +127,9 @@ func (u *UserController) DeleteByID(ctx fiber.Ctx) error {
 	return ctx.SendStatus(fiber.StatusOK)
 }
 
-// List List all users by page
+// List lists users with pagination
 //
-//	@Summary	List all users by page
+//	@Summary	List Users
 //	@Tags		User
 //	@Produce	json
 //	@Param		page		query	int	false	"page"		default(1)

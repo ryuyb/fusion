@@ -24,6 +24,10 @@ var Module = fx.Module("http",
 		controller.NewHealthController,
 		controller.NewUserController,
 		controller.NewAuthController,
+		controller.NewStreamingPlatformController,
+		controller.NewStreamerController,
+		controller.NewNotificationChannelController,
+		controller.NewUserFollowedStreamerController,
 	),
 
 	fx.Provide(

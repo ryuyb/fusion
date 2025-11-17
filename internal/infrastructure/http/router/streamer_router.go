@@ -1,0 +1,23 @@
+package router
+
+import (
+	"github.com/gofiber/fiber/v3"
+	"github.com/ryuyb/fusion/internal/infrastructure/http/controller"
+)
+
+type StreamerRouter struct {
+	controller *controller.StreamerController
+}
+
+func NewStreamerRouter(controller *controller.StreamerController) Router {
+	return &StreamerRouter{controller: controller}
+}
+
+func (r *StreamerRouter) RegisterRouters(router fiber.Router) {
+	group := router.Group("/streamers")
+	group.Post("/", r.controller.Create)
+	group.Put("/:id", r.controller.Update)
+	group.Delete("/:id", r.controller.Delete)
+	group.Get("/:id", r.controller.GetByID)
+	group.Get("/", r.controller.List)
+}

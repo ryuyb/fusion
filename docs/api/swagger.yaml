@@ -1,5 +1,78 @@
 basePath: /api/v1
 definitions:
+  dto.CreateNotificationChannelRequest:
+    properties:
+      channel_type:
+        type: string
+      config:
+        additionalProperties: {}
+        type: object
+      enable:
+        type: boolean
+      name:
+        type: string
+      priority:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  dto.CreateStreamerRequest:
+    properties:
+      avatar_url:
+        type: string
+      bio:
+        type: string
+      display_name:
+        type: string
+      platform_streamer_id:
+        type: string
+      platform_type:
+        type: string
+      room_url:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+    type: object
+  dto.CreateStreamingPlatformRequest:
+    properties:
+      base_url:
+        type: string
+      description:
+        type: string
+      enabled:
+        type: boolean
+      logo_url:
+        type: string
+      metadata:
+        additionalProperties:
+          type: string
+        type: object
+      name:
+        type: string
+      priority:
+        type: integer
+      type:
+        type: string
+    type: object
+  dto.CreateUserFollowedStreamerRequest:
+    properties:
+      alias:
+        type: string
+      notes:
+        type: string
+      notification_channel_ids:
+        items:
+          type: integer
+        type: array
+      notifications_enabled:
+        type: boolean
+      streamer_id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
   dto.CreateUserRequest:
     properties:
       confirm_password:
@@ -37,6 +110,84 @@ definitions:
       token:
         type: string
     type: object
+  dto.NotificationChannelResponse:
+    properties:
+      channel_type:
+        type: string
+      config:
+        additionalProperties: {}
+        type: object
+      enable:
+        type: boolean
+      id:
+        type: integer
+      name:
+        type: string
+      priority:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  dto.PaginationResponse-dto_NotificationChannelResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.NotificationChannelResponse'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+  dto.PaginationResponse-dto_StreamerResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.StreamerResponse'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+  dto.PaginationResponse-dto_StreamingPlatformResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.StreamingPlatformResponse'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+  dto.PaginationResponse-dto_UserFollowedStreamerResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.UserFollowedStreamerResponse'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
   dto.PaginationResponse-dto_UserResponse:
     properties:
       data:
@@ -72,6 +223,127 @@ definitions:
     - password
     - username
     type: object
+  dto.StreamerResponse:
+    properties:
+      avatar_url:
+        type: string
+      bio:
+        type: string
+      display_name:
+        type: string
+      id:
+        type: integer
+      platform_streamer_id:
+        type: string
+      platform_type:
+        type: string
+      room_url:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+    type: object
+  dto.StreamingPlatformResponse:
+    properties:
+      base_url:
+        type: string
+      description:
+        type: string
+      enabled:
+        type: boolean
+      id:
+        type: integer
+      logo_url:
+        type: string
+      metadata:
+        additionalProperties:
+          type: string
+        type: object
+      name:
+        type: string
+      priority:
+        type: integer
+      type:
+        type: string
+    type: object
+  dto.UpdateNotificationChannelRequest:
+    properties:
+      channel_type:
+        type: string
+      config:
+        additionalProperties: {}
+        type: object
+      enable:
+        type: boolean
+      id:
+        type: integer
+      name:
+        type: string
+      priority:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  dto.UpdateStreamerRequest:
+    properties:
+      avatar_url:
+        type: string
+      bio:
+        type: string
+      display_name:
+        type: string
+      id:
+        type: integer
+      platform_streamer_id:
+        type: string
+      platform_type:
+        type: string
+      room_url:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+    type: object
+  dto.UpdateStreamingPlatformRequest:
+    properties:
+      base_url:
+        type: string
+      description:
+        type: string
+      enabled:
+        type: boolean
+      id:
+        type: integer
+      logo_url:
+        type: string
+      metadata:
+        additionalProperties:
+          type: string
+        type: object
+      name:
+        type: string
+      priority:
+        type: integer
+      type:
+        type: string
+    type: object
+  dto.UpdateUserFollowedStreamerRequest:
+    properties:
+      alias:
+        type: string
+      id:
+        type: integer
+      notes:
+        type: string
+      notification_channel_ids:
+        items:
+          type: integer
+        type: array
+      notifications_enabled:
+        type: boolean
+    type: object
   dto.UpdateUserRequest:
     properties:
       confirm_password:
@@ -95,6 +367,25 @@ definitions:
     - id
     - password
     - username
+    type: object
+  dto.UserFollowedStreamerResponse:
+    properties:
+      alias:
+        type: string
+      id:
+        type: integer
+      notes:
+        type: string
+      notification_channel_ids:
+        items:
+          type: integer
+        type: array
+      notifications_enabled:
+        type: boolean
+      streamer_id:
+        type: integer
+      user_id:
+        type: integer
     type: object
   dto.UserResponse:
     properties:
@@ -137,7 +428,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/dto.LoginResponse'
-      summary: Login
+      summary: Login User
       tags:
       - Auth
   /auth/register:
@@ -156,9 +447,156 @@ paths:
       responses:
         "200":
           description: OK
-      summary: Register
+      summary: Register User
       tags:
       - Auth
+  /follows:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Follow data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateUserFollowedStreamerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.UserFollowedStreamerResponse'
+      security:
+      - Bearer: []
+      summary: Create User Followed Streamer
+      tags:
+      - UserFollow
+  /follows/{id}:
+    delete:
+      parameters:
+      - description: Follow ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - Bearer: []
+      summary: Delete User Followed Streamer
+      tags:
+      - UserFollow
+    get:
+      parameters:
+      - description: Follow ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UserFollowedStreamerResponse'
+      security:
+      - Bearer: []
+      summary: Get User Followed Streamer
+      tags:
+      - UserFollow
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Follow ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Follow data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateUserFollowedStreamerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UserFollowedStreamerResponse'
+      security:
+      - Bearer: []
+      summary: Update User Followed Streamer
+      tags:
+      - UserFollow
+  /follows/streamers/{streamer_id}:
+    get:
+      parameters:
+      - description: Streamer ID
+        in: path
+        name: streamer_id
+        required: true
+        type: integer
+      - default: 1
+        description: Page
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Page size
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PaginationResponse-dto_UserFollowedStreamerResponse'
+      security:
+      - Bearer: []
+      summary: List Follows By Streamer
+      tags:
+      - UserFollow
+  /follows/users/{user_id}:
+    get:
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      - default: 1
+        description: Page
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Page size
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PaginationResponse-dto_UserFollowedStreamerResponse'
+      security:
+      - Bearer: []
+      summary: List Follows By User
+      tags:
+      - UserFollow
   /health:
     get:
       produces:
@@ -170,9 +608,348 @@ paths:
             additionalProperties:
               type: string
             type: object
-      summary: Health check
+      summary: Health Check
       tags:
       - Health
+  /notification-channels:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Channel data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateNotificationChannelRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.NotificationChannelResponse'
+      security:
+      - Bearer: []
+      summary: Create Notification Channel
+      tags:
+      - NotificationChannel
+  /notification-channels/{id}:
+    delete:
+      parameters:
+      - description: Channel ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - Bearer: []
+      summary: Delete Notification Channel
+      tags:
+      - NotificationChannel
+    get:
+      parameters:
+      - description: Channel ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.NotificationChannelResponse'
+      security:
+      - Bearer: []
+      summary: Get Notification Channel
+      tags:
+      - NotificationChannel
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Channel ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Channel data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateNotificationChannelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.NotificationChannelResponse'
+      security:
+      - Bearer: []
+      summary: Update Notification Channel
+      tags:
+      - NotificationChannel
+  /notification-channels/users/{user_id}:
+    get:
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      - default: 1
+        description: Page
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Page size
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PaginationResponse-dto_NotificationChannelResponse'
+      security:
+      - Bearer: []
+      summary: List Notification Channels By User
+      tags:
+      - NotificationChannel
+  /platforms:
+    get:
+      parameters:
+      - default: 1
+        description: Page
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Page size
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PaginationResponse-dto_StreamingPlatformResponse'
+      security:
+      - Bearer: []
+      summary: List Streaming Platforms
+      tags:
+      - StreamingPlatform
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Platform data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateStreamingPlatformRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.StreamingPlatformResponse'
+      security:
+      - Bearer: []
+      summary: Create Streaming Platform
+      tags:
+      - StreamingPlatform
+  /platforms/{id}:
+    delete:
+      parameters:
+      - description: Platform ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - Bearer: []
+      summary: Delete Streaming Platform
+      tags:
+      - StreamingPlatform
+    get:
+      parameters:
+      - description: Platform ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.StreamingPlatformResponse'
+      security:
+      - Bearer: []
+      summary: Get Streaming Platform
+      tags:
+      - StreamingPlatform
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Platform ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Platform data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateStreamingPlatformRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.StreamingPlatformResponse'
+      security:
+      - Bearer: []
+      summary: Update Streaming Platform
+      tags:
+      - StreamingPlatform
+  /streamers:
+    get:
+      parameters:
+      - default: 1
+        description: Page
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Page size
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PaginationResponse-dto_StreamerResponse'
+      security:
+      - Bearer: []
+      summary: List Streamers
+      tags:
+      - Streamer
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Streamer data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateStreamerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.StreamerResponse'
+      security:
+      - Bearer: []
+      summary: Create Streamer
+      tags:
+      - Streamer
+  /streamers/{id}:
+    delete:
+      parameters:
+      - description: Streamer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - Bearer: []
+      summary: Delete Streamer
+      tags:
+      - Streamer
+    get:
+      parameters:
+      - description: Streamer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.StreamerResponse'
+      security:
+      - Bearer: []
+      summary: Get Streamer
+      tags:
+      - Streamer
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Streamer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Streamer data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateStreamerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.StreamerResponse'
+      security:
+      - Bearer: []
+      summary: Update Streamer
+      tags:
+      - Streamer
   /user:
     post:
       consumes:
@@ -193,7 +970,7 @@ paths:
             $ref: '#/definitions/dto.UserResponse'
       security:
       - Bearer: []
-      summary: Create user
+      summary: Create User
       tags:
       - User
   /user/{id}:
@@ -211,7 +988,7 @@ paths:
           description: OK
       security:
       - Bearer: []
-      summary: Delete user by user ID
+      summary: Delete User
       tags:
       - User
     get:
@@ -230,7 +1007,7 @@ paths:
             $ref: '#/definitions/dto.UserResponse'
       security:
       - Bearer: []
-      summary: Get user By ID
+      summary: Get User
       tags:
       - User
     put:
@@ -257,7 +1034,7 @@ paths:
             $ref: '#/definitions/dto.UserResponse'
       security:
       - Bearer: []
-      summary: Update user
+      summary: Update User
       tags:
       - User
   /user/list:
@@ -282,7 +1059,7 @@ paths:
             $ref: '#/definitions/dto.PaginationResponse-dto_UserResponse'
       security:
       - Bearer: []
-      summary: List all users by page
+      summary: List Users
       tags:
       - User
 securityDefinitions:

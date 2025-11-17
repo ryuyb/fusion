@@ -14,9 +14,9 @@ type AuthController struct {
 	jwtManager  *jwt.JWTManager
 }
 
-// Register New user registration
+// Register handles new user registration
 //
-//	@Summary	Register
+//	@Summary	Register User
 //	@Tags		Auth
 //	@Accept		json
 //	@Produce	json
@@ -39,9 +39,9 @@ func (a *AuthController) Register(ctx fiber.Ctx) error {
 	return ctx.SendStatus(fiber.StatusCreated)
 }
 
-// Login User Login
+// Login authenticates a user
 //
-//	@Summary	Login
+//	@Summary	Login User
 //	@Tags		Auth
 //	@Accept		json
 //	@Produce	json

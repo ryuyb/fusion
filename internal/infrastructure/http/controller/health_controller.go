@@ -9,9 +9,9 @@ func NewHealthController() *HealthController {
 	return &HealthController{}
 }
 
-// HealthCheck Health check
+// HealthCheck returns service health
 //
-//	@Summary	Health check
+//	@Summary	Health Check
 //	@Tags		Health
 //	@Produce	json
 //	@Success	200	{object}	map[string]string
