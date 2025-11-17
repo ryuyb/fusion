@@ -6,6 +6,7 @@ import (
 
 	"github.com/ryuyb/fusion/internal/core/domain"
 	repoMocks "github.com/ryuyb/fusion/internal/core/port/repository"
+	"github.com/ryuyb/fusion/internal/infrastructure/external/streaming"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 )
@@ -13,7 +14,8 @@ import (
 func TestStreamerService_Create(t *testing.T) {
 	ctx := context.Background()
 	repo := repoMocks.NewMockStreamerRepository(t)
-	svc := NewStreamerService(repo, zap.NewNop())
+	spm := streaming.NewStreamingProviderManager(nil, zap.NewNop())
+	svc := NewStreamerService(repo, spm, zap.NewNop())
 
 	streamer := &domain.Streamer{ID: 1, PlatformType: domain.StreamingPlatformTypeBilibili, PlatformStreamerID: "123"}
 
@@ -28,7 +30,8 @@ func TestStreamerService_Create(t *testing.T) {
 func TestStreamerService_CreateConflict(t *testing.T) {
 	ctx := context.Background()
 	repo := repoMocks.NewMockStreamerRepository(t)
-	svc := NewStreamerService(repo, zap.NewNop())
+	spm := streaming.NewStreamingProviderManager(nil, zap.NewNop())
+	svc := NewStreamerService(repo, spm, zap.NewNop())
 
 	streamer := &domain.Streamer{PlatformType: domain.StreamingPlatformTypeBilibili, PlatformStreamerID: "123"}
 
@@ -41,7 +44,8 @@ func TestStreamerService_CreateConflict(t *testing.T) {
 func TestStreamerService_Update(t *testing.T) {
 	ctx := context.Background()
 	repo := repoMocks.NewMockStreamerRepository(t)
-	svc := NewStreamerService(repo, zap.NewNop())
+	spm := streaming.NewStreamingProviderManager(nil, zap.NewNop())
+	svc := NewStreamerService(repo, spm, zap.NewNop())
 
 	existing := &domain.Streamer{ID: 1, PlatformType: domain.StreamingPlatformTypeBilibili, PlatformStreamerID: "123"}
 	updated := &domain.Streamer{ID: 1, PlatformType: domain.StreamingPlatformTypeBilibili, PlatformStreamerID: "123", DisplayName: "New"}
@@ -57,7 +61,8 @@ func TestStreamerService_Update(t *testing.T) {
 func TestStreamerService_UpdateConflict(t *testing.T) {
 	ctx := context.Background()
 	repo := repoMocks.NewMockStreamerRepository(t)
-	svc := NewStreamerService(repo, zap.NewNop())
+	spm := streaming.NewStreamingProviderManager(nil, zap.NewNop())
+	svc := NewStreamerService(repo, spm, zap.NewNop())
 
 	current := &domain.Streamer{ID: 1, PlatformType: domain.StreamingPlatformTypeBilibili, PlatformStreamerID: "123"}
 	updated := &domain.Streamer{ID: 1, PlatformType: domain.StreamingPlatformTypeBilibili, PlatformStreamerID: "456"}
@@ -72,7 +77,8 @@ func TestStreamerService_UpdateConflict(t *testing.T) {
 func TestStreamerService_ListPaginationError(t *testing.T) {
 	ctx := context.Background()
 	repo := repoMocks.NewMockStreamerRepository(t)
-	svc := NewStreamerService(repo, zap.NewNop())
+	spm := streaming.NewStreamingProviderManager(nil, zap.NewNop())
+	svc := NewStreamerService(repo, spm, zap.NewNop())
 
 	_, _, err := svc.List(ctx, 0, 10)
 	require.Error(t, err)

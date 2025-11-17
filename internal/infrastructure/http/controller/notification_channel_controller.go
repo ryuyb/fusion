@@ -127,8 +127,8 @@ func (c *NotificationChannelController) GetByID(ctx fiber.Ctx) error {
 //	@Summary	List Notification Channels By User
 //	@Tags		NotificationChannel
 //	@Produce	json
-//	@Param		user_id	path	int	true	"User ID"
-//	@Param		page	query	int	false	"Page"			default(1)
+//	@Param		user_id		path	int	true	"User ID"
+//	@Param		page		query	int	false	"Page"		default(1)
 //	@Param		page_size	query	int	false	"Page size"	default(10)
 //	@Security	Bearer
 //	@Success	200	{object}	dto.PaginationResponse[dto.NotificationChannelResponse]

@@ -14,7 +14,7 @@ func NewStreamingPlatformRouter(controller *controller.StreamingPlatformControll
 }
 
 func (r *StreamingPlatformRouter) RegisterRouters(router fiber.Router) {
-	group := router.Group("/platforms")
+	group := router.Group("/api/v1/platforms")
 	group.Post("/", r.controller.Create)
 	group.Put("/:id", r.controller.Update)
 	group.Delete("/:id", r.controller.Delete)

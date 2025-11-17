@@ -62,3 +62,32 @@ func copyStringSlice(values []string) []string {
 	copy(dup, values)
 	return dup
 }
+
+// StreamerInfoInput carries profile data for building/updating a streamer.
+type StreamerInfoInput struct {
+	PlatformStreamerID string
+	Name               string
+	Avatar             string
+	Description        string
+	RoomURL            string
+	Tags               []string
+}
+
+// NewStreamerFromInfo constructs a Streamer from provider info.
+func NewStreamerFromInfo(platformType StreamingPlatformType, info *StreamerInfoInput) (*Streamer, error) {
+	streamer, err := NewStreamer(platformType, info.PlatformStreamerID, info.Name)
+	if err != nil {
+		return nil, err
+	}
+	streamer.AvatarURL = info.Avatar
+	streamer.RoomURL = info.RoomURL
+	streamer.Bio = info.Description
+	streamer.Tags = copyStringSlice(info.Tags)
+	streamer.LastSyncedAt = time.Now()
+	return streamer, nil
+}
+
+// UpdateFromInfo updates the streamer fields based on provider info.
+func (s *Streamer) UpdateFromInfo(info *StreamerInfoInput) error {
+	return s.UpdateProfile(info.Name, info.Avatar, info.RoomURL, info.Description, info.Tags)
+}

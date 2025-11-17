@@ -57,7 +57,7 @@ func (c *StreamingPlatformController) Create(ctx fiber.Ctx) error {
 //	@Tags		StreamingPlatform
 //	@Accept		json
 //	@Produce	json
-//	@Param		id		path	int										true	"Platform ID"
+//	@Param		id		path	int									true	"Platform ID"
 //	@Param		request	body	dto.UpdateStreamingPlatformRequest	true	"Platform data"
 //	@Security	Bearer
 //	@Success	200	{object}	dto.StreamingPlatformResponse
@@ -131,7 +131,7 @@ func (c *StreamingPlatformController) GetByID(ctx fiber.Ctx) error {
 //	@Summary	List Streaming Platforms
 //	@Tags		StreamingPlatform
 //	@Produce	json
-//	@Param		page		query	int	false	"Page"			default(1)
+//	@Param		page		query	int	false	"Page"		default(1)
 //	@Param		page_size	query	int	false	"Page size"	default(10)
 //	@Security	Bearer
 //	@Success	200	{object}	dto.PaginationResponse[dto.StreamingPlatformResponse]

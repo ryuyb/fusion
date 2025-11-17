@@ -56,7 +56,7 @@ func (c *StreamerController) Create(ctx fiber.Ctx) error {
 //	@Tags		Streamer
 //	@Accept		json
 //	@Produce	json
-//	@Param		id		path	int						true	"Streamer ID"
+//	@Param		id		path	int							true	"Streamer ID"
 //	@Param		request	body	dto.UpdateStreamerRequest	true	"Streamer data"
 //	@Security	Bearer
 //	@Success	200	{object}	dto.StreamerResponse
@@ -124,12 +124,34 @@ func (c *StreamerController) GetByID(ctx fiber.Ctx) error {
 	return ctx.JSON(c.toResponse(streamer))
 }
 
+// GetByPlatformStreamerID gets a streamer by platform type and platform streamer id
+//
+//	@Summary	Get Streamer By Platform
+//	@Tags		Streamer
+//	@Produce	json
+//	@Param		platform_type			path	domain.StreamingPlatformType	true	"Platform type"
+//	@Param		platform_streamer_id	path	string							true	"Platform streamer ID"
+//	@Security	Bearer
+//	@Param		refresh	query		bool	false	"Refresh from platform and update database"
+//	@Success	200		{object}	dto.StreamerResponse
+//	@Router		/streamers/{platform_type}/{platform_streamer_id} [get]
+func (c *StreamerController) GetByPlatformStreamerID(ctx fiber.Ctx) error {
+	platformType := domain.StreamingPlatformType(ctx.Params("platform_type"))
+	platformStreamerID := ctx.Params("platform_streamer_id")
+	refresh, _ := strconv.ParseBool(ctx.Query("refresh"))
+	streamer, err := c.service.FindByPlatformStreamerId(ctx, platformType, platformStreamerID, refresh)
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(c.toResponse(streamer))
+}
+
 // List lists streamers
 //
 //	@Summary	List Streamers
 //	@Tags		Streamer
 //	@Produce	json
-//	@Param		page		query	int	false	"Page"			default(1)
+//	@Param		page		query	int	false	"Page"		default(1)
 //	@Param		page_size	query	int	false	"Page size"	default(10)
 //	@Security	Bearer
 //	@Success	200	{object}	dto.PaginationResponse[dto.StreamerResponse]

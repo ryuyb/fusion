@@ -14,7 +14,7 @@ func NewNotificationChannelRouter(controller *controller.NotificationChannelCont
 }
 
 func (r *NotificationChannelRouter) RegisterRouters(router fiber.Router) {
-	group := router.Group("/notification-channels")
+	group := router.Group("/api/v1/notification-channels")
 	group.Post("/", r.controller.Create)
 	group.Put("/:id", r.controller.Update)
 	group.Delete("/:id", r.controller.Delete)

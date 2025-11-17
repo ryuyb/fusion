@@ -73,7 +73,7 @@ func (d *Provider) CheckLiveStatus(ctx context.Context, platformStreamerId strin
 	}, nil
 }
 
-func (d Provider) BatchCheckLiveStatus(ctx context.Context, platformStreamerIds []string) (map[string]*external.LiveStatus, error) {
+func (d *Provider) BatchCheckLiveStatus(ctx context.Context, platformStreamerIds []string) (map[string]*external.LiveStatus, error) {
 	results := make(map[string]*external.LiveStatus)
 
 	for _, platformStreamerId := range platformStreamerIds {

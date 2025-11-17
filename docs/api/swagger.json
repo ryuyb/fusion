@@ -879,6 +879,57 @@
                 ]
             }
         },
+        "/streamers/{platform_type}/{platform_streamer_id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Streamer"
+                ],
+                "summary": "Get Streamer By Platform",
+                "parameters": [
+                    {
+                        "enum": [
+                            "douyu",
+                            "huya",
+                            "bilibili"
+                        ],
+                        "type": "string",
+                        "description": "Platform type",
+                        "name": "platform_type",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Platform streamer ID",
+                        "name": "platform_streamer_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Refresh from platform and update database",
+                        "name": "refresh",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.StreamerResponse"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
         "/user": {
             "post": {
                 "consumes": [

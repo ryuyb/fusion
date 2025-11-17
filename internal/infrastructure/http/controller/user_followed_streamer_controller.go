@@ -123,8 +123,8 @@ func (c *UserFollowedStreamerController) GetByID(ctx fiber.Ctx) error {
 //	@Summary	List Follows By User
 //	@Tags		UserFollow
 //	@Produce	json
-//	@Param		user_id	path	int	true	"User ID"
-//	@Param		page	query	int	false	"Page"			default(1)
+//	@Param		user_id		path	int	true	"User ID"
+//	@Param		page		query	int	false	"Page"		default(1)
 //	@Param		page_size	query	int	false	"Page size"	default(10)
 //	@Security	Bearer
 //	@Success	200	{object}	dto.PaginationResponse[dto.UserFollowedStreamerResponse]
@@ -152,7 +152,7 @@ func (c *UserFollowedStreamerController) ListByUser(ctx fiber.Ctx) error {
 //	@Tags		UserFollow
 //	@Produce	json
 //	@Param		streamer_id	path	int	true	"Streamer ID"
-//	@Param		page		query	int	false	"Page"			default(1)
+//	@Param		page		query	int	false	"Page"		default(1)
 //	@Param		page_size	query	int	false	"Page size"	default(10)
 //	@Security	Bearer
 //	@Success	200	{object}	dto.PaginationResponse[dto.UserFollowedStreamerResponse]

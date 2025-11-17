@@ -14,7 +14,7 @@ func NewUserFollowedStreamerRouter(controller *controller.UserFollowedStreamerCo
 }
 
 func (r *UserFollowedStreamerRouter) RegisterRouters(router fiber.Router) {
-	group := router.Group("/follows")
+	group := router.Group("/api/v1/follows")
 	group.Post("/", r.controller.Create)
 	group.Put("/:id", r.controller.Update)
 	group.Delete("/:id", r.controller.Delete)

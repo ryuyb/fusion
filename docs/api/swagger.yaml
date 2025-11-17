@@ -950,6 +950,39 @@ paths:
       summary: Update Streamer
       tags:
       - Streamer
+  /streamers/{platform_type}/{platform_streamer_id}:
+    get:
+      parameters:
+      - description: Platform type
+        enum:
+        - douyu
+        - huya
+        - bilibili
+        in: path
+        name: platform_type
+        required: true
+        type: string
+      - description: Platform streamer ID
+        in: path
+        name: platform_streamer_id
+        required: true
+        type: string
+      - description: Refresh from platform and update database
+        in: query
+        name: refresh
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.StreamerResponse'
+      security:
+      - Bearer: []
+      summary: Get Streamer By Platform
+      tags:
+      - Streamer
   /user:
     post:
       consumes:

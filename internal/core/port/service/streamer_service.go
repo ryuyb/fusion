@@ -15,7 +15,7 @@ type StreamerService interface {
 
 	FindById(ctx context.Context, id int64) (*domain.Streamer, error)
 
-	FindByPlatformStreamerId(ctx context.Context, platformType domain.StreamingPlatformType, platformStreamerID string) (*domain.Streamer, error)
+	FindByPlatformStreamerId(ctx context.Context, platformType domain.StreamingPlatformType, platformStreamerID string, refresh bool) (*domain.Streamer, error)
 
 	List(ctx context.Context, page, pageSize int) ([]*domain.Streamer, int, error)
 }
