@@ -3,6 +3,7 @@ package app
 import (
 	"github.com/ryuyb/fusion/internal/application"
 	"github.com/ryuyb/fusion/internal/infrastructure/database"
+	"github.com/ryuyb/fusion/internal/infrastructure/external"
 	"github.com/ryuyb/fusion/internal/infrastructure/http"
 	"github.com/ryuyb/fusion/internal/infrastructure/provider/config"
 	"github.com/ryuyb/fusion/internal/infrastructure/provider/jwt"
@@ -18,6 +19,7 @@ var AppModule = fx.Module("app",
 	validator.Module,
 	jwt.Module,
 	scheduler.Module,
+	external.Module,
 
 	database.Module,
 	http.Module,
