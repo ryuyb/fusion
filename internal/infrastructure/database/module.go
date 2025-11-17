@@ -10,6 +10,10 @@ var Module = fx.Module("database",
 
 	fx.Provide(
 		repository.NewUserRepository,
+		repository.NewStreamingPlatformRepository,
+		repository.NewStreamerRepository,
+		repository.NewNotificationChannelRepository,
+		repository.NewUserFollowedStreamerRepository,
 	),
 )
 

@@ -49,6 +49,13 @@ lint: ## 运行 golangci-lint
 	@golangci-lint run
 	@echo "$(GREEN)Linting completed$(NC)"
 
+.PHONY: test
+test: ## 运行单元测试
+	@echo "$(BLUE)Running unit tests...$(NC)"
+	@mkdir -p .cache
+	@GOCACHE=$(PWD)/.cache go test ./...
+	@echo "$(GREEN)Tests passed$(NC)"
+
 .PHONY: generate-ent
 generate-ent: ## 生成Ent代码
 	@echo "$(GREEN)Generating Ent code...$(NC)"
