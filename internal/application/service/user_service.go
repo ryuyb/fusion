@@ -8,6 +8,7 @@ import (
 	"github.com/ryuyb/fusion/internal/core/port/repository"
 	"github.com/ryuyb/fusion/internal/core/port/service"
 	"github.com/ryuyb/fusion/internal/pkg/errors"
+	"github.com/ryuyb/fusion/internal/pkg/util"
 	"go.uber.org/zap"
 )
 
@@ -82,13 +83,9 @@ func (u *userService) FindById(ctx context.Context, id int64) (*domain.User, err
 }
 
 func (u *userService) List(ctx context.Context, page, pageSize int) ([]*domain.User, int, error) {
-	if page < 1 {
-		return nil, 0, errors.BadRequest("page must be greater than zero")
+	if err := util.ValidatePagination(page, pageSize); err != nil {
+		return nil, 0, err
 	}
-	if pageSize < 1 || pageSize > 200 {
-		return nil, 0, errors.BadRequest("page size must be between 1 and 200")
-	}
-
 	offset := (page - 1) * pageSize
 	return u.repo.List(ctx, offset, pageSize)
 }

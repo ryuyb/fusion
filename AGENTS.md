@@ -26,7 +26,7 @@
 - Use `go test ./... -run <Name>` to target suites; keep fixtures small and deterministic.
 
 ## Commit & Pull Request Guidelines
-- Commit messages: imperative voice, concise summary (e.g., `fix login token refresh`); group related changes.
+- Commit messages: imperative voice, concise summary (e.g., `fix login token refresh`); group related changes, use Conventional Commits.
 - Pull requests should describe scope, include relevant `make`/`go test` outputs, and link issues if applicable.
 - Add screenshots or curl examples for API changes when helpful; note schema or migration impacts explicitly.
 - Before merging, ensure lint/tests pass and regenerated assets (Ent, Swagger, mocks) are committed.

@@ -10,6 +10,10 @@ var Module = fx.Module("application",
 	fx.Provide(
 		service.NewUserService,
 		service.NewAuthService,
+		service.NewStreamingPlatformService,
+		service.NewStreamerService,
+		service.NewNotificationChannelService,
+		service.NewUserFollowedStreamerService,
 	),
 
 	fx.Provide(
