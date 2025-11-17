@@ -32,8 +32,8 @@ func NewUserFollowedStreamerController(service coreService.UserFollowedStreamerS
 //	@Router		/follows [post]
 func (c *UserFollowedStreamerController) Create(ctx fiber.Ctx) error {
 	req := new(dto.CreateUserFollowedStreamerRequest)
-	if err := ctx.Bind().JSON(req); err != nil {
-		return errors.BadRequest("failed to parse request body").Wrap(err)
+	if err := util.ParseRequestJson(ctx, req); err != nil {
+		return err
 	}
 	cmd := &command.CreateUserFollowedStreamerCommand{
 		UserID:                 req.UserID,
@@ -64,8 +64,8 @@ func (c *UserFollowedStreamerController) Create(ctx fiber.Ctx) error {
 //	@Router		/follows/{id} [put]
 func (c *UserFollowedStreamerController) Update(ctx fiber.Ctx) error {
 	req := new(dto.UpdateUserFollowedStreamerRequest)
-	if err := ctx.Bind().JSON(req); err != nil {
-		return errors.BadRequest("failed to parse request body").Wrap(err)
+	if err := util.ParseRequestJson(ctx, req); err != nil {
+		return err
 	}
 	cmd := &command.UpdateUserFollowedStreamerCommand{
 		ID:                     req.ID,

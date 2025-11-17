@@ -32,8 +32,8 @@ func NewNotificationChannelController(service coreService.NotificationChannelSer
 //	@Router		/notification-channels [post]
 func (c *NotificationChannelController) Create(ctx fiber.Ctx) error {
 	req := new(dto.CreateNotificationChannelRequest)
-	if err := ctx.Bind().JSON(req); err != nil {
-		return errors.BadRequest("failed to parse request body").Wrap(err)
+	if err := util.ParseRequestJson(ctx, req); err != nil {
+		return err
 	}
 	cmd := &command.CreateNotificationChannelCommand{
 		UserID:      req.UserID,
@@ -63,8 +63,8 @@ func (c *NotificationChannelController) Create(ctx fiber.Ctx) error {
 //	@Router		/notification-channels/{id} [put]
 func (c *NotificationChannelController) Update(ctx fiber.Ctx) error {
 	req := new(dto.UpdateNotificationChannelRequest)
-	if err := ctx.Bind().JSON(req); err != nil {
-		return errors.BadRequest("failed to parse request body").Wrap(err)
+	if err := util.ParseRequestJson(ctx, req); err != nil {
+		return err
 	}
 	cmd := &command.UpdateNotificationChannelCommand{
 		ID: req.ID,

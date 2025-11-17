@@ -32,8 +32,8 @@ func NewStreamingPlatformController(service coreService.StreamingPlatformService
 //	@Router		/platforms [post]
 func (c *StreamingPlatformController) Create(ctx fiber.Ctx) error {
 	req := new(dto.CreateStreamingPlatformRequest)
-	if err := ctx.Bind().JSON(req); err != nil {
-		return errors.BadRequest("failed to parse request body").Wrap(err)
+	if err := util.ParseRequestJson(ctx, req); err != nil {
+		return err
 	}
 	cmd := &command.CreateStreamingPlatformCommand{
 		Type:        req.Type,
@@ -66,8 +66,8 @@ func (c *StreamingPlatformController) Create(ctx fiber.Ctx) error {
 //	@Router		/platforms/{id} [put]
 func (c *StreamingPlatformController) Update(ctx fiber.Ctx) error {
 	req := new(dto.UpdateStreamingPlatformRequest)
-	if err := ctx.Bind().JSON(req); err != nil {
-		return errors.BadRequest("failed to parse request body").Wrap(err)
+	if err := util.ParseRequestJson(ctx, req); err != nil {
+		return err
 	}
 	cmd := &command.UpdateStreamingPlatformCommand{
 		ID: req.ID,

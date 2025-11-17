@@ -32,8 +32,8 @@ func NewStreamerController(service coreService.StreamerService) *StreamerControl
 //	@Router		/streamers [post]
 func (c *StreamerController) Create(ctx fiber.Ctx) error {
 	req := new(dto.CreateStreamerRequest)
-	if err := ctx.Bind().JSON(req); err != nil {
-		return errors.BadRequest("failed to parse request body").Wrap(err)
+	if err := util.ParseRequestJson(ctx, req); err != nil {
+		return err
 	}
 	cmd := &command.CreateStreamerCommand{
 		PlatformType:       req.PlatformType,
@@ -65,8 +65,8 @@ func (c *StreamerController) Create(ctx fiber.Ctx) error {
 //	@Router		/streamers/{id} [put]
 func (c *StreamerController) Update(ctx fiber.Ctx) error {
 	req := new(dto.UpdateStreamerRequest)
-	if err := ctx.Bind().JSON(req); err != nil {
-		return errors.BadRequest("failed to parse request body").Wrap(err)
+	if err := util.ParseRequestJson(ctx, req); err != nil {
+		return err
 	}
 	cmd := &command.UpdateStreamerCommand{
 		ID: req.ID,

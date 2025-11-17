@@ -3,15 +3,13 @@ package controller
 import (
 	"strconv"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v3"
 	"github.com/ryuyb/fusion/internal/core/command"
 	"github.com/ryuyb/fusion/internal/core/domain"
 	"github.com/ryuyb/fusion/internal/core/port/service"
 	"github.com/ryuyb/fusion/internal/infrastructure/http/dto"
-	validator2 "github.com/ryuyb/fusion/internal/infrastructure/provider/validator"
 	"github.com/ryuyb/fusion/internal/pkg/errors"
-	"github.com/samber/lo"
+	"github.com/ryuyb/fusion/internal/pkg/util"
 )
 
 type UserController struct {
@@ -30,12 +28,8 @@ type UserController struct {
 //	@Router		/user [post]
 func (u *UserController) Create(ctx fiber.Ctx) error {
 	req := new(dto.CreateUserRequest)
-	if err := ctx.Bind().JSON(req); err != nil {
-		if errs, ok := lo.ErrorsAs[validator.ValidationErrors](err); ok {
-			validationErrors := validator2.VALIDATOR.TranslateErrorsAuto(errs, ctx.Get(fiber.HeaderAcceptLanguage))
-			return errors.CustomValidationError(validationErrors)
-		}
-		return errors.BadRequest("failed to parse request body").Wrap(err)
+	if err := util.ParseRequestJson(ctx, req); err != nil {
+		return err
 	}
 	cmd := &command.CreateUserCommand{
 		Username: req.Username,
@@ -62,12 +56,8 @@ func (u *UserController) Create(ctx fiber.Ctx) error {
 //	@Router		/user/{id} [put]
 func (u *UserController) Update(ctx fiber.Ctx) error {
 	req := new(dto.UpdateUserRequest)
-	if err := ctx.Bind().JSON(req); err != nil {
-		if errs, ok := lo.ErrorsAs[validator.ValidationErrors](err); ok {
-			validationErrors := validator2.VALIDATOR.TranslateErrorsAuto(errs, ctx.Get(fiber.HeaderAcceptLanguage))
-			return errors.CustomValidationError(validationErrors)
-		}
-		return errors.BadRequest("failed to parse request body").Wrap(err)
+	if err := util.ParseRequestJson(ctx, req); err != nil {
+		return err
 	}
 	cmd := &command.UpdateUserCommand{
 		ID: req.ID,
