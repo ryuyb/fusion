@@ -52,8 +52,7 @@ lint: ## 运行 golangci-lint
 .PHONY: test
 test: ## 运行单元测试
 	@echo "$(BLUE)Running unit tests...$(NC)"
-	@mkdir -p .cache
-	@GOCACHE=$(PWD)/.cache go test ./...
+	@go test ./...
 	@echo "$(GREEN)Tests passed$(NC)"
 
 .PHONY: generate-ent

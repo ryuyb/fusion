@@ -19,7 +19,8 @@ func (StreamingPlatform) Fields() []ent.Field {
 			Unique().
 			Immutable(),
 		field.String("type").
-			NotEmpty(),
+			NotEmpty().
+			Unique(),
 		field.String("name").
 			NotEmpty().
 			Unique(),
