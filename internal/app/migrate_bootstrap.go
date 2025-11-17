@@ -35,8 +35,8 @@ func RunMigrateApp(direction MigrateDirection) error {
 		log.Info("Running up migrations")
 		err = migrator.Up()
 	case MigrateDown:
-		_, _, err := migrator.Version()
-		if errors.Is(err, migrate.ErrNilVersion) {
+		_, _, vErr := migrator.Version()
+		if errors.Is(vErr, migrate.ErrNilVersion) {
 			log.Info("No migrations to apply")
 			return nil
 		}
