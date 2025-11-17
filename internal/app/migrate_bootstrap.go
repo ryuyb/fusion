@@ -8,6 +8,7 @@ import (
 	"github.com/ryuyb/fusion/internal/infrastructure/database"
 	"github.com/ryuyb/fusion/internal/infrastructure/provider/config"
 	"github.com/ryuyb/fusion/internal/infrastructure/provider/logger"
+	"github.com/spf13/viper"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
 	"go.uber.org/zap"
@@ -34,6 +35,11 @@ func RunMigrateApp(direction MigrateDirection) error {
 		log.Info("Running up migrations")
 		err = migrator.Up()
 	case MigrateDown:
+		_, _, err := migrator.Version()
+		if errors.Is(err, migrate.ErrNilVersion) {
+			log.Info("No migrations to apply")
+			return nil
+		}
 		log.Info("Running down migrations")
 		err = migrator.Steps(-1)
 	}
@@ -79,6 +85,13 @@ func RunMigrateVersionApp() error {
 func getMigrator() (*migrate.Migrate, error) {
 	var migrator *migrate.Migrate
 
+	fxLogger := fx.NopLogger
+	if viper.GetBool("logger.fx.enable") {
+		fxLogger = fx.WithLogger(func(logger *zap.Logger) fxevent.Logger {
+			return &fxevent.ZapLogger{Logger: logger.Named("fx-migrate")}
+		})
+	}
+
 	app := fx.New(
 		config.Module,
 		logger.Module,
@@ -86,9 +99,7 @@ func getMigrator() (*migrate.Migrate, error) {
 
 		fx.Populate(&migrator),
 
-		fx.WithLogger(func(logger *zap.Logger) fxevent.Logger {
-			return &fxevent.ZapLogger{Logger: logger.Named("fx-migrate")}
-		}),
+		fxLogger,
 	)
 
 	startCtx, cancel := context.WithTimeout(context.Background(), fx.DefaultTimeout)

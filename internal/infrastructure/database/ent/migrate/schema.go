@@ -8,6 +8,38 @@ import (
 )
 
 var (
+	// StreamingPlatformsColumns holds the columns for the "streaming_platforms" table.
+	StreamingPlatformsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "type", Type: field.TypeString},
+		{Name: "name", Type: field.TypeString, Unique: true},
+		{Name: "description", Type: field.TypeString, Nullable: true},
+		{Name: "base_url", Type: field.TypeString},
+		{Name: "logo_url", Type: field.TypeString, Nullable: true},
+		{Name: "enabled", Type: field.TypeBool, Default: true},
+		{Name: "priority", Type: field.TypeInt, Default: 0},
+		{Name: "metadata", Type: field.TypeJSON, Nullable: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+	}
+	// StreamingPlatformsTable holds the schema information for the "streaming_platforms" table.
+	StreamingPlatformsTable = &schema.Table{
+		Name:       "streaming_platforms",
+		Columns:    StreamingPlatformsColumns,
+		PrimaryKey: []*schema.Column{StreamingPlatformsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "streamingplatform_type",
+				Unique:  false,
+				Columns: []*schema.Column{StreamingPlatformsColumns[1]},
+			},
+			{
+				Name:    "streamingplatform_name",
+				Unique:  false,
+				Columns: []*schema.Column{StreamingPlatformsColumns[2]},
+			},
+		},
+	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
@@ -37,6 +69,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		StreamingPlatformsTable,
 		UsersTable,
 	}
 )

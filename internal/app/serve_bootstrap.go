@@ -9,18 +9,24 @@ import (
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/ryuyb/fusion/internal/infrastructure/provider/config"
+	"github.com/spf13/viper"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
 	"go.uber.org/zap"
 )
 
 func RunServeApp() error {
+	fxLogger := fx.NopLogger
+	if viper.GetBool("logger.fx.enable") {
+		fxLogger = fx.WithLogger(func(logger *zap.Logger) fxevent.Logger {
+			return &fxevent.ZapLogger{Logger: logger.Named("fx")}
+		})
+	}
+
 	app := fx.New(
 		AppModule,
 
-		fx.WithLogger(func(logger *zap.Logger) fxevent.Logger {
-			return &fxevent.ZapLogger{Logger: logger.Named("fx")}
-		}),
+		fxLogger,
 
 		fx.Invoke(func(lc fx.Lifecycle, app *fiber.App, cfg *config.Config, logger *zap.Logger) {
 			lc.Append(fx.Hook{

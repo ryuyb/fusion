@@ -6,5 +6,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// StreamingPlatform is the predicate function for streamingplatform builders.
+type StreamingPlatform func(*sql.Selector)
+
 // User is the predicate function for user builders.
 type User func(*sql.Selector)

@@ -5,6 +5,7 @@ package ent
 import (
 	"time"
 
+	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/streamingplatform"
 	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/user"
 	"github.com/ryuyb/fusion/internal/infrastructure/database/schema"
 )
@@ -13,6 +14,42 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	streamingplatformFields := schema.StreamingPlatform{}.Fields()
+	_ = streamingplatformFields
+	// streamingplatformDescType is the schema descriptor for type field.
+	streamingplatformDescType := streamingplatformFields[1].Descriptor()
+	// streamingplatform.TypeValidator is a validator for the "type" field. It is called by the builders before save.
+	streamingplatform.TypeValidator = streamingplatformDescType.Validators[0].(func(string) error)
+	// streamingplatformDescName is the schema descriptor for name field.
+	streamingplatformDescName := streamingplatformFields[2].Descriptor()
+	// streamingplatform.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	streamingplatform.NameValidator = streamingplatformDescName.Validators[0].(func(string) error)
+	// streamingplatformDescBaseURL is the schema descriptor for base_url field.
+	streamingplatformDescBaseURL := streamingplatformFields[4].Descriptor()
+	// streamingplatform.BaseURLValidator is a validator for the "base_url" field. It is called by the builders before save.
+	streamingplatform.BaseURLValidator = streamingplatformDescBaseURL.Validators[0].(func(string) error)
+	// streamingplatformDescEnabled is the schema descriptor for enabled field.
+	streamingplatformDescEnabled := streamingplatformFields[6].Descriptor()
+	// streamingplatform.DefaultEnabled holds the default value on creation for the enabled field.
+	streamingplatform.DefaultEnabled = streamingplatformDescEnabled.Default.(bool)
+	// streamingplatformDescPriority is the schema descriptor for priority field.
+	streamingplatformDescPriority := streamingplatformFields[7].Descriptor()
+	// streamingplatform.DefaultPriority holds the default value on creation for the priority field.
+	streamingplatform.DefaultPriority = streamingplatformDescPriority.Default.(int)
+	// streamingplatformDescMetadata is the schema descriptor for metadata field.
+	streamingplatformDescMetadata := streamingplatformFields[8].Descriptor()
+	// streamingplatform.DefaultMetadata holds the default value on creation for the metadata field.
+	streamingplatform.DefaultMetadata = streamingplatformDescMetadata.Default.(map[string]string)
+	// streamingplatformDescCreatedAt is the schema descriptor for created_at field.
+	streamingplatformDescCreatedAt := streamingplatformFields[9].Descriptor()
+	// streamingplatform.DefaultCreatedAt holds the default value on creation for the created_at field.
+	streamingplatform.DefaultCreatedAt = streamingplatformDescCreatedAt.Default.(func() time.Time)
+	// streamingplatformDescUpdatedAt is the schema descriptor for updated_at field.
+	streamingplatformDescUpdatedAt := streamingplatformFields[10].Descriptor()
+	// streamingplatform.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	streamingplatform.DefaultUpdatedAt = streamingplatformDescUpdatedAt.Default.(func() time.Time)
+	// streamingplatform.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	streamingplatform.UpdateDefaultUpdatedAt = streamingplatformDescUpdatedAt.UpdateDefault.(func() time.Time)
 	userFields := schema.User{}.Fields()
 	_ = userFields
 	// userDescUsername is the schema descriptor for username field.

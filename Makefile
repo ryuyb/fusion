@@ -31,7 +31,17 @@ install-tools: ## 安装开发工具
 	@go install github.com/swaggo/swag/cmd/swag@latest
 	@go install github.com/vektra/mockery/v3@latest
 	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+	@go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 	@echo "$(GREEN)Development tools installed$(NC)"
+
+.PHONY: migrate-new
+migrate-new: ## 创建新的迁移 (使用: make migrate-new name=add_users_table)
+	@if [ -z "$(name)" ]; then \
+		echo "$(RED)Error: name is required. Usage: make migrate-new name=add_feature$(NC)"; \
+		exit 1; \
+	fi
+	@echo "$(BLUE)Creating migration: $(name)$(NC)"
+	@migrate create -ext sql -dir migrations -seq $(name)
 
 .PHONY: lint
 lint: ## 运行 golangci-lint

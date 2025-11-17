@@ -9,6 +9,18 @@ import (
 	"github.com/ryuyb/fusion/internal/infrastructure/database/ent"
 )
 
+// The StreamingPlatformFunc type is an adapter to allow the use of ordinary
+// function as StreamingPlatform mutator.
+type StreamingPlatformFunc func(context.Context, *ent.StreamingPlatformMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f StreamingPlatformFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.StreamingPlatformMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.StreamingPlatformMutation", m)
+}
+
 // The UserFunc type is an adapter to allow the use of ordinary
 // function as User mutator.
 type UserFunc func(context.Context, *ent.UserMutation) (ent.Value, error)

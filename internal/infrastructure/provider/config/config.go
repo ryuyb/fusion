@@ -24,13 +24,19 @@ type ServerConfig struct {
 }
 
 type DatabaseConfig struct {
-	Host        string `mapstructure:"host"`
-	Port        int    `mapstructure:"port" validate:"min=1,max=65535"`
-	User        string `mapstructure:"user"`
-	Password    string `mapstructure:"password"`
-	Name        string `mapstructure:"name"`
-	SSLMode     string `mapstructure:"ssl_mode" validate:"oneof=disable require verify-ca verify-full"`
+	Host     string `mapstructure:"host"`
+	Port     int    `mapstructure:"port" validate:"min=1,max=65535"`
+	User     string `mapstructure:"user"`
+	Password string `mapstructure:"password"`
+	Name     string `mapstructure:"name"`
+	SSLMode  string `mapstructure:"ssl_mode" validate:"oneof=disable require verify-ca verify-full"`
+
+	Migrate MigrateConfig `mapstructure:"migrate"`
+}
+
+type MigrateConfig struct {
 	AutoMigrate bool   `mapstructure:"auto_migrate"`
+	Source      string `mapstructure:"source"`
 }
 
 type LogConfig struct {
@@ -43,6 +49,12 @@ type LogConfig struct {
 	MaxBackups    int    `mapstructure:"max_backups"`
 	MaxAge        int    `mapstructure:"max_age"`
 	Compress      bool   `mapstructure:"compress"`
+
+	Fx FxLogConfig `mapstructure:"fx"`
+}
+
+type FxLogConfig struct {
+	Enable bool `mapstructure:"enable"`
 }
 
 type JWTConfig struct {

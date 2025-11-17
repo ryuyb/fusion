@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/predicate"
+	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/streamingplatform"
 	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/user"
 )
 
@@ -24,8 +25,923 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeUser = "User"
+	TypeStreamingPlatform = "StreamingPlatform"
+	TypeUser              = "User"
 )
+
+// StreamingPlatformMutation represents an operation that mutates the StreamingPlatform nodes in the graph.
+type StreamingPlatformMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *int64
+	_type         *string
+	name          *string
+	description   *string
+	base_url      *string
+	logo_url      *string
+	enabled       *bool
+	priority      *int
+	addpriority   *int
+	metadata      *map[string]string
+	created_at    *time.Time
+	updated_at    *time.Time
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*StreamingPlatform, error)
+	predicates    []predicate.StreamingPlatform
+}
+
+var _ ent.Mutation = (*StreamingPlatformMutation)(nil)
+
+// streamingplatformOption allows management of the mutation configuration using functional options.
+type streamingplatformOption func(*StreamingPlatformMutation)
+
+// newStreamingPlatformMutation creates new mutation for the StreamingPlatform entity.
+func newStreamingPlatformMutation(c config, op Op, opts ...streamingplatformOption) *StreamingPlatformMutation {
+	m := &StreamingPlatformMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeStreamingPlatform,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withStreamingPlatformID sets the ID field of the mutation.
+func withStreamingPlatformID(id int64) streamingplatformOption {
+	return func(m *StreamingPlatformMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *StreamingPlatform
+		)
+		m.oldValue = func(ctx context.Context) (*StreamingPlatform, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().StreamingPlatform.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withStreamingPlatform sets the old StreamingPlatform of the mutation.
+func withStreamingPlatform(node *StreamingPlatform) streamingplatformOption {
+	return func(m *StreamingPlatformMutation) {
+		m.oldValue = func(context.Context) (*StreamingPlatform, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m StreamingPlatformMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m StreamingPlatformMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of StreamingPlatform entities.
+func (m *StreamingPlatformMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *StreamingPlatformMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *StreamingPlatformMutation) IDs(ctx context.Context) ([]int64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().StreamingPlatform.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetType sets the "type" field.
+func (m *StreamingPlatformMutation) SetType(s string) {
+	m._type = &s
+}
+
+// GetType returns the value of the "type" field in the mutation.
+func (m *StreamingPlatformMutation) GetType() (r string, exists bool) {
+	v := m._type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldType returns the old "type" field's value of the StreamingPlatform entity.
+// If the StreamingPlatform object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StreamingPlatformMutation) OldType(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldType: %w", err)
+	}
+	return oldValue.Type, nil
+}
+
+// ResetType resets all changes to the "type" field.
+func (m *StreamingPlatformMutation) ResetType() {
+	m._type = nil
+}
+
+// SetName sets the "name" field.
+func (m *StreamingPlatformMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *StreamingPlatformMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the StreamingPlatform entity.
+// If the StreamingPlatform object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StreamingPlatformMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *StreamingPlatformMutation) ResetName() {
+	m.name = nil
+}
+
+// SetDescription sets the "description" field.
+func (m *StreamingPlatformMutation) SetDescription(s string) {
+	m.description = &s
+}
+
+// Description returns the value of the "description" field in the mutation.
+func (m *StreamingPlatformMutation) Description() (r string, exists bool) {
+	v := m.description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDescription returns the old "description" field's value of the StreamingPlatform entity.
+// If the StreamingPlatform object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StreamingPlatformMutation) OldDescription(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDescription: %w", err)
+	}
+	return oldValue.Description, nil
+}
+
+// ClearDescription clears the value of the "description" field.
+func (m *StreamingPlatformMutation) ClearDescription() {
+	m.description = nil
+	m.clearedFields[streamingplatform.FieldDescription] = struct{}{}
+}
+
+// DescriptionCleared returns if the "description" field was cleared in this mutation.
+func (m *StreamingPlatformMutation) DescriptionCleared() bool {
+	_, ok := m.clearedFields[streamingplatform.FieldDescription]
+	return ok
+}
+
+// ResetDescription resets all changes to the "description" field.
+func (m *StreamingPlatformMutation) ResetDescription() {
+	m.description = nil
+	delete(m.clearedFields, streamingplatform.FieldDescription)
+}
+
+// SetBaseURL sets the "base_url" field.
+func (m *StreamingPlatformMutation) SetBaseURL(s string) {
+	m.base_url = &s
+}
+
+// BaseURL returns the value of the "base_url" field in the mutation.
+func (m *StreamingPlatformMutation) BaseURL() (r string, exists bool) {
+	v := m.base_url
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBaseURL returns the old "base_url" field's value of the StreamingPlatform entity.
+// If the StreamingPlatform object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StreamingPlatformMutation) OldBaseURL(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBaseURL is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBaseURL requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBaseURL: %w", err)
+	}
+	return oldValue.BaseURL, nil
+}
+
+// ResetBaseURL resets all changes to the "base_url" field.
+func (m *StreamingPlatformMutation) ResetBaseURL() {
+	m.base_url = nil
+}
+
+// SetLogoURL sets the "logo_url" field.
+func (m *StreamingPlatformMutation) SetLogoURL(s string) {
+	m.logo_url = &s
+}
+
+// LogoURL returns the value of the "logo_url" field in the mutation.
+func (m *StreamingPlatformMutation) LogoURL() (r string, exists bool) {
+	v := m.logo_url
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLogoURL returns the old "logo_url" field's value of the StreamingPlatform entity.
+// If the StreamingPlatform object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StreamingPlatformMutation) OldLogoURL(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLogoURL is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLogoURL requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLogoURL: %w", err)
+	}
+	return oldValue.LogoURL, nil
+}
+
+// ClearLogoURL clears the value of the "logo_url" field.
+func (m *StreamingPlatformMutation) ClearLogoURL() {
+	m.logo_url = nil
+	m.clearedFields[streamingplatform.FieldLogoURL] = struct{}{}
+}
+
+// LogoURLCleared returns if the "logo_url" field was cleared in this mutation.
+func (m *StreamingPlatformMutation) LogoURLCleared() bool {
+	_, ok := m.clearedFields[streamingplatform.FieldLogoURL]
+	return ok
+}
+
+// ResetLogoURL resets all changes to the "logo_url" field.
+func (m *StreamingPlatformMutation) ResetLogoURL() {
+	m.logo_url = nil
+	delete(m.clearedFields, streamingplatform.FieldLogoURL)
+}
+
+// SetEnabled sets the "enabled" field.
+func (m *StreamingPlatformMutation) SetEnabled(b bool) {
+	m.enabled = &b
+}
+
+// Enabled returns the value of the "enabled" field in the mutation.
+func (m *StreamingPlatformMutation) Enabled() (r bool, exists bool) {
+	v := m.enabled
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEnabled returns the old "enabled" field's value of the StreamingPlatform entity.
+// If the StreamingPlatform object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StreamingPlatformMutation) OldEnabled(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEnabled is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEnabled requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEnabled: %w", err)
+	}
+	return oldValue.Enabled, nil
+}
+
+// ResetEnabled resets all changes to the "enabled" field.
+func (m *StreamingPlatformMutation) ResetEnabled() {
+	m.enabled = nil
+}
+
+// SetPriority sets the "priority" field.
+func (m *StreamingPlatformMutation) SetPriority(i int) {
+	m.priority = &i
+	m.addpriority = nil
+}
+
+// Priority returns the value of the "priority" field in the mutation.
+func (m *StreamingPlatformMutation) Priority() (r int, exists bool) {
+	v := m.priority
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPriority returns the old "priority" field's value of the StreamingPlatform entity.
+// If the StreamingPlatform object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StreamingPlatformMutation) OldPriority(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPriority is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPriority requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPriority: %w", err)
+	}
+	return oldValue.Priority, nil
+}
+
+// AddPriority adds i to the "priority" field.
+func (m *StreamingPlatformMutation) AddPriority(i int) {
+	if m.addpriority != nil {
+		*m.addpriority += i
+	} else {
+		m.addpriority = &i
+	}
+}
+
+// AddedPriority returns the value that was added to the "priority" field in this mutation.
+func (m *StreamingPlatformMutation) AddedPriority() (r int, exists bool) {
+	v := m.addpriority
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetPriority resets all changes to the "priority" field.
+func (m *StreamingPlatformMutation) ResetPriority() {
+	m.priority = nil
+	m.addpriority = nil
+}
+
+// SetMetadata sets the "metadata" field.
+func (m *StreamingPlatformMutation) SetMetadata(value map[string]string) {
+	m.metadata = &value
+}
+
+// Metadata returns the value of the "metadata" field in the mutation.
+func (m *StreamingPlatformMutation) Metadata() (r map[string]string, exists bool) {
+	v := m.metadata
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMetadata returns the old "metadata" field's value of the StreamingPlatform entity.
+// If the StreamingPlatform object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StreamingPlatformMutation) OldMetadata(ctx context.Context) (v map[string]string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMetadata is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMetadata requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMetadata: %w", err)
+	}
+	return oldValue.Metadata, nil
+}
+
+// ClearMetadata clears the value of the "metadata" field.
+func (m *StreamingPlatformMutation) ClearMetadata() {
+	m.metadata = nil
+	m.clearedFields[streamingplatform.FieldMetadata] = struct{}{}
+}
+
+// MetadataCleared returns if the "metadata" field was cleared in this mutation.
+func (m *StreamingPlatformMutation) MetadataCleared() bool {
+	_, ok := m.clearedFields[streamingplatform.FieldMetadata]
+	return ok
+}
+
+// ResetMetadata resets all changes to the "metadata" field.
+func (m *StreamingPlatformMutation) ResetMetadata() {
+	m.metadata = nil
+	delete(m.clearedFields, streamingplatform.FieldMetadata)
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *StreamingPlatformMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *StreamingPlatformMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the StreamingPlatform entity.
+// If the StreamingPlatform object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StreamingPlatformMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *StreamingPlatformMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *StreamingPlatformMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *StreamingPlatformMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the StreamingPlatform entity.
+// If the StreamingPlatform object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StreamingPlatformMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *StreamingPlatformMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// Where appends a list predicates to the StreamingPlatformMutation builder.
+func (m *StreamingPlatformMutation) Where(ps ...predicate.StreamingPlatform) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the StreamingPlatformMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *StreamingPlatformMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.StreamingPlatform, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *StreamingPlatformMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *StreamingPlatformMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (StreamingPlatform).
+func (m *StreamingPlatformMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *StreamingPlatformMutation) Fields() []string {
+	fields := make([]string, 0, 10)
+	if m._type != nil {
+		fields = append(fields, streamingplatform.FieldType)
+	}
+	if m.name != nil {
+		fields = append(fields, streamingplatform.FieldName)
+	}
+	if m.description != nil {
+		fields = append(fields, streamingplatform.FieldDescription)
+	}
+	if m.base_url != nil {
+		fields = append(fields, streamingplatform.FieldBaseURL)
+	}
+	if m.logo_url != nil {
+		fields = append(fields, streamingplatform.FieldLogoURL)
+	}
+	if m.enabled != nil {
+		fields = append(fields, streamingplatform.FieldEnabled)
+	}
+	if m.priority != nil {
+		fields = append(fields, streamingplatform.FieldPriority)
+	}
+	if m.metadata != nil {
+		fields = append(fields, streamingplatform.FieldMetadata)
+	}
+	if m.created_at != nil {
+		fields = append(fields, streamingplatform.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, streamingplatform.FieldUpdatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *StreamingPlatformMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case streamingplatform.FieldType:
+		return m.GetType()
+	case streamingplatform.FieldName:
+		return m.Name()
+	case streamingplatform.FieldDescription:
+		return m.Description()
+	case streamingplatform.FieldBaseURL:
+		return m.BaseURL()
+	case streamingplatform.FieldLogoURL:
+		return m.LogoURL()
+	case streamingplatform.FieldEnabled:
+		return m.Enabled()
+	case streamingplatform.FieldPriority:
+		return m.Priority()
+	case streamingplatform.FieldMetadata:
+		return m.Metadata()
+	case streamingplatform.FieldCreatedAt:
+		return m.CreatedAt()
+	case streamingplatform.FieldUpdatedAt:
+		return m.UpdatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *StreamingPlatformMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case streamingplatform.FieldType:
+		return m.OldType(ctx)
+	case streamingplatform.FieldName:
+		return m.OldName(ctx)
+	case streamingplatform.FieldDescription:
+		return m.OldDescription(ctx)
+	case streamingplatform.FieldBaseURL:
+		return m.OldBaseURL(ctx)
+	case streamingplatform.FieldLogoURL:
+		return m.OldLogoURL(ctx)
+	case streamingplatform.FieldEnabled:
+		return m.OldEnabled(ctx)
+	case streamingplatform.FieldPriority:
+		return m.OldPriority(ctx)
+	case streamingplatform.FieldMetadata:
+		return m.OldMetadata(ctx)
+	case streamingplatform.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case streamingplatform.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown StreamingPlatform field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *StreamingPlatformMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case streamingplatform.FieldType:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetType(v)
+		return nil
+	case streamingplatform.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case streamingplatform.FieldDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDescription(v)
+		return nil
+	case streamingplatform.FieldBaseURL:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBaseURL(v)
+		return nil
+	case streamingplatform.FieldLogoURL:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLogoURL(v)
+		return nil
+	case streamingplatform.FieldEnabled:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEnabled(v)
+		return nil
+	case streamingplatform.FieldPriority:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPriority(v)
+		return nil
+	case streamingplatform.FieldMetadata:
+		v, ok := value.(map[string]string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMetadata(v)
+		return nil
+	case streamingplatform.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case streamingplatform.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown StreamingPlatform field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *StreamingPlatformMutation) AddedFields() []string {
+	var fields []string
+	if m.addpriority != nil {
+		fields = append(fields, streamingplatform.FieldPriority)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *StreamingPlatformMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case streamingplatform.FieldPriority:
+		return m.AddedPriority()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *StreamingPlatformMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case streamingplatform.FieldPriority:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddPriority(v)
+		return nil
+	}
+	return fmt.Errorf("unknown StreamingPlatform numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *StreamingPlatformMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(streamingplatform.FieldDescription) {
+		fields = append(fields, streamingplatform.FieldDescription)
+	}
+	if m.FieldCleared(streamingplatform.FieldLogoURL) {
+		fields = append(fields, streamingplatform.FieldLogoURL)
+	}
+	if m.FieldCleared(streamingplatform.FieldMetadata) {
+		fields = append(fields, streamingplatform.FieldMetadata)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *StreamingPlatformMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *StreamingPlatformMutation) ClearField(name string) error {
+	switch name {
+	case streamingplatform.FieldDescription:
+		m.ClearDescription()
+		return nil
+	case streamingplatform.FieldLogoURL:
+		m.ClearLogoURL()
+		return nil
+	case streamingplatform.FieldMetadata:
+		m.ClearMetadata()
+		return nil
+	}
+	return fmt.Errorf("unknown StreamingPlatform nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *StreamingPlatformMutation) ResetField(name string) error {
+	switch name {
+	case streamingplatform.FieldType:
+		m.ResetType()
+		return nil
+	case streamingplatform.FieldName:
+		m.ResetName()
+		return nil
+	case streamingplatform.FieldDescription:
+		m.ResetDescription()
+		return nil
+	case streamingplatform.FieldBaseURL:
+		m.ResetBaseURL()
+		return nil
+	case streamingplatform.FieldLogoURL:
+		m.ResetLogoURL()
+		return nil
+	case streamingplatform.FieldEnabled:
+		m.ResetEnabled()
+		return nil
+	case streamingplatform.FieldPriority:
+		m.ResetPriority()
+		return nil
+	case streamingplatform.FieldMetadata:
+		m.ResetMetadata()
+		return nil
+	case streamingplatform.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case streamingplatform.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown StreamingPlatform field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *StreamingPlatformMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *StreamingPlatformMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *StreamingPlatformMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *StreamingPlatformMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *StreamingPlatformMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *StreamingPlatformMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *StreamingPlatformMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown StreamingPlatform unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *StreamingPlatformMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown StreamingPlatform edge %s", name)
+}
 
 // UserMutation represents an operation that mutates the User nodes in the graph.
 type UserMutation struct {

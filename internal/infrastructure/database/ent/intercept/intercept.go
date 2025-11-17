@@ -9,6 +9,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/ryuyb/fusion/internal/infrastructure/database/ent"
 	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/predicate"
+	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/streamingplatform"
 	"github.com/ryuyb/fusion/internal/infrastructure/database/ent/user"
 )
 
@@ -68,6 +69,33 @@ func (f TraverseFunc) Traverse(ctx context.Context, q ent.Query) error {
 	return f(ctx, query)
 }
 
+// The StreamingPlatformFunc type is an adapter to allow the use of ordinary function as a Querier.
+type StreamingPlatformFunc func(context.Context, *ent.StreamingPlatformQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f StreamingPlatformFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.StreamingPlatformQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.StreamingPlatformQuery", q)
+}
+
+// The TraverseStreamingPlatform type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseStreamingPlatform func(context.Context, *ent.StreamingPlatformQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseStreamingPlatform) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseStreamingPlatform) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.StreamingPlatformQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.StreamingPlatformQuery", q)
+}
+
 // The UserFunc type is an adapter to allow the use of ordinary function as a Querier.
 type UserFunc func(context.Context, *ent.UserQuery) (ent.Value, error)
 
@@ -98,6 +126,8 @@ func (f TraverseUser) Traverse(ctx context.Context, q ent.Query) error {
 // NewQuery returns the generic Query interface for the given typed query.
 func NewQuery(q ent.Query) (Query, error) {
 	switch q := q.(type) {
+	case *ent.StreamingPlatformQuery:
+		return &query[*ent.StreamingPlatformQuery, predicate.StreamingPlatform, streamingplatform.OrderOption]{typ: ent.TypeStreamingPlatform, tq: q}, nil
 	case *ent.UserQuery:
 		return &query[*ent.UserQuery, predicate.User, user.OrderOption]{typ: ent.TypeUser, tq: q}, nil
 	default:

@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/ryuyb/fusion/internal/infrastructure/provider/config"
@@ -22,9 +23,12 @@ func NewMigrator(cfg *config.Config, logger *zap.Logger) (*migrate.Migrate, erro
 		cfg.Database.Name,
 		cfg.Database.SSLMode,
 	)
-	logger.Info("migrating database", zap.String("dsn", dsn))
+	passwordStr := fmt.Sprintf(":%s@", cfg.Database.Password)
+	replacedStr := fmt.Sprintf(":%s@", strings.Repeat("*", len(cfg.Database.Password)))
+	hidePasswordDsn := strings.ReplaceAll(dsn, passwordStr, replacedStr)
+	logger.Info("migrating database", zap.String("dsn", hidePasswordDsn))
 
-	m, err := migrate.New("file://./migrations", dsn)
+	m, err := migrate.New(cfg.Database.Migrate.Source, dsn)
 	if err != nil {
 		logger.Error("failed to create migrator", zap.Error(err))
 		return nil, fmt.Errorf("failed to init migrator: %w", err)

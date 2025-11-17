@@ -12,16 +12,21 @@ database:
   host: localhost
   port: 5432
   user: postgres
-  password: postgres
+  password: 123456
   name: fusion
   ssl_mode: disable
-  auto_migrate: true
+  migrate:
+    auto_migrate: true
+    source: 'file://./migrations'
 
 logger:
   level: info
   enable_console: true
   enable_file: false
   console_color: true
+
+  fx:
+    enable: false
 
 job:
   broadcast_reminder:
