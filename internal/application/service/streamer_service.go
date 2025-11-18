@@ -81,7 +81,7 @@ func (s *streamerService) FindByPlatformStreamerId(ctx context.Context, platform
 		return nil, err
 	}
 	if !refresh {
-		return exists, nil
+		return exists, err
 	}
 
 	provider, err := s.spm.GetProvider(platformType)

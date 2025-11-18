@@ -47,6 +47,7 @@ func (p *Provider) FetchStreamerInfo(ctx context.Context, platformStreamerId str
 			Description string `json:"description"`
 			UserCover   string `json:"user_cover"`
 			LiveStatus  int    `json:"live_status"` // 0: offline, 1: live, 2: replay
+			Tags        string `json:"tags"`
 		} `json:"data"`
 	}
 

@@ -2,7 +2,6 @@ package bark
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/ryuyb/fusion/internal/core/domain"
@@ -36,8 +35,10 @@ func (p *Provider) GetChannelType() domain.NotificationChannelType {
 func (p *Provider) Send(ctx context.Context, channel *domain.NotificationChannel, data *external.NotificationData) error {
 	deviceKey, ok := channel.Config["device_key"].(string)
 	if !ok {
-		err := fmt.Errorf("device key is invalid: %s", channel.Config["device_key"])
-		return errors2.Internal(err)
+		return errors2.Internal(
+			errors2.BadRequest("device key is invalid").
+				WithDetail("device_key", channel.Config["device_key"]),
+		)
 	}
 
 	url, ok := channel.Config["url"].(string)
@@ -72,7 +73,10 @@ func (p *Provider) Send(ctx context.Context, channel *domain.NotificationChannel
 			zap.Int("status", response.StatusCode()),
 			zap.String("body", body),
 		)
-		return errors2.Internal(fmt.Errorf("bark returned status code %d", response.StatusCode()))
+		return errors2.Internal(
+			errors2.BadRequest("bark returned non-success status").
+				WithDetail("status", response.StatusCode()),
+		)
 	}
 
 	return nil
