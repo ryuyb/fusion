@@ -19,3 +19,9 @@ type BarkRequest struct {
 	Url       string `json:"url,omitempty"`
 	Action    string `json:"action,omitempty"`
 }
+
+type barkResponse struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+	Msg     string `json:"msg"` // some versions use "msg"
+}

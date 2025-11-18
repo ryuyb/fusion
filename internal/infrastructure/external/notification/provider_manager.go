@@ -9,11 +9,13 @@ import (
 	"go.uber.org/zap"
 )
 
+// NotificationProviderManager holds notification providers keyed by channel type.
 type NotificationProviderManager struct {
 	providers map[domain.NotificationChannelType]external.NotificationProvider
 	logger    *zap.Logger
 }
 
+// NewNotificationProviderManager builds a manager with a lookup table for quick provider resolution.
 func NewNotificationProviderManager(providers []external.NotificationProvider, logger *zap.Logger) *NotificationProviderManager {
 	pm := &NotificationProviderManager{
 		providers: make(map[domain.NotificationChannelType]external.NotificationProvider),
@@ -37,6 +39,7 @@ func (pm *NotificationProviderManager) GetProvider(channelType domain.Notificati
 	return provider, nil
 }
 
+// GetAllProviders returns all registered providers; useful for broadcast-style operations.
 func (pm *NotificationProviderManager) GetAllProviders() []external.NotificationProvider {
 	providers := make([]external.NotificationProvider, 0, len(pm.providers))
 	for _, provider := range pm.providers {
@@ -50,6 +53,7 @@ func (pm *NotificationProviderManager) HasProvider(channelType domain.Notificati
 	return exists
 }
 
+// GetSupportedChannels lists channel types for configuration or capability checks.
 func (pm *NotificationProviderManager) GetSupportedChannels() []domain.NotificationChannelType {
 	channelTypes := make([]domain.NotificationChannelType, 0, len(pm.providers))
 	for channelType := range pm.providers {
