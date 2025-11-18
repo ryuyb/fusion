@@ -84,7 +84,7 @@ format-swagger: ## 格式化 swagger 文档
 generate-mockery: ## 生成 mockery 文件
 	@echo "$(GREEN)Generating mockery files...$(NC)"
 	@mockery
-	@echo "$(GREEN)Swagger mockery files done$(NC)"
+	@echo "$(GREEN)Generate mockery files done$(NC)"
 
 .PHONY: build
 build: ## 构建

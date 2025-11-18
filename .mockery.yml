@@ -8,14 +8,11 @@ include-auto-generated: false
 log-level: info
 structname: '{{.Mock}}{{.InterfaceName}}'
 pkgname: '{{.SrcPackageName}}'
-recursive: false
+recursive: true
 require-template-schema-exists: true
 template: testify
 template-schema: '{{.Template}}.schema.json'
 packages:
-  github.com/ryuyb/fusion/internal/core/port/repository:
-    config:
-      all: true
-  github.com/ryuyb/fusion/internal/core/port/service:
+  github.com/ryuyb/fusion/internal/core/port:
     config:
       all: true

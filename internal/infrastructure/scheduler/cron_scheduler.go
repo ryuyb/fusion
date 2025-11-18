@@ -32,6 +32,7 @@ func (s *CronScheduler) Register(cronExpr string, job job.Job) error {
 			s.executeJob(ctx, job)
 		}),
 		gocron.WithName(job.Name()),
+		gocron.WithSingletonMode(gocron.LimitModeReschedule),
 	)
 	if err != nil {
 		s.logger.Error("failed to register job", zap.String("name", job.Name()), zap.Error(err))
