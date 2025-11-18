@@ -61,6 +61,13 @@ var (
 		{Name: "room_url", Type: field.TypeString, Nullable: true},
 		{Name: "bio", Type: field.TypeString, Nullable: true},
 		{Name: "tags", Type: field.TypeJSON, Nullable: true},
+		{Name: "is_live", Type: field.TypeBool, Default: false},
+		{Name: "live_title", Type: field.TypeString, Nullable: true},
+		{Name: "live_game_name", Type: field.TypeString, Nullable: true},
+		{Name: "live_start_time", Type: field.TypeTime, Nullable: true},
+		{Name: "live_viewers", Type: field.TypeInt, Nullable: true},
+		{Name: "live_cover_image", Type: field.TypeString, Nullable: true},
+		{Name: "last_live_synced_at", Type: field.TypeTime, Nullable: true},
 		{Name: "last_synced_at", Type: field.TypeTime, Nullable: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
@@ -86,7 +93,7 @@ var (
 	// StreamingPlatformsColumns holds the columns for the "streaming_platforms" table.
 	StreamingPlatformsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "type", Type: field.TypeString},
+		{Name: "type", Type: field.TypeString, Unique: true},
 		{Name: "name", Type: field.TypeString, Unique: true},
 		{Name: "description", Type: field.TypeString, Nullable: true},
 		{Name: "base_url", Type: field.TypeString},

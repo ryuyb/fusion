@@ -37,6 +37,26 @@ func (Streamer) Fields() []ent.Field {
 		field.JSON("tags", []string{}).
 			Optional().
 			Default([]string{}),
+		field.Bool("is_live").
+			Default(false),
+		field.String("live_title").
+			Optional().
+			Nillable(),
+		field.String("live_game_name").
+			Optional().
+			Nillable(),
+		field.Time("live_start_time").
+			Optional().
+			Nillable(),
+		field.Int("live_viewers").
+			Optional().
+			Nillable(),
+		field.String("live_cover_image").
+			Optional().
+			Nillable(),
+		field.Time("last_live_synced_at").
+			Optional().
+			Nillable(),
 		field.Time("last_synced_at").
 			Optional().
 			Nillable(),

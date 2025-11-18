@@ -71,12 +71,16 @@ func init() {
 	streamerDescTags := streamerFields[7].Descriptor()
 	// streamer.DefaultTags holds the default value on creation for the tags field.
 	streamer.DefaultTags = streamerDescTags.Default.([]string)
+	// streamerDescIsLive is the schema descriptor for is_live field.
+	streamerDescIsLive := streamerFields[8].Descriptor()
+	// streamer.DefaultIsLive holds the default value on creation for the is_live field.
+	streamer.DefaultIsLive = streamerDescIsLive.Default.(bool)
 	// streamerDescCreatedAt is the schema descriptor for created_at field.
-	streamerDescCreatedAt := streamerFields[9].Descriptor()
+	streamerDescCreatedAt := streamerFields[16].Descriptor()
 	// streamer.DefaultCreatedAt holds the default value on creation for the created_at field.
 	streamer.DefaultCreatedAt = streamerDescCreatedAt.Default.(func() time.Time)
 	// streamerDescUpdatedAt is the schema descriptor for updated_at field.
-	streamerDescUpdatedAt := streamerFields[10].Descriptor()
+	streamerDescUpdatedAt := streamerFields[17].Descriptor()
 	// streamer.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	streamer.DefaultUpdatedAt = streamerDescUpdatedAt.Default.(func() time.Time)
 	// streamer.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.

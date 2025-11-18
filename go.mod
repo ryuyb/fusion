@@ -4,6 +4,7 @@ go 1.25.0
 
 require (
 	entgo.io/ent v0.14.5
+	github.com/PuerkitoBio/goquery v1.11.0
 	github.com/bytedance/sonic v1.14.2
 	github.com/go-co-op/gocron/v2 v2.18.0
 	github.com/go-playground/locales v0.14.1
@@ -31,6 +32,7 @@ require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/andybalholm/brotli v1.2.0 // indirect
+	github.com/andybalholm/cascadia v1.3.3 // indirect
 	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
 	github.com/bmatcuk/doublestar v1.3.4 // indirect
 	github.com/bytedance/gopkg v0.1.3 // indirect

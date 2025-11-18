@@ -43,6 +43,23 @@ func (r *streamerRepository) Create(ctx context.Context, entity *domain.Streamer
 	if len(entity.Tags) > 0 {
 		builder.SetTags(entity.Tags)
 	}
+	builder.SetIsLive(entity.LiveStatus.IsLive)
+	if entity.LiveStatus.Title != "" {
+		builder.SetLiveTitle(entity.LiveStatus.Title)
+	}
+	if entity.LiveStatus.GameName != "" {
+		builder.SetLiveGameName(entity.LiveStatus.GameName)
+	}
+	if !entity.LiveStatus.StartTime.IsZero() {
+		builder.SetLiveStartTime(entity.LiveStatus.StartTime)
+	}
+	builder.SetLiveViewers(entity.LiveStatus.Viewers)
+	if entity.LiveStatus.CoverImage != "" {
+		builder.SetLiveCoverImage(entity.LiveStatus.CoverImage)
+	}
+	if !entity.LastLiveSyncedAt.IsZero() {
+		builder.SetLastLiveSyncedAt(entity.LastLiveSyncedAt)
+	}
 	if !entity.LastSyncedAt.IsZero() {
 		builder.SetLastSyncedAt(entity.LastSyncedAt)
 	}
@@ -83,6 +100,33 @@ func (r *streamerRepository) Update(ctx context.Context, entity *domain.Streamer
 	builder.ClearTags()
 	if len(entity.Tags) > 0 {
 		builder.SetTags(entity.Tags)
+	}
+	builder.SetIsLive(entity.LiveStatus.IsLive)
+	if entity.LiveStatus.Title == "" {
+		builder.ClearLiveTitle()
+	} else {
+		builder.SetLiveTitle(entity.LiveStatus.Title)
+	}
+	if entity.LiveStatus.GameName == "" {
+		builder.ClearLiveGameName()
+	} else {
+		builder.SetLiveGameName(entity.LiveStatus.GameName)
+	}
+	if entity.LiveStatus.StartTime.IsZero() {
+		builder.ClearLiveStartTime()
+	} else {
+		builder.SetLiveStartTime(entity.LiveStatus.StartTime)
+	}
+	builder.SetLiveViewers(entity.LiveStatus.Viewers)
+	if entity.LiveStatus.CoverImage == "" {
+		builder.ClearLiveCoverImage()
+	} else {
+		builder.SetLiveCoverImage(entity.LiveStatus.CoverImage)
+	}
+	if entity.LastLiveSyncedAt.IsZero() {
+		builder.ClearLastLiveSyncedAt()
+	} else {
+		builder.SetLastLiveSyncedAt(entity.LastLiveSyncedAt)
 	}
 	if entity.LastSyncedAt.IsZero() {
 		builder.ClearLastSyncedAt()
@@ -206,8 +250,17 @@ func (r *streamerRepository) toDomain(entity *ent.Streamer) *domain.Streamer {
 		RoomURL:            lo.FromPtr(entity.RoomURL),
 		Bio:                lo.FromPtr(entity.Bio),
 		Tags:               slices.Clone(entity.Tags),
-		LastSyncedAt:       lo.FromPtr(entity.LastSyncedAt),
-		CreatedAt:          entity.CreatedAt,
-		UpdatedAt:          entity.UpdatedAt,
+		LiveStatus: domain.LiveStatusInfo{
+			IsLive:     entity.IsLive,
+			Title:      lo.FromPtr(entity.LiveTitle),
+			GameName:   lo.FromPtr(entity.LiveGameName),
+			StartTime:  lo.FromPtr(entity.LiveStartTime),
+			Viewers:    lo.FromPtr(entity.LiveViewers),
+			CoverImage: lo.FromPtr(entity.LiveCoverImage),
+		},
+		LastLiveSyncedAt: lo.FromPtr(entity.LastLiveSyncedAt),
+		LastSyncedAt:     lo.FromPtr(entity.LastSyncedAt),
+		CreatedAt:        entity.CreatedAt,
+		UpdatedAt:        entity.UpdatedAt,
 	}
 }

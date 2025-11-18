@@ -17,9 +17,21 @@ type Streamer struct {
 	RoomURL            string
 	Bio                string
 	Tags               []string
+	LiveStatus         LiveStatusInfo
+	LastLiveSyncedAt   time.Time
 	LastSyncedAt       time.Time
 	CreatedAt          time.Time
 	UpdatedAt          time.Time
+}
+
+// LiveStatusInfo mirrors the streaming platform live state for a streamer.
+type LiveStatusInfo struct {
+	IsLive     bool
+	Title      string
+	GameName   string
+	StartTime  time.Time
+	Viewers    int
+	CoverImage string
 }
 
 // NewStreamer validates input and constructs a Streamer aggregate.
@@ -90,4 +102,10 @@ func NewStreamerFromInfo(platformType StreamingPlatformType, info *StreamerInfoI
 // UpdateFromInfo updates the streamer fields based on provider info.
 func (s *Streamer) UpdateFromInfo(info *StreamerInfoInput) error {
 	return s.UpdateProfile(info.Name, info.Avatar, info.RoomURL, info.Description, info.Tags)
+}
+
+// UpdateLiveStatus refreshes live status fields and stamps sync time.
+func (s *Streamer) UpdateLiveStatus(status LiveStatusInfo, syncedAt time.Time) {
+	s.LiveStatus = status
+	s.LastLiveSyncedAt = syncedAt
 }

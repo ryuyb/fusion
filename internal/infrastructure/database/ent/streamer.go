@@ -32,6 +32,20 @@ type Streamer struct {
 	Bio *string `json:"bio,omitempty"`
 	// Tags holds the value of the "tags" field.
 	Tags []string `json:"tags,omitempty"`
+	// IsLive holds the value of the "is_live" field.
+	IsLive bool `json:"is_live,omitempty"`
+	// LiveTitle holds the value of the "live_title" field.
+	LiveTitle *string `json:"live_title,omitempty"`
+	// LiveGameName holds the value of the "live_game_name" field.
+	LiveGameName *string `json:"live_game_name,omitempty"`
+	// LiveStartTime holds the value of the "live_start_time" field.
+	LiveStartTime *time.Time `json:"live_start_time,omitempty"`
+	// LiveViewers holds the value of the "live_viewers" field.
+	LiveViewers *int `json:"live_viewers,omitempty"`
+	// LiveCoverImage holds the value of the "live_cover_image" field.
+	LiveCoverImage *string `json:"live_cover_image,omitempty"`
+	// LastLiveSyncedAt holds the value of the "last_live_synced_at" field.
+	LastLiveSyncedAt *time.Time `json:"last_live_synced_at,omitempty"`
 	// LastSyncedAt holds the value of the "last_synced_at" field.
 	LastSyncedAt *time.Time `json:"last_synced_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -69,11 +83,13 @@ func (*Streamer) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case streamer.FieldTags:
 			values[i] = new([]byte)
-		case streamer.FieldID:
+		case streamer.FieldIsLive:
+			values[i] = new(sql.NullBool)
+		case streamer.FieldID, streamer.FieldLiveViewers:
 			values[i] = new(sql.NullInt64)
-		case streamer.FieldPlatformType, streamer.FieldPlatformStreamerID, streamer.FieldDisplayName, streamer.FieldAvatarURL, streamer.FieldRoomURL, streamer.FieldBio:
+		case streamer.FieldPlatformType, streamer.FieldPlatformStreamerID, streamer.FieldDisplayName, streamer.FieldAvatarURL, streamer.FieldRoomURL, streamer.FieldBio, streamer.FieldLiveTitle, streamer.FieldLiveGameName, streamer.FieldLiveCoverImage:
 			values[i] = new(sql.NullString)
-		case streamer.FieldLastSyncedAt, streamer.FieldCreatedAt, streamer.FieldUpdatedAt:
+		case streamer.FieldLiveStartTime, streamer.FieldLastLiveSyncedAt, streamer.FieldLastSyncedAt, streamer.FieldCreatedAt, streamer.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -142,6 +158,54 @@ func (_m *Streamer) assignValues(columns []string, values []any) error {
 				if err := json.Unmarshal(*value, &_m.Tags); err != nil {
 					return fmt.Errorf("unmarshal field tags: %w", err)
 				}
+			}
+		case streamer.FieldIsLive:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field is_live", values[i])
+			} else if value.Valid {
+				_m.IsLive = value.Bool
+			}
+		case streamer.FieldLiveTitle:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field live_title", values[i])
+			} else if value.Valid {
+				_m.LiveTitle = new(string)
+				*_m.LiveTitle = value.String
+			}
+		case streamer.FieldLiveGameName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field live_game_name", values[i])
+			} else if value.Valid {
+				_m.LiveGameName = new(string)
+				*_m.LiveGameName = value.String
+			}
+		case streamer.FieldLiveStartTime:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field live_start_time", values[i])
+			} else if value.Valid {
+				_m.LiveStartTime = new(time.Time)
+				*_m.LiveStartTime = value.Time
+			}
+		case streamer.FieldLiveViewers:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field live_viewers", values[i])
+			} else if value.Valid {
+				_m.LiveViewers = new(int)
+				*_m.LiveViewers = int(value.Int64)
+			}
+		case streamer.FieldLiveCoverImage:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field live_cover_image", values[i])
+			} else if value.Valid {
+				_m.LiveCoverImage = new(string)
+				*_m.LiveCoverImage = value.String
+			}
+		case streamer.FieldLastLiveSyncedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field last_live_synced_at", values[i])
+			} else if value.Valid {
+				_m.LastLiveSyncedAt = new(time.Time)
+				*_m.LastLiveSyncedAt = value.Time
 			}
 		case streamer.FieldLastSyncedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -229,6 +293,39 @@ func (_m *Streamer) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("tags=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Tags))
+	builder.WriteString(", ")
+	builder.WriteString("is_live=")
+	builder.WriteString(fmt.Sprintf("%v", _m.IsLive))
+	builder.WriteString(", ")
+	if v := _m.LiveTitle; v != nil {
+		builder.WriteString("live_title=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.LiveGameName; v != nil {
+		builder.WriteString("live_game_name=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.LiveStartTime; v != nil {
+		builder.WriteString("live_start_time=")
+		builder.WriteString(v.Format(time.ANSIC))
+	}
+	builder.WriteString(", ")
+	if v := _m.LiveViewers; v != nil {
+		builder.WriteString("live_viewers=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	builder.WriteString(", ")
+	if v := _m.LiveCoverImage; v != nil {
+		builder.WriteString("live_cover_image=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.LastLiveSyncedAt; v != nil {
+		builder.WriteString("last_live_synced_at=")
+		builder.WriteString(v.Format(time.ANSIC))
+	}
 	builder.WriteString(", ")
 	if v := _m.LastSyncedAt; v != nil {
 		builder.WriteString("last_synced_at=")

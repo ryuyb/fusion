@@ -87,6 +87,104 @@ func (_c *StreamerCreate) SetTags(v []string) *StreamerCreate {
 	return _c
 }
 
+// SetIsLive sets the "is_live" field.
+func (_c *StreamerCreate) SetIsLive(v bool) *StreamerCreate {
+	_c.mutation.SetIsLive(v)
+	return _c
+}
+
+// SetNillableIsLive sets the "is_live" field if the given value is not nil.
+func (_c *StreamerCreate) SetNillableIsLive(v *bool) *StreamerCreate {
+	if v != nil {
+		_c.SetIsLive(*v)
+	}
+	return _c
+}
+
+// SetLiveTitle sets the "live_title" field.
+func (_c *StreamerCreate) SetLiveTitle(v string) *StreamerCreate {
+	_c.mutation.SetLiveTitle(v)
+	return _c
+}
+
+// SetNillableLiveTitle sets the "live_title" field if the given value is not nil.
+func (_c *StreamerCreate) SetNillableLiveTitle(v *string) *StreamerCreate {
+	if v != nil {
+		_c.SetLiveTitle(*v)
+	}
+	return _c
+}
+
+// SetLiveGameName sets the "live_game_name" field.
+func (_c *StreamerCreate) SetLiveGameName(v string) *StreamerCreate {
+	_c.mutation.SetLiveGameName(v)
+	return _c
+}
+
+// SetNillableLiveGameName sets the "live_game_name" field if the given value is not nil.
+func (_c *StreamerCreate) SetNillableLiveGameName(v *string) *StreamerCreate {
+	if v != nil {
+		_c.SetLiveGameName(*v)
+	}
+	return _c
+}
+
+// SetLiveStartTime sets the "live_start_time" field.
+func (_c *StreamerCreate) SetLiveStartTime(v time.Time) *StreamerCreate {
+	_c.mutation.SetLiveStartTime(v)
+	return _c
+}
+
+// SetNillableLiveStartTime sets the "live_start_time" field if the given value is not nil.
+func (_c *StreamerCreate) SetNillableLiveStartTime(v *time.Time) *StreamerCreate {
+	if v != nil {
+		_c.SetLiveStartTime(*v)
+	}
+	return _c
+}
+
+// SetLiveViewers sets the "live_viewers" field.
+func (_c *StreamerCreate) SetLiveViewers(v int) *StreamerCreate {
+	_c.mutation.SetLiveViewers(v)
+	return _c
+}
+
+// SetNillableLiveViewers sets the "live_viewers" field if the given value is not nil.
+func (_c *StreamerCreate) SetNillableLiveViewers(v *int) *StreamerCreate {
+	if v != nil {
+		_c.SetLiveViewers(*v)
+	}
+	return _c
+}
+
+// SetLiveCoverImage sets the "live_cover_image" field.
+func (_c *StreamerCreate) SetLiveCoverImage(v string) *StreamerCreate {
+	_c.mutation.SetLiveCoverImage(v)
+	return _c
+}
+
+// SetNillableLiveCoverImage sets the "live_cover_image" field if the given value is not nil.
+func (_c *StreamerCreate) SetNillableLiveCoverImage(v *string) *StreamerCreate {
+	if v != nil {
+		_c.SetLiveCoverImage(*v)
+	}
+	return _c
+}
+
+// SetLastLiveSyncedAt sets the "last_live_synced_at" field.
+func (_c *StreamerCreate) SetLastLiveSyncedAt(v time.Time) *StreamerCreate {
+	_c.mutation.SetLastLiveSyncedAt(v)
+	return _c
+}
+
+// SetNillableLastLiveSyncedAt sets the "last_live_synced_at" field if the given value is not nil.
+func (_c *StreamerCreate) SetNillableLastLiveSyncedAt(v *time.Time) *StreamerCreate {
+	if v != nil {
+		_c.SetLastLiveSyncedAt(*v)
+	}
+	return _c
+}
+
 // SetLastSyncedAt sets the "last_synced_at" field.
 func (_c *StreamerCreate) SetLastSyncedAt(v time.Time) *StreamerCreate {
 	_c.mutation.SetLastSyncedAt(v)
@@ -189,6 +287,10 @@ func (_c *StreamerCreate) defaults() {
 		v := streamer.DefaultTags
 		_c.mutation.SetTags(v)
 	}
+	if _, ok := _c.mutation.IsLive(); !ok {
+		v := streamer.DefaultIsLive
+		_c.mutation.SetIsLive(v)
+	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := streamer.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
@@ -224,6 +326,9 @@ func (_c *StreamerCreate) check() error {
 		if err := streamer.DisplayNameValidator(v); err != nil {
 			return &ValidationError{Name: "display_name", err: fmt.Errorf(`ent: validator failed for field "Streamer.display_name": %w`, err)}
 		}
+	}
+	if _, ok := _c.mutation.IsLive(); !ok {
+		return &ValidationError{Name: "is_live", err: errors.New(`ent: missing required field "Streamer.is_live"`)}
 	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Streamer.created_at"`)}
@@ -290,6 +395,34 @@ func (_c *StreamerCreate) createSpec() (*Streamer, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.Tags(); ok {
 		_spec.SetField(streamer.FieldTags, field.TypeJSON, value)
 		_node.Tags = value
+	}
+	if value, ok := _c.mutation.IsLive(); ok {
+		_spec.SetField(streamer.FieldIsLive, field.TypeBool, value)
+		_node.IsLive = value
+	}
+	if value, ok := _c.mutation.LiveTitle(); ok {
+		_spec.SetField(streamer.FieldLiveTitle, field.TypeString, value)
+		_node.LiveTitle = &value
+	}
+	if value, ok := _c.mutation.LiveGameName(); ok {
+		_spec.SetField(streamer.FieldLiveGameName, field.TypeString, value)
+		_node.LiveGameName = &value
+	}
+	if value, ok := _c.mutation.LiveStartTime(); ok {
+		_spec.SetField(streamer.FieldLiveStartTime, field.TypeTime, value)
+		_node.LiveStartTime = &value
+	}
+	if value, ok := _c.mutation.LiveViewers(); ok {
+		_spec.SetField(streamer.FieldLiveViewers, field.TypeInt, value)
+		_node.LiveViewers = &value
+	}
+	if value, ok := _c.mutation.LiveCoverImage(); ok {
+		_spec.SetField(streamer.FieldLiveCoverImage, field.TypeString, value)
+		_node.LiveCoverImage = &value
+	}
+	if value, ok := _c.mutation.LastLiveSyncedAt(); ok {
+		_spec.SetField(streamer.FieldLastLiveSyncedAt, field.TypeTime, value)
+		_node.LastLiveSyncedAt = &value
 	}
 	if value, ok := _c.mutation.LastSyncedAt(); ok {
 		_spec.SetField(streamer.FieldLastSyncedAt, field.TypeTime, value)

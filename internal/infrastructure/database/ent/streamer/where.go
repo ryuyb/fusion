@@ -85,6 +85,41 @@ func Bio(v string) predicate.Streamer {
 	return predicate.Streamer(sql.FieldEQ(FieldBio, v))
 }
 
+// IsLive applies equality check predicate on the "is_live" field. It's identical to IsLiveEQ.
+func IsLive(v bool) predicate.Streamer {
+	return predicate.Streamer(sql.FieldEQ(FieldIsLive, v))
+}
+
+// LiveTitle applies equality check predicate on the "live_title" field. It's identical to LiveTitleEQ.
+func LiveTitle(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldEQ(FieldLiveTitle, v))
+}
+
+// LiveGameName applies equality check predicate on the "live_game_name" field. It's identical to LiveGameNameEQ.
+func LiveGameName(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldEQ(FieldLiveGameName, v))
+}
+
+// LiveStartTime applies equality check predicate on the "live_start_time" field. It's identical to LiveStartTimeEQ.
+func LiveStartTime(v time.Time) predicate.Streamer {
+	return predicate.Streamer(sql.FieldEQ(FieldLiveStartTime, v))
+}
+
+// LiveViewers applies equality check predicate on the "live_viewers" field. It's identical to LiveViewersEQ.
+func LiveViewers(v int) predicate.Streamer {
+	return predicate.Streamer(sql.FieldEQ(FieldLiveViewers, v))
+}
+
+// LiveCoverImage applies equality check predicate on the "live_cover_image" field. It's identical to LiveCoverImageEQ.
+func LiveCoverImage(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldEQ(FieldLiveCoverImage, v))
+}
+
+// LastLiveSyncedAt applies equality check predicate on the "last_live_synced_at" field. It's identical to LastLiveSyncedAtEQ.
+func LastLiveSyncedAt(v time.Time) predicate.Streamer {
+	return predicate.Streamer(sql.FieldEQ(FieldLastLiveSyncedAt, v))
+}
+
 // LastSyncedAt applies equality check predicate on the "last_synced_at" field. It's identical to LastSyncedAtEQ.
 func LastSyncedAt(v time.Time) predicate.Streamer {
 	return predicate.Streamer(sql.FieldEQ(FieldLastSyncedAt, v))
@@ -528,6 +563,391 @@ func TagsIsNil() predicate.Streamer {
 // TagsNotNil applies the NotNil predicate on the "tags" field.
 func TagsNotNil() predicate.Streamer {
 	return predicate.Streamer(sql.FieldNotNull(FieldTags))
+}
+
+// IsLiveEQ applies the EQ predicate on the "is_live" field.
+func IsLiveEQ(v bool) predicate.Streamer {
+	return predicate.Streamer(sql.FieldEQ(FieldIsLive, v))
+}
+
+// IsLiveNEQ applies the NEQ predicate on the "is_live" field.
+func IsLiveNEQ(v bool) predicate.Streamer {
+	return predicate.Streamer(sql.FieldNEQ(FieldIsLive, v))
+}
+
+// LiveTitleEQ applies the EQ predicate on the "live_title" field.
+func LiveTitleEQ(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldEQ(FieldLiveTitle, v))
+}
+
+// LiveTitleNEQ applies the NEQ predicate on the "live_title" field.
+func LiveTitleNEQ(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldNEQ(FieldLiveTitle, v))
+}
+
+// LiveTitleIn applies the In predicate on the "live_title" field.
+func LiveTitleIn(vs ...string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldIn(FieldLiveTitle, vs...))
+}
+
+// LiveTitleNotIn applies the NotIn predicate on the "live_title" field.
+func LiveTitleNotIn(vs ...string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldNotIn(FieldLiveTitle, vs...))
+}
+
+// LiveTitleGT applies the GT predicate on the "live_title" field.
+func LiveTitleGT(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldGT(FieldLiveTitle, v))
+}
+
+// LiveTitleGTE applies the GTE predicate on the "live_title" field.
+func LiveTitleGTE(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldGTE(FieldLiveTitle, v))
+}
+
+// LiveTitleLT applies the LT predicate on the "live_title" field.
+func LiveTitleLT(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldLT(FieldLiveTitle, v))
+}
+
+// LiveTitleLTE applies the LTE predicate on the "live_title" field.
+func LiveTitleLTE(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldLTE(FieldLiveTitle, v))
+}
+
+// LiveTitleContains applies the Contains predicate on the "live_title" field.
+func LiveTitleContains(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldContains(FieldLiveTitle, v))
+}
+
+// LiveTitleHasPrefix applies the HasPrefix predicate on the "live_title" field.
+func LiveTitleHasPrefix(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldHasPrefix(FieldLiveTitle, v))
+}
+
+// LiveTitleHasSuffix applies the HasSuffix predicate on the "live_title" field.
+func LiveTitleHasSuffix(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldHasSuffix(FieldLiveTitle, v))
+}
+
+// LiveTitleIsNil applies the IsNil predicate on the "live_title" field.
+func LiveTitleIsNil() predicate.Streamer {
+	return predicate.Streamer(sql.FieldIsNull(FieldLiveTitle))
+}
+
+// LiveTitleNotNil applies the NotNil predicate on the "live_title" field.
+func LiveTitleNotNil() predicate.Streamer {
+	return predicate.Streamer(sql.FieldNotNull(FieldLiveTitle))
+}
+
+// LiveTitleEqualFold applies the EqualFold predicate on the "live_title" field.
+func LiveTitleEqualFold(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldEqualFold(FieldLiveTitle, v))
+}
+
+// LiveTitleContainsFold applies the ContainsFold predicate on the "live_title" field.
+func LiveTitleContainsFold(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldContainsFold(FieldLiveTitle, v))
+}
+
+// LiveGameNameEQ applies the EQ predicate on the "live_game_name" field.
+func LiveGameNameEQ(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldEQ(FieldLiveGameName, v))
+}
+
+// LiveGameNameNEQ applies the NEQ predicate on the "live_game_name" field.
+func LiveGameNameNEQ(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldNEQ(FieldLiveGameName, v))
+}
+
+// LiveGameNameIn applies the In predicate on the "live_game_name" field.
+func LiveGameNameIn(vs ...string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldIn(FieldLiveGameName, vs...))
+}
+
+// LiveGameNameNotIn applies the NotIn predicate on the "live_game_name" field.
+func LiveGameNameNotIn(vs ...string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldNotIn(FieldLiveGameName, vs...))
+}
+
+// LiveGameNameGT applies the GT predicate on the "live_game_name" field.
+func LiveGameNameGT(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldGT(FieldLiveGameName, v))
+}
+
+// LiveGameNameGTE applies the GTE predicate on the "live_game_name" field.
+func LiveGameNameGTE(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldGTE(FieldLiveGameName, v))
+}
+
+// LiveGameNameLT applies the LT predicate on the "live_game_name" field.
+func LiveGameNameLT(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldLT(FieldLiveGameName, v))
+}
+
+// LiveGameNameLTE applies the LTE predicate on the "live_game_name" field.
+func LiveGameNameLTE(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldLTE(FieldLiveGameName, v))
+}
+
+// LiveGameNameContains applies the Contains predicate on the "live_game_name" field.
+func LiveGameNameContains(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldContains(FieldLiveGameName, v))
+}
+
+// LiveGameNameHasPrefix applies the HasPrefix predicate on the "live_game_name" field.
+func LiveGameNameHasPrefix(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldHasPrefix(FieldLiveGameName, v))
+}
+
+// LiveGameNameHasSuffix applies the HasSuffix predicate on the "live_game_name" field.
+func LiveGameNameHasSuffix(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldHasSuffix(FieldLiveGameName, v))
+}
+
+// LiveGameNameIsNil applies the IsNil predicate on the "live_game_name" field.
+func LiveGameNameIsNil() predicate.Streamer {
+	return predicate.Streamer(sql.FieldIsNull(FieldLiveGameName))
+}
+
+// LiveGameNameNotNil applies the NotNil predicate on the "live_game_name" field.
+func LiveGameNameNotNil() predicate.Streamer {
+	return predicate.Streamer(sql.FieldNotNull(FieldLiveGameName))
+}
+
+// LiveGameNameEqualFold applies the EqualFold predicate on the "live_game_name" field.
+func LiveGameNameEqualFold(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldEqualFold(FieldLiveGameName, v))
+}
+
+// LiveGameNameContainsFold applies the ContainsFold predicate on the "live_game_name" field.
+func LiveGameNameContainsFold(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldContainsFold(FieldLiveGameName, v))
+}
+
+// LiveStartTimeEQ applies the EQ predicate on the "live_start_time" field.
+func LiveStartTimeEQ(v time.Time) predicate.Streamer {
+	return predicate.Streamer(sql.FieldEQ(FieldLiveStartTime, v))
+}
+
+// LiveStartTimeNEQ applies the NEQ predicate on the "live_start_time" field.
+func LiveStartTimeNEQ(v time.Time) predicate.Streamer {
+	return predicate.Streamer(sql.FieldNEQ(FieldLiveStartTime, v))
+}
+
+// LiveStartTimeIn applies the In predicate on the "live_start_time" field.
+func LiveStartTimeIn(vs ...time.Time) predicate.Streamer {
+	return predicate.Streamer(sql.FieldIn(FieldLiveStartTime, vs...))
+}
+
+// LiveStartTimeNotIn applies the NotIn predicate on the "live_start_time" field.
+func LiveStartTimeNotIn(vs ...time.Time) predicate.Streamer {
+	return predicate.Streamer(sql.FieldNotIn(FieldLiveStartTime, vs...))
+}
+
+// LiveStartTimeGT applies the GT predicate on the "live_start_time" field.
+func LiveStartTimeGT(v time.Time) predicate.Streamer {
+	return predicate.Streamer(sql.FieldGT(FieldLiveStartTime, v))
+}
+
+// LiveStartTimeGTE applies the GTE predicate on the "live_start_time" field.
+func LiveStartTimeGTE(v time.Time) predicate.Streamer {
+	return predicate.Streamer(sql.FieldGTE(FieldLiveStartTime, v))
+}
+
+// LiveStartTimeLT applies the LT predicate on the "live_start_time" field.
+func LiveStartTimeLT(v time.Time) predicate.Streamer {
+	return predicate.Streamer(sql.FieldLT(FieldLiveStartTime, v))
+}
+
+// LiveStartTimeLTE applies the LTE predicate on the "live_start_time" field.
+func LiveStartTimeLTE(v time.Time) predicate.Streamer {
+	return predicate.Streamer(sql.FieldLTE(FieldLiveStartTime, v))
+}
+
+// LiveStartTimeIsNil applies the IsNil predicate on the "live_start_time" field.
+func LiveStartTimeIsNil() predicate.Streamer {
+	return predicate.Streamer(sql.FieldIsNull(FieldLiveStartTime))
+}
+
+// LiveStartTimeNotNil applies the NotNil predicate on the "live_start_time" field.
+func LiveStartTimeNotNil() predicate.Streamer {
+	return predicate.Streamer(sql.FieldNotNull(FieldLiveStartTime))
+}
+
+// LiveViewersEQ applies the EQ predicate on the "live_viewers" field.
+func LiveViewersEQ(v int) predicate.Streamer {
+	return predicate.Streamer(sql.FieldEQ(FieldLiveViewers, v))
+}
+
+// LiveViewersNEQ applies the NEQ predicate on the "live_viewers" field.
+func LiveViewersNEQ(v int) predicate.Streamer {
+	return predicate.Streamer(sql.FieldNEQ(FieldLiveViewers, v))
+}
+
+// LiveViewersIn applies the In predicate on the "live_viewers" field.
+func LiveViewersIn(vs ...int) predicate.Streamer {
+	return predicate.Streamer(sql.FieldIn(FieldLiveViewers, vs...))
+}
+
+// LiveViewersNotIn applies the NotIn predicate on the "live_viewers" field.
+func LiveViewersNotIn(vs ...int) predicate.Streamer {
+	return predicate.Streamer(sql.FieldNotIn(FieldLiveViewers, vs...))
+}
+
+// LiveViewersGT applies the GT predicate on the "live_viewers" field.
+func LiveViewersGT(v int) predicate.Streamer {
+	return predicate.Streamer(sql.FieldGT(FieldLiveViewers, v))
+}
+
+// LiveViewersGTE applies the GTE predicate on the "live_viewers" field.
+func LiveViewersGTE(v int) predicate.Streamer {
+	return predicate.Streamer(sql.FieldGTE(FieldLiveViewers, v))
+}
+
+// LiveViewersLT applies the LT predicate on the "live_viewers" field.
+func LiveViewersLT(v int) predicate.Streamer {
+	return predicate.Streamer(sql.FieldLT(FieldLiveViewers, v))
+}
+
+// LiveViewersLTE applies the LTE predicate on the "live_viewers" field.
+func LiveViewersLTE(v int) predicate.Streamer {
+	return predicate.Streamer(sql.FieldLTE(FieldLiveViewers, v))
+}
+
+// LiveViewersIsNil applies the IsNil predicate on the "live_viewers" field.
+func LiveViewersIsNil() predicate.Streamer {
+	return predicate.Streamer(sql.FieldIsNull(FieldLiveViewers))
+}
+
+// LiveViewersNotNil applies the NotNil predicate on the "live_viewers" field.
+func LiveViewersNotNil() predicate.Streamer {
+	return predicate.Streamer(sql.FieldNotNull(FieldLiveViewers))
+}
+
+// LiveCoverImageEQ applies the EQ predicate on the "live_cover_image" field.
+func LiveCoverImageEQ(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldEQ(FieldLiveCoverImage, v))
+}
+
+// LiveCoverImageNEQ applies the NEQ predicate on the "live_cover_image" field.
+func LiveCoverImageNEQ(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldNEQ(FieldLiveCoverImage, v))
+}
+
+// LiveCoverImageIn applies the In predicate on the "live_cover_image" field.
+func LiveCoverImageIn(vs ...string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldIn(FieldLiveCoverImage, vs...))
+}
+
+// LiveCoverImageNotIn applies the NotIn predicate on the "live_cover_image" field.
+func LiveCoverImageNotIn(vs ...string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldNotIn(FieldLiveCoverImage, vs...))
+}
+
+// LiveCoverImageGT applies the GT predicate on the "live_cover_image" field.
+func LiveCoverImageGT(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldGT(FieldLiveCoverImage, v))
+}
+
+// LiveCoverImageGTE applies the GTE predicate on the "live_cover_image" field.
+func LiveCoverImageGTE(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldGTE(FieldLiveCoverImage, v))
+}
+
+// LiveCoverImageLT applies the LT predicate on the "live_cover_image" field.
+func LiveCoverImageLT(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldLT(FieldLiveCoverImage, v))
+}
+
+// LiveCoverImageLTE applies the LTE predicate on the "live_cover_image" field.
+func LiveCoverImageLTE(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldLTE(FieldLiveCoverImage, v))
+}
+
+// LiveCoverImageContains applies the Contains predicate on the "live_cover_image" field.
+func LiveCoverImageContains(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldContains(FieldLiveCoverImage, v))
+}
+
+// LiveCoverImageHasPrefix applies the HasPrefix predicate on the "live_cover_image" field.
+func LiveCoverImageHasPrefix(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldHasPrefix(FieldLiveCoverImage, v))
+}
+
+// LiveCoverImageHasSuffix applies the HasSuffix predicate on the "live_cover_image" field.
+func LiveCoverImageHasSuffix(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldHasSuffix(FieldLiveCoverImage, v))
+}
+
+// LiveCoverImageIsNil applies the IsNil predicate on the "live_cover_image" field.
+func LiveCoverImageIsNil() predicate.Streamer {
+	return predicate.Streamer(sql.FieldIsNull(FieldLiveCoverImage))
+}
+
+// LiveCoverImageNotNil applies the NotNil predicate on the "live_cover_image" field.
+func LiveCoverImageNotNil() predicate.Streamer {
+	return predicate.Streamer(sql.FieldNotNull(FieldLiveCoverImage))
+}
+
+// LiveCoverImageEqualFold applies the EqualFold predicate on the "live_cover_image" field.
+func LiveCoverImageEqualFold(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldEqualFold(FieldLiveCoverImage, v))
+}
+
+// LiveCoverImageContainsFold applies the ContainsFold predicate on the "live_cover_image" field.
+func LiveCoverImageContainsFold(v string) predicate.Streamer {
+	return predicate.Streamer(sql.FieldContainsFold(FieldLiveCoverImage, v))
+}
+
+// LastLiveSyncedAtEQ applies the EQ predicate on the "last_live_synced_at" field.
+func LastLiveSyncedAtEQ(v time.Time) predicate.Streamer {
+	return predicate.Streamer(sql.FieldEQ(FieldLastLiveSyncedAt, v))
+}
+
+// LastLiveSyncedAtNEQ applies the NEQ predicate on the "last_live_synced_at" field.
+func LastLiveSyncedAtNEQ(v time.Time) predicate.Streamer {
+	return predicate.Streamer(sql.FieldNEQ(FieldLastLiveSyncedAt, v))
+}
+
+// LastLiveSyncedAtIn applies the In predicate on the "last_live_synced_at" field.
+func LastLiveSyncedAtIn(vs ...time.Time) predicate.Streamer {
+	return predicate.Streamer(sql.FieldIn(FieldLastLiveSyncedAt, vs...))
+}
+
+// LastLiveSyncedAtNotIn applies the NotIn predicate on the "last_live_synced_at" field.
+func LastLiveSyncedAtNotIn(vs ...time.Time) predicate.Streamer {
+	return predicate.Streamer(sql.FieldNotIn(FieldLastLiveSyncedAt, vs...))
+}
+
+// LastLiveSyncedAtGT applies the GT predicate on the "last_live_synced_at" field.
+func LastLiveSyncedAtGT(v time.Time) predicate.Streamer {
+	return predicate.Streamer(sql.FieldGT(FieldLastLiveSyncedAt, v))
+}
+
+// LastLiveSyncedAtGTE applies the GTE predicate on the "last_live_synced_at" field.
+func LastLiveSyncedAtGTE(v time.Time) predicate.Streamer {
+	return predicate.Streamer(sql.FieldGTE(FieldLastLiveSyncedAt, v))
+}
+
+// LastLiveSyncedAtLT applies the LT predicate on the "last_live_synced_at" field.
+func LastLiveSyncedAtLT(v time.Time) predicate.Streamer {
+	return predicate.Streamer(sql.FieldLT(FieldLastLiveSyncedAt, v))
+}
+
+// LastLiveSyncedAtLTE applies the LTE predicate on the "last_live_synced_at" field.
+func LastLiveSyncedAtLTE(v time.Time) predicate.Streamer {
+	return predicate.Streamer(sql.FieldLTE(FieldLastLiveSyncedAt, v))
+}
+
+// LastLiveSyncedAtIsNil applies the IsNil predicate on the "last_live_synced_at" field.
+func LastLiveSyncedAtIsNil() predicate.Streamer {
+	return predicate.Streamer(sql.FieldIsNull(FieldLastLiveSyncedAt))
+}
+
+// LastLiveSyncedAtNotNil applies the NotNil predicate on the "last_live_synced_at" field.
+func LastLiveSyncedAtNotNil() predicate.Streamer {
+	return predicate.Streamer(sql.FieldNotNull(FieldLastLiveSyncedAt))
 }
 
 // LastSyncedAtEQ applies the EQ predicate on the "last_synced_at" field.

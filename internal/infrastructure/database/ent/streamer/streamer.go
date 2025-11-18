@@ -28,6 +28,20 @@ const (
 	FieldBio = "bio"
 	// FieldTags holds the string denoting the tags field in the database.
 	FieldTags = "tags"
+	// FieldIsLive holds the string denoting the is_live field in the database.
+	FieldIsLive = "is_live"
+	// FieldLiveTitle holds the string denoting the live_title field in the database.
+	FieldLiveTitle = "live_title"
+	// FieldLiveGameName holds the string denoting the live_game_name field in the database.
+	FieldLiveGameName = "live_game_name"
+	// FieldLiveStartTime holds the string denoting the live_start_time field in the database.
+	FieldLiveStartTime = "live_start_time"
+	// FieldLiveViewers holds the string denoting the live_viewers field in the database.
+	FieldLiveViewers = "live_viewers"
+	// FieldLiveCoverImage holds the string denoting the live_cover_image field in the database.
+	FieldLiveCoverImage = "live_cover_image"
+	// FieldLastLiveSyncedAt holds the string denoting the last_live_synced_at field in the database.
+	FieldLastLiveSyncedAt = "last_live_synced_at"
 	// FieldLastSyncedAt holds the string denoting the last_synced_at field in the database.
 	FieldLastSyncedAt = "last_synced_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
@@ -57,6 +71,13 @@ var Columns = []string{
 	FieldRoomURL,
 	FieldBio,
 	FieldTags,
+	FieldIsLive,
+	FieldLiveTitle,
+	FieldLiveGameName,
+	FieldLiveStartTime,
+	FieldLiveViewers,
+	FieldLiveCoverImage,
+	FieldLastLiveSyncedAt,
 	FieldLastSyncedAt,
 	FieldCreatedAt,
 	FieldUpdatedAt,
@@ -81,6 +102,8 @@ var (
 	DisplayNameValidator func(string) error
 	// DefaultTags holds the default value on creation for the "tags" field.
 	DefaultTags []string
+	// DefaultIsLive holds the default value on creation for the "is_live" field.
+	DefaultIsLive bool
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
@@ -125,6 +148,41 @@ func ByRoomURL(opts ...sql.OrderTermOption) OrderOption {
 // ByBio orders the results by the bio field.
 func ByBio(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldBio, opts...).ToFunc()
+}
+
+// ByIsLive orders the results by the is_live field.
+func ByIsLive(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldIsLive, opts...).ToFunc()
+}
+
+// ByLiveTitle orders the results by the live_title field.
+func ByLiveTitle(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLiveTitle, opts...).ToFunc()
+}
+
+// ByLiveGameName orders the results by the live_game_name field.
+func ByLiveGameName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLiveGameName, opts...).ToFunc()
+}
+
+// ByLiveStartTime orders the results by the live_start_time field.
+func ByLiveStartTime(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLiveStartTime, opts...).ToFunc()
+}
+
+// ByLiveViewers orders the results by the live_viewers field.
+func ByLiveViewers(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLiveViewers, opts...).ToFunc()
+}
+
+// ByLiveCoverImage orders the results by the live_cover_image field.
+func ByLiveCoverImage(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLiveCoverImage, opts...).ToFunc()
+}
+
+// ByLastLiveSyncedAt orders the results by the last_live_synced_at field.
+func ByLastLiveSyncedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLastLiveSyncedAt, opts...).ToFunc()
 }
 
 // ByLastSyncedAt orders the results by the last_synced_at field.

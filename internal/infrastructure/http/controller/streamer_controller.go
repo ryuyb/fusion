@@ -175,7 +175,11 @@ func (c *StreamerController) List(ctx fiber.Ctx) error {
 }
 
 func (c *StreamerController) toResponse(streamer *domain.Streamer) *dto.StreamerResponse {
-	return &dto.StreamerResponse{
+	if streamer == nil {
+		return nil
+	}
+
+	resp := &dto.StreamerResponse{
 		ID:                 streamer.ID,
 		PlatformType:       string(streamer.PlatformType),
 		PlatformStreamerID: streamer.PlatformStreamerID,
@@ -185,4 +189,28 @@ func (c *StreamerController) toResponse(streamer *domain.Streamer) *dto.Streamer
 		Bio:                streamer.Bio,
 		Tags:               streamer.Tags,
 	}
+
+	liveStatus := &dto.LiveStatusResponse{
+		IsLive:     streamer.LiveStatus.IsLive,
+		Title:      streamer.LiveStatus.Title,
+		GameName:   streamer.LiveStatus.GameName,
+		Viewers:    streamer.LiveStatus.Viewers,
+		CoverImage: streamer.LiveStatus.CoverImage,
+	}
+	if !streamer.LiveStatus.StartTime.IsZero() {
+		start := streamer.LiveStatus.StartTime
+		liveStatus.StartTime = &start
+	}
+	resp.LiveStatus = liveStatus
+
+	if !streamer.LastLiveSyncedAt.IsZero() {
+		t := streamer.LastLiveSyncedAt
+		resp.LastLiveSyncedAt = &t
+	}
+	if !streamer.LastSyncedAt.IsZero() {
+		t := streamer.LastSyncedAt
+		resp.LastProfileSynced = &t
+	}
+
+	return resp
 }

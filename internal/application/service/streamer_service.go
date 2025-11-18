@@ -6,6 +6,7 @@ import (
 
 	"github.com/ryuyb/fusion/internal/core/command"
 	"github.com/ryuyb/fusion/internal/core/domain"
+	coreExternal "github.com/ryuyb/fusion/internal/core/port/external"
 	coreRepo "github.com/ryuyb/fusion/internal/core/port/repository"
 	coreService "github.com/ryuyb/fusion/internal/core/port/service"
 	"github.com/ryuyb/fusion/internal/infrastructure/external/streaming"
@@ -92,6 +93,15 @@ func (s *streamerService) FindByPlatformStreamerId(ctx context.Context, platform
 	if err != nil {
 		return nil, err
 	}
+	var liveStatus *coreExternal.LiveStatus
+	if status, liveErr := provider.CheckLiveStatus(ctx, platformStreamerID); liveErr != nil {
+		s.logger.Warn("failed to refresh live status",
+			zap.String("platform_type", string(platformType)),
+			zap.String("platform_streamer_id", platformStreamerID),
+			zap.Error(liveErr))
+	} else {
+		liveStatus = status
+	}
 	input := &domain.StreamerInfoInput{
 		PlatformStreamerID: info.PlatformStreamerId,
 		Name:               info.Name,
@@ -105,6 +115,7 @@ func (s *streamerService) FindByPlatformStreamerId(ctx context.Context, platform
 			return nil, err
 		}
 		exists.LastSyncedAt = time.Now()
+		applyLiveStatus(exists, liveStatus)
 		return s.repo.Update(ctx, exists)
 	}
 
@@ -112,6 +123,7 @@ func (s *streamerService) FindByPlatformStreamerId(ctx context.Context, platform
 	if err != nil {
 		return nil, err
 	}
+	applyLiveStatus(newStreamer, liveStatus)
 	return s.repo.Create(ctx, newStreamer)
 }
 
@@ -139,4 +151,18 @@ func buildStreamerFromCommand(cmd *command.CreateStreamerCommand, platformType d
 		copy(streamer.Tags, cmd.Tags)
 	}
 	return streamer, nil
+}
+
+func applyLiveStatus(streamer *domain.Streamer, status *coreExternal.LiveStatus) {
+	if streamer == nil || status == nil {
+		return
+	}
+	streamer.UpdateLiveStatus(domain.LiveStatusInfo{
+		IsLive:     status.IsLive,
+		Title:      status.Title,
+		GameName:   status.GameName,
+		StartTime:  status.StartTime,
+		Viewers:    status.Viewers,
+		CoverImage: status.CoverImage,
+	}, time.Now())
 }
